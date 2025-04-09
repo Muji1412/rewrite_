@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>이미지 업로드</title>
+    <style>
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        .upload-form {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0069d9;
+        }
+        #result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 5px;
+            background-color: #e9ecef;
+            display: none;
+        }
+        #imagePreview {
+            max-width: 100%;
+            max-height: 300px;
+            margin-top: 10px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+<h1>이미지 업로드</h1>
+
+<div class="upload-form">
+    <div class="form-group">
+        <label for="file">프로필 이미지 선택</label>
+        <input type="file" id="file" accept="image/*" required>
+    </div>
+    <button onclick="uploadImage()">업로드</button>
+
+    <div id="result">
+        <h3>업로드 결과</h3>
+        <p><strong>이미지 URL:</strong> <span id="imageUrl"></span></p>
+        <div>
+            <h4>이미지 미리보기</h4>
+            <img id="imagePreview" src="" alt="업로드된 이미지">
+        </div>
+    </div>
+</div>
+
+<script>
+    function uploadImage() {
+        const fileInput = document.getElementById('file');
+        const file = fileInput.files[0];
+
+        if (!file) {
+            alert('파일을 선택해주세요.');
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append('file', file);
+
+        fetch('/api/files/upload', {
+            method: 'POST',
+            body: formData
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('서버 오류: ' + response.status);
+                }
+                return response.text();
+            })
+            .then(url => {
+                document.getElementById('result').style.display = 'block';
+                document.getElementById('imageUrl').textContent = url;
+                document.getElementById('imagePreview').src = url;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('업로드 실패: ' + error.message);
+            });
+    }
+</script>
+</body>
+</html>

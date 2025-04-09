@@ -4,6 +4,10 @@ plugins {
     id 'io.spring.dependency-management' version '1.1.7'
 }
 
+ext {
+    springCloudGcpVersion = "3.6.3"
+}
+
 group = 'com.example'
 version = '0.0.1-SNAPSHOT'
 
@@ -28,6 +32,10 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:2.2.0'
+
+    // GCP 의존성 - 이 부분만 수정
+    implementation 'com.google.cloud:spring-cloud-gcp-starter-storage'
+
     testImplementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter-test'
     compileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
@@ -36,8 +44,18 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-    //sql로깅용
+
+    // SQL 로깅용
     implementation 'org.bgee.log4jdbc-log4j2:log4jdbc-log4j2-jdbc4.1:1.16'
+
+    // 이 의존성 제거
+    // implementation 'org.springframework.cloud:spring-cloud-gcp'
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "com.google.cloud:spring-cloud-gcp-dependencies:$springCloudGcpVersion"
+    }
 }
 
 tasks.named('test') {

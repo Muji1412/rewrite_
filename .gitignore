@@ -36,3 +36,4 @@ out/
 ### VS Code ###
 .vscode/
 application.properties
+google_bucket_api.json
