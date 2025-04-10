@@ -19,14 +19,23 @@ public class FileUploadServiceImpl implements FileUploadService {
     private String bucketName;
 
     @Override
-    public String uploadFile(MultipartFile file) throws IOException {
+    public String uploadFile(MultipartFile file, String folderPath) throws IOException {
         // 파일명 생성 (UUID 사용하여 중복 방지)
         String uuid = UUID.randomUUID().toString();
         String originalFilename = file.getOriginalFilename();
         String ext = originalFilename != null
                 ? originalFilename.substring(originalFilename.lastIndexOf("."))
                 : "";
-        String fileName = uuid + ext;
+
+        // 폴더 경로가 있는 경우 파일명 앞에 추가 (경로의 끝에 '/'가 없으면 추가)
+        String fileName = "";
+        if (folderPath != null && !folderPath.isEmpty()) {
+            fileName = folderPath;
+            if (!folderPath.endsWith("/")) {
+                fileName += "/";
+            }
+        }
+        fileName += uuid + ext;
 
         // BlobInfo 객체 생성
         BlobInfo blobInfo = BlobInfo.newBuilder(bucketName, fileName)
@@ -39,4 +48,5 @@ public class FileUploadServiceImpl implements FileUploadService {
         // 업로드된 파일의 URL 생성
         return "https://storage.googleapis.com/" + bucketName + "/" + fileName;
     }
+
 }

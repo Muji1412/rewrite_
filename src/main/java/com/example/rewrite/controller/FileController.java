@@ -19,9 +19,11 @@ public class FileController {
     private final FileUploadService fileUploadService;
 
     @PostMapping("/upload")
-    public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file) {
+    public ResponseEntity<String> uploadFile(
+            @RequestParam("file") MultipartFile file,
+            @RequestParam(value = "folderPath", required = false, defaultValue = "") String folderPath) {
         try {
-            String fileUrl = fileUploadService.uploadFile(file);
+            String fileUrl = fileUploadService.uploadFile(file, folderPath);
             return ResponseEntity.ok(fileUrl);
         } catch (IOException e) {
             e.printStackTrace();
