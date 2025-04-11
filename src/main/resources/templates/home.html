@@ -13,10 +13,26 @@
 
 <h1>메인 페이지에 오신 것을 환영합니다!</h1>
 
-<p>아래 링크를 클릭하여 파일 업로드 페이지로 이동하세요.</p>
+<!--이미 로그인중인데 다시 로그인 시도시 alert창-->
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    var message = /*[[${loginMsg}]]*/ null;
+    if (message) {
+        alert(message);
+    }
+    /*]]>*/
+</script>
 
-<!-- /upload 경로로 이동하는 링크 -->
+<div th:if="${session.user}">
+    안녕하세요. <span th:text="${session.user.nickname}"></span> 님. <br>
+    가입정보입니다. <br>
+    이름 : <span th:text="${session.user.name}"></span> <br>
+    아이디 : <span th:text="${session.user.id}"></span> <br>
+</div>
+
+<p th:unless="${session.user}"><a href="/login">로그인 하러 가기</a></p>
 <p><a href="/upload">파일 업로드 하러 가기</a></p>
+<p><a href="https://storage.googleapis.com/rewrite_project/Dark.Nuns.2025.1080P.Web-Dl.Aac5.1.X265-Neonoir.mp4">검은 수녀들 보러가기 </a></p>
 
 </body>
 </html>
