@@ -36,7 +36,8 @@ dependencies {
     // GCP 의존성 - 이 부분만 수정
     implementation 'com.google.cloud:spring-cloud-gcp-starter-storage'
 
-    testImplementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter-test'
+    // 수정 후: 버전 번호 추가
+    testImplementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter-test:2.2.0' // <-- 수정됨
     compileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     runtimeOnly 'com.mysql:mysql-connector-j'
