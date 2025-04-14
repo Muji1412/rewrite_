@@ -7,12 +7,13 @@
   <link rel="stylesheet" href="/css/user/signup.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&family=Roboto:wght@700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
 <div class="container">
   <form action="/signup" method="post" class="signup-form">
-    <h1 class="logo">REWRITE</h1>
+    <img src="/img/rewrite_logo.png" alt="REWRITE 로고" class="logo-image">
+
     <h2 class="page-title">회원가입</h2>
 
     <div class="input-group">
@@ -38,13 +39,11 @@
     <div class="input-group">
       <label for="birthDate">생년월일</label>
       <input type="text" id="birthDate" name="birthDate" placeholder="예) 19900101" required>
-      <!-- 생년월일은 date 타입이나 별도 라이브러리 사용 고려 -->
     </div>
 
     <div class="input-group">
       <label for="phoneNumber">휴대폰번호</label>
       <input type="tel" id="phoneNumber" name="phoneNumber" placeholder="예) 01012345678" required>
-      <!-- 휴대폰번호는 tel 타입 사용 권장 -->
     </div>
 
     <button type="submit" class="submit-button">가입하기</button>

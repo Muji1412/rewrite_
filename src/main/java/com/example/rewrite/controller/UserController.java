@@ -31,8 +31,6 @@ public class UserController {
         } else {
             return "user/login";
         }
-
-
     }
 
     @PostMapping("/loginForm") // 로그인 진행
@@ -49,4 +47,56 @@ public class UserController {
             return "redirect:/login";
         }
     }
+
+    @GetMapping("/signup")
+    public String signup(HttpSession session, RedirectAttributes redirectAttributes) {
+        Object user = session.getAttribute("user");
+        if (user != null) { // 로그인 돼있는 상태에서 회원가입 창 들어가면 홈으로 리턴
+            redirectAttributes.addFlashAttribute("loginMsg", "이미 로그인 상태입니다.");
+            return "redirect:/";
+        } else {
+            return "user/signup";
+        }
+    }
+
+    @PostMapping("/signupForm")
+    public String signupForm(UserVO userVO, HttpSession session, RedirectAttributes redirectAttributes) {
+
+        log.info("회원가입 시작");
+        log.info(userVO.toString());
+        int result = userService.register(userVO);
+
+        if (result == 1) {
+            session.setAttribute("user", userVO);
+            return "redirect:/";
+        } else {
+            redirectAttributes.addFlashAttribute("signupMsg", "오류가 발생했습니다.");
+            return "redirect:/signup";
+        }
+    }
+
+    @GetMapping("/notice")
+    public String notice(HttpSession session, RedirectAttributes redirectAttributes) {
+
+        return "user/notice";
+    }
+
+    @GetMapping("/noticeDetail")
+    public String noticeDetail(HttpSession session, RedirectAttributes redirectAttributes) {
+
+        return "user/noticeDetail";
+    }
+    @GetMapping("/inquiryList")
+    public String inquiryList(HttpSession session, RedirectAttributes redirectAttributes) {
+        return "user/inquiryList";
+    }
+    @GetMapping("/writeInquiry")
+    public String writeInquiry(HttpSession session, RedirectAttributes redirectAttributes) {
+        return "user/writeInquiry";
+    }
+    @GetMapping("/inquiryAnswer")
+    public String inquiryAnswer(HttpSession session, RedirectAttributes redirectAttributes) {
+        return "user/inquiryAnswer";
+    }
+
 }

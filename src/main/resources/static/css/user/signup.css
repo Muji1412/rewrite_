@@ -21,19 +21,19 @@ body {
     width: 100%;
     display: flex;
     flex-direction: column;
-    align-items: center; /* 로고, 타이틀 중앙 정렬 */
+    align-items: center; /* 자식 요소들(로고 이미지 포함)을 중앙 정렬 */
 }
 
-/* 로고 및 페이지 타이틀 */
-.logo {
-    font-family: 'Roboto', sans-serif; /* 로고는 다른 폰트 사용 가능 */
-    font-weight: 700;
-    font-size: 2.5rem; /* 로고 크기 */
-    margin-bottom: 5px;
-    color: #000000; /* 검정색 */
-    text-align: center;
+/* 로고 이미지 스타일 */
+.logo-image {
+    display: block; /* 이미지를 블록 요소로 만들어 margin auto 적용 가능하게 */
+    max-width: 150px; /* 이미지 최대 너비 (로고 크기에 맞게 조절) */
+    height: auto; /* 높이는 비율에 맞게 자동 조절 */
+    margin: 0 auto 10px auto; /* 상하 0, 좌우 auto로 중앙 정렬, 아래쪽 여백 10px */
 }
 
+
+/* 페이지 타이틀 */
 .page-title {
     font-size: 1.2rem;
     font-weight: 700;

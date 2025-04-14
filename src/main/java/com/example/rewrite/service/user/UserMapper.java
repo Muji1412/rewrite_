@@ -12,7 +12,7 @@ public interface UserMapper {
     @Insert
             ("INSERT INTO Users (ID, PW, NICKNAME, NAME, BIRTH, IMG_URL, PHONE, ROLE) " +
             "VALUES (#{id}, #{pw}, #{nickname}, #{name}, #{birth}, #{imgUrl}, #{phone}, #{role})")
-    int registUser(UserVO userVO);
+    int registerUser(UserVO userVO);
 
     @Select("SELECT * FROM Users WHERE ID = #{id} AND PW = #{pw}")
     UserVO loginForm(UserVO userVO);

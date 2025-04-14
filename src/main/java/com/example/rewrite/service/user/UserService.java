@@ -8,4 +8,5 @@ import org.apache.ibatis.annotations.Param;
 public interface UserService {
 
     UserVO loginForm(UserVO vo);
+    int register(UserVO vo);
 }

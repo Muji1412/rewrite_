@@ -16,4 +16,10 @@ public class UserServiceImpl implements UserService {
 
         return userMapper.loginForm(vo);
     }
+
+    @Override
+    public int register(UserVO vo) {
+
+        return userMapper.registerUser(vo);
+    }
 }
