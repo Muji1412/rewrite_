@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>주문 상세 정보</title>
+    <link rel="stylesheet" href="/css/prod/orderDetail.css" th:href="@{/css/prod/orderDetail.css}">
+</head>
+<body>
+
+<div class="container">
+
+    <div class="section">
+        <h2>상세정보</h2>
+        <div class="order-info-block">
+            <p>2020.04.21</p>
+            <p>주문번호 20250421111111111111</p>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>배송상품</h2>
+        <table class="product-table">
+            <thead>
+            <tr>
+                <th>상품명</th>
+                <th>판매가</th>
+                <th>진행현황</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>
+                    <img src="/img/prod/shirt.png" alt="상품 이미지">
+                    <span>까마릴라</span>
+                </td>
+                <td class="price">3,000,000원</td>
+                <td class="status">배송완료</td>
+            </tr>
+
+            </tbody>
+        </table>
+    </div>
+
+    <div class="section">
+        <h2>배송지 정보</h2>
+        <table class="info-table">
+            <tbody>
+            <tr>
+                <th>받는분</th>
+                <td>안종수</td>
+            </tr>
+            <tr>
+                <th>연락처</th>
+                <td>010-1234-5678</td>
+            </tr>
+            <tr>
+                <th>주소</th>
+                <td>12345<br>서울특별시 강남구 역삼동 ~~~</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="section">
+        <h2>배송요청사항</h2>
+        <table class="info-table">
+            <tbody>
+            <tr>
+                <th>배송메시지</th>
+                <td>던지기만해봐라 죽여버린다! 내 소중한 까마릴라가 아프다</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="section">
+        <h2>결제정보</h2>
+        <div class="payment-info-block">
+            <div class="payment-row">
+                <span class="label">주문금액</span>
+                <span class="value">3,000,000원</span>
+            </div>
+            <div class="payment-row">
+                <span class="label">+배송비</span>
+                <span class="value">0원</span>
+            </div>
+            <div class="payment-row total">
+                <span class="label">총 결제금액</span>
+                <span class="value total-amount">3,000,000원</span>
+            </div>
+            <div class="payment-row method">
+                <span class="label"></span> <!-- Empty label for alignment -->
+                <span class="value">카드</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="button-container">
+        <button type="button">목록</button>
+    </div>
+
+</div>
+
+</body>
+</html>

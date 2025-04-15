@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>주문/결제</title>
+    <link rel="stylesheet" href="/css/prod/checkout.css" th:href="@{/css/prod/checkout.css}">
+</head>
+<body>
+<div class="checkout-container">
+    <!-- 추가된 헤더 섹션 -->
+    <div class="checkout-header">  <!-- 제목과 단계 표시줄을 묶는 div -->
+        <h1>주문/결제</h1>
+        <nav aria-label="결제 진행 단계"> <!-- 단계별 네비게이션임을 나타내는 nav 태그 -->
+            <ol class="checkout-progress"> <!-- 순서 있는 목록(ol)으로 단계 표시 -->
+                <li>01 장바구니</li>
+                <li class="current-step" aria-current="step">02 주문/결제</li> <!-- 현재 단계 표시 (클래스, aria 속성) -->
+                <li>03 주문완료</li>
+            </ol>
+        </nav>
+    </div>
+    <!-- // 추가된 헤더 섹션 끝 -->
+
+    <!-- 배송지 정보 -->
+    <section class="info-section">
+        <h2>배송지 정보</h2>
+        <div class="info-table">
+            <div class="info-row">
+                <div class="info-label">받는분</div>
+                <div class="info-value">안종수</div>
+            </div>
+            <div class="info-row">
+                <div class="info-label">연락처</div>
+                <div class="info-value">010-1234-5678</div>
+            </div>
+            <div class="info-row">
+                <div class="info-label">주소</div>
+                <div class="info-value">
+                    <span>서울특별시 강남구 역삼동 에스코빌딩 5층</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 배송 요청사항 -->
+    <section class="info-section">
+        <h2>배송 요청사항</h2>
+        <div class="info-table">
+            <div class="info-row">
+                <div class="info-label">배송메시지</div>
+                <div class="info-value input-value">
+                    <input type="text" placeholder="내용">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 배송 상품 -->
+    <section class="info-section">
+        <h2>배송 상품</h2>
+        <table class="product-table">
+            <thead>
+            <tr>
+                <!-- Changed to three columns -->
+                <th class="col-image">이미지</th>
+                <th class="col-name">상품 정보</th>
+                <th class="col-price">판매가</th>
+            </tr>
+            </thead>
+            <tbody>
+            <!-- 상품 1 -->
+            <tr>
+                <!-- 1st TD: Image only -->
+                <td class="product-image-cell">
+                    <img src="/img/prod/kkamarilla1.png" alt="상품 이미지" class="product-thumbnail">
+                </td>
+                <!-- 2nd TD: Name only -->
+                <td class="product-name-cell">
+                    <span class="product-name">까마릴라</span>
+                </td>
+                <!-- 3rd TD: Price -->
+                <td class="product-price">3,000,000원</td>
+            </tr>
+            <!-- 상품 2 -->
+            <tr>
+                <td class="product-image-cell">
+                    <img src="/img/prod/kkamarilla2.png" alt="상품 이미지" class="product-thumbnail">
+                </td>
+                <td class="product-name-cell">
+                    <span class="product-name">까마릴라</span>
+                </td>
+                <td class="product-price">3,000,000원</td>
+            </tr>
+            <!-- 상품 3 -->
+            <tr>
+                <td class="product-image-cell">
+                    <img src="/img/prod/kkamarilla1.png" alt="상품 이미지" class="product-thumbnail">
+                </td>
+                <td class="product-name-cell">
+                    <span class="product-name">까마릴라</span>
+                </td>
+                <td class="product-price">3,000,000원</td>
+            </tr>
+            <!-- Add more product rows following this 3-cell structure -->
+            </tbody>
+        </table>
+    </section>
+
+    <!-- 결제 수단 및 정보 -->
+    <div class="payment-section">
+        <section class="payment-methods info-section">
+            <h2>결제수단 선택</h2>
+            <div class="options-container">
+                <div class="option">
+                    <input type="radio" id="credit-card" name="payment-method" value="credit-card" checked>
+                    <label for="credit-card">신용카드</label>
+                </div>
+                <div class="option">
+                    <input type="radio" id="kakao-pay" name="payment-method" value="kakao-pay">
+                    <label for="kakao-pay">카카오페이</label>
+                </div>
+                <div class="option">
+                    <input type="radio" id="toss-pay" name="payment-method" value="toss-pay">
+                    <label for="toss-pay">토스페이</label>
+                </div>
+            </div>
+        </section>
+
+        <aside class="payment-summary info-section">
+            <h2>결제 정보</h2>
+            <div class="summary-details">
+                <div class="summary-row">
+                    <span>주문금액</span>
+                    <span>3,000,000원</span>
+                </div>
+                <div class="summary-row">
+                    <span>+배송비</span>
+                    <span>0원</span>
+                </div>
+                <div class="summary-total">
+                    <span>총 결제금액</span>
+                    <span class="total-amount">3,000,000원</span>
+                </div>
+            </div>
+            <button class="checkout-button">결제하기</button>
+        </aside>
+    </div>
+</div>
+
+</body>
+</html>

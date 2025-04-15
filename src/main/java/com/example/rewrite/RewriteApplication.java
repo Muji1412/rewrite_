@@ -2,8 +2,10 @@ package com.example.rewrite;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
 
 @SpringBootApplication
+@EntityScan("com.example.rewrite.entity")
 public class RewriteApplication {
 
     public static void main(String[] args) {
