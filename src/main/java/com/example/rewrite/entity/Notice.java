@@ -1,47 +1,43 @@
+package com.example.rewrite.entity;
+
+import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
-import lombok.NoArgsConstructor;
-import org.hibernate.annotations.CreationTimestamp;
 
 @Getter
 @Setter
 @ToString(exclude = {"content"})
 @NoArgsConstructor
 @Entity
-@Table(name = "NOTICE")
+@Table(name = "notice")
+@AllArgsConstructor
+@Builder
 public class Notice {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    // columnDefinition 제거: Hibernate가 Long + IDENTITY 전략에 맞춰 적절한 타입 (보통 BIGINT)으로 자동 매핑하도록 함
-    @Column(name = "NOTICE_ID", nullable = false, updatable = false)
+    @Column(name = "notice_id", nullable = false, updatable = false)
     private Long noticeId;
 
-    // ... (나머지 코드는 동일)
-    @Column(name = "TITLE", length = 200, nullable = true)
+    @Column(name = "title", length = 200, nullable = true)
     private String title;
-    // ... (나머지 코드는 동일)
-    @Column(name = "TITLE3", length = 200, nullable = true)
-    private String title3;
-    // ... (나머지 코드는 동일)
-    @Column(name = "TITLE4", length = 200, nullable = true)
-    private String title4;
 
     @Lob
-    // TEXT 타입도 columnDefinition 없이 @Lob 만으로 충분한 경우가 많음 (필요시 유지)
-    @Column(name = "CONTENT", columnDefinition = "TEXT", nullable = true)
+    @Column(name = "content", nullable = true)
     private String content;
 
-    @Column(name = "IMG", length = 255, nullable = true)
+    @Column(name = "img", length = 255, nullable = true)
     private String img;
 
-    @CreationTimestamp
-    @Column(name = "REG_DATE", nullable = true, updatable = false)
-    private LocalDateTime regDate;
+    @CreationTimestamp // 엔티티 생성 시 현재 시간 자동 저장
+    @Column(name = "reg_date", nullable = true, updatable = false)
+    private LocalDateTime regDate; //
 
+    // 생성자 (Lombok @NoArgsConstructor가 기본 생성자를 만듦)
+    // 필요하다면 필드를 받는 생성자를 둘 수 있습니다.
+    // Qna의 생성자와 형식을 맞추기 위해 기존 생성자를 유지합니다.
     public Notice(String title, String content, String img) {
         this.title = title;
         this.content = content;
