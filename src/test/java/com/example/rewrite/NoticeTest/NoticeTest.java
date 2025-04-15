@@ -16,6 +16,7 @@ public class NoticeTest {
     private NoticeRepository noticeRepository;
 
     @Test
+    @Transactional
     public void uploadTest() {
         Notice notice = Notice.builder()
                 .content("내용입니다.")
@@ -27,7 +28,18 @@ public class NoticeTest {
 
     }
     @Test
-    @Transactional
+    public void uploadTest2() {
+        for (int i = 0; i <= 200; i++) {
+            Notice notice = Notice.builder()
+                    .content("테스트 내용 " + i)
+                    .title("테스트 제목 " + i)
+                    .build();
+            noticeRepository.save(notice);
+        }
+    }
+
+
+    @Test
     public void getListTest() {
         List<Notice> noticeList = noticeRepository.findAll();
         for (Notice notice : noticeList) {
