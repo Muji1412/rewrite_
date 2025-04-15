@@ -3,7 +3,6 @@ package com.example.rewrite.controller;
 import com.example.rewrite.command.UserVO;
 import com.example.rewrite.service.user.UserService;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
@@ -73,30 +72,6 @@ public class UserController {
             redirectAttributes.addFlashAttribute("signupMsg", "오류가 발생했습니다.");
             return "redirect:/signup";
         }
-    }
-
-    @GetMapping("/notice")
-    public String notice(HttpSession session, RedirectAttributes redirectAttributes) {
-
-        return "user/notice";
-    }
-
-    @GetMapping("/noticeDetail")
-    public String noticeDetail(HttpSession session, RedirectAttributes redirectAttributes) {
-
-        return "user/noticeDetail";
-    }
-    @GetMapping("/inquiryList")
-    public String inquiryList(HttpSession session, RedirectAttributes redirectAttributes) {
-        return "user/inquiryList";
-    }
-    @GetMapping("/writeInquiry")
-    public String writeInquiry(HttpSession session, RedirectAttributes redirectAttributes) {
-        return "user/writeInquiry";
-    }
-    @GetMapping("/inquiryAnswer")
-    public String inquiryAnswer(HttpSession session, RedirectAttributes redirectAttributes) {
-        return "user/inquiryAnswer";
     }
 
 }
