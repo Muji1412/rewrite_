@@ -22,6 +22,5 @@ public class UserController {
     private UsersRepository usersRepository;
     private PasswordEncoder passwordEncoder;
 
-    @Transactional
 
 }
