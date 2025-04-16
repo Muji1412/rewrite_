@@ -1,0 +1,55 @@
+package com.example.rewrite.entity;
+
+import lombok.*;
+import org.hibernate.annotations.CreationTimestamp; // Hibernate 사용 시
+
+
+import javax.persistence.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
+@Entity
+@Table(name = "Users")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class Users {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "uid", nullable = false)
+    private Long uid;
+
+    @Column(name = "id", nullable = false, unique = true, length = 50)
+    private String id;
+
+    @Column(name = "pw", nullable = false, length = 255)
+    private String pw;
+
+    @Column(name = "name", length = 20)
+    private String name;
+
+    @Column(name = "nickname", length = 30)
+    private String nickname;
+
+    @Column(name = "email", length = 100)
+    private String email;
+
+    @Column(name = "birth") // DATE 타입은 LocalDate와 매핑
+    private LocalDate birth;
+
+    @Column(name = "img_url", length = 512)
+    private String imgUrl;
+
+    @CreationTimestamp // 엔티티 생성 시 자동으로 현재 시간 저장
+    @Column(name = "reg_date", nullable = false, updatable = false)
+    private LocalDateTime regDate;
+
+    @Column(name = "phone", length = 25)
+    private String phone;
+
+    @Column(name = "role", nullable = false, length = 20)
+    private String role = "user";
+}
