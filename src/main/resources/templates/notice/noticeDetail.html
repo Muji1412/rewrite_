@@ -22,11 +22,10 @@
     <div class="detail-section">
         <div class="detail-label">제목</div>
         <!-- th:text를 사용하여 제목 출력 (HTML 태그 escape) -->
-        <div class="detail-content subject-content" text="">
-            여기에 공지사항 제목이 표시됩니다.
+        <div class="detail-content subject-content" th:text="${dto.title}">
+            공지사항 제목 예시
         </div>
     </div>
-
     <div class="detail-section">
         <div class="detail-label">내용</div>
         <!--
@@ -36,22 +35,12 @@
              - CSS 파일의 .main-content 클래스에 white-space: pre-line; 또는 pre-wrap; 추가
              - th:text 사용 (줄바꿈 문자(\n)가 CSS에 의해 처리됨)
         -->
-        <div class="detail-content main-content" text="">
-            여기에 공지사항 내용이 표시됩니다.
-            여러 줄의 내용도 CSS에 의해 줄바꿈됩니다.
-            여기에 공지사항 내용이 표시됩니다.
-            여러 줄의 내용도 CSS에 의해 줄바꿈됩니다.
-            여기에 공지사항 내용이 표시됩니다.
-            여러 줄의 내용도 CSS에 의해 줄바꿈됩니다.
-            여기에 공지사항 내용이 표시됩니다.
-            여러 줄의 내용도 CSS에 의해 줄바꿈됩니다.
-            여기에 공지사항 내용이 표시됩니다.
-            여러 줄의 내용도 CSS에 의해 줄바꿈됩니다.
-            여기에 공지사항 내용이 표시됩니다.
-            여러 줄의 내용도 CSS에 의해 줄바꿈됩니다.
-
+        <div class="detail-content main-content">
+            <th:block th:if="${dto.img != null and dto.img != ''}">
+                <img th:src="${dto.img}" alt="공지사항 이미지" class="notice-image">
+            </th:block>
+            <p th:text="${dto.content}"></p>
         </div>
-
         <!--
           방법 2: Thymeleaf 유틸리티로 \n을 <br>로 변환 (HTML에 <br> 직접 삽입)
              - th:utext 사용 (HTML 태그 escape 안 함)
@@ -63,10 +52,9 @@
         </div>
          -->
     </div>
-
     <div class="button-container">
         <!-- 목록 링크에 th:href 사용 -->
-        <a href="/notice" th:href="@{/templates/notice}" class="list-button">목록으로</a>
+        <a href="/notice/noticeList" th:href="@{/notice/noticeList(page=${pageable.pageNumber})}" class="list-button">목록으로</a>
     </div>
 </div>
 </body>

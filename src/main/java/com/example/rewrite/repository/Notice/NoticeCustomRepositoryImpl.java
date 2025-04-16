@@ -14,7 +14,9 @@ public class NoticeCustomRepositoryImpl implements NoticeCustomRepository {
     @Transactional
     @Override
     public int saveNotice(Notice notice) { // 공지사항 올리기
+
         return 0;
+
     }
 
 
