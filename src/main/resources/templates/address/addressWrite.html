@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>주소지</title>
+  <link rel="stylesheet" href="/css/address/addressWrite.css">
+  <link rel="stylesheet" href="/css/common.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="js/script.js"></script>
+</head>
+<body>
+    <header class="header">
+        <div class="header_top">
+            <ul class="header_semi_menu">
+                <li><a href="#">고객센터</a></li>
+                <li><a href="#">알림</a></li>
+                <li><a href="#">로그인</a></li>
+            </ul>
+        </div>
+        <div class="header_bottom">
+            <div class="logo_box">
+                <img src="img/logo.png" alt="logo">
+            </div>
+            <div class="drop_menu">
+                <ul class="e_drop">
+                    <li>
+                        <a href="#" class="default_m">CLOTHING</a>
+                        <a href="#" class="hover_m">의류</a>
+                    </li>
+                    <li>
+                        <a href="#" class="default_m">GAMES</a>
+                        <a href="#" class="hover_m">게임</a>
+                    </li>
+                    <li>
+                        <a href="#" class="default_m">APPLIANCES</a>
+                        <a href="#" class="hover_m">가전제품</a>
+                    </li>
+                    <li>
+                        <a href="#" class="default_m">ELECTRONICS</a>
+                        <a href="#" class="hover_m">전자기기</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="sub_icon">
+                <img src="img/mypage_icon.png" alt="my_page">
+                <img src="img/mycart_icon.png" alt="my_cart">
+            </div>
+        </div>
+    </header>
+    <section class="section">
+    <div class="address-container">
+        <h2>주소지</h2>
+        <p class="description">서비스 이용을 위해 주소지 정보를 입력해 주세요!</p>
+
+        <form action="submitAddress.do" method="post">
+        <label>주소지명</label><br>
+        <input type="text" name="label" placeholder="예: 집"><br>
+
+        <label>이름</label><br>
+        <input type="text" name="name" placeholder="예: 안종수"><br>
+
+        <label>주소지 정보</label><br>
+        <div class="address-search">
+            <input type="text" name="address" readonly>
+            <button type="button">주소검색</button>
+        </div>
+
+        <label>상세주소</label><br>
+        <input type="text" name="detailAddress"><br>
+
+        <label>전화번호</label><br>
+        <div class="phone-select">
+            <select name="phone1">
+            <option value="010" selected="selected">010</option>
+            <option value="011">011</option>
+            <option value="016">016</option>
+            <option value="017">017</option>
+            <option value="018">018</option>
+            </select>
+        
+            <input type="text" name="phone2" maxlength="4">
+            <span>-</span>
+            <input type="text" name="phone3" maxlength="4">
+        </div>
+
+        <div class="button-group">
+            <button type="submit">등록</button>
+        </div>
+        </form>
+    </div>
+    </section>
+    <footer class="footer">
+        <div class="footer_wrap">
+            <div class="footer_top">
+                <ul class="f_flex f_top_ul">
+                    <li><a href="#" class="f_single">개인정보처리방침</a></li>
+                    <li><a href="#" class="f_notice">이용안내</a></li>
+                </ul>
+            </div>
+            <div class="footer_mid">
+                <ul class="f_flex">
+                    <li>상호명 : (주)REWRITE</li>
+                    <li>대표자 : 따악코</li>
+                    <li>주소 : 서울시 강남구 테헤란로7길 에스코빌딩</li>
+                    <li>전화번호 : 1234-5678</li>
+                    <li>팩스 : 02-9876-5432</li>
+                    <li>이메일 : rewrite@rewrite.com</li>
+                </ul>
+            </div>
+            <div class="footer_mid_sec">
+                <ul class="f_flex f_mid_sub">
+                    <li>사업자등록번호 : 202-50410</li>
+                    <li>통신판매업신고 : 제25-0410호</li>
+                </ul>
+            </div>
+            <div class="footer_mid_thd">
+                <ul>
+                    <li></li>
+                </ul>
+            </div>
+            <div class="footer_bottom">
+                <p class="f_flex">Copyright © 2025 Jongsu Macne. All rights reserved. Created by JongSu</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
