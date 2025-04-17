@@ -18,19 +18,11 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable()) // CSRF 보호 비활성화 (REST API에서는 보통 비활성화, 세션/쿠키 기반이라면 활성화 및 설정 필요)
+                .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(authorize -> authorize
-                        // "/api/auth/signup" 경로는 인증 없이 누구나 접근 가능하도록 허용 ***매우 중요***
-                        .antMatchers("/api/auth/signup", "/signup").permitAll()
-                        // "/api/auth/login" 경로도 인증 없이 접근 가능하도록 허용
-                        .antMatchers("/api/auth/login", "/login").permitAll()
-                        // 정적 리소스(css, js, 이미지 등) 경로도 필요에 따라 허용
-                        // .antMatchers("/", "/home", "/css/**", "/js/**", "/images/**").permitAll()
-                        // 그 외 모든 요청은 인증된 사용자만 접근 가능하도록 설정
-                        .anyRequest().authenticated()
+                        .anyRequest().permitAll() // 개발 중에는 모든 요청 허용
                 );
-        // 필요에 따라 로그인 설정(formLogin, httpBasic), JWT 필터 등을 추가
-
+        // 개발 중에는 로그인/로그아웃 폼 등이 필요 없을 수도 있음
         return http.build();
     }
 }

@@ -24,6 +24,7 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
+    @Transactional
     public Users signup(SignupRequestDto signupRequestDto) {
 
         if (usersRepository.existsById(signupRequestDto.getId())) {

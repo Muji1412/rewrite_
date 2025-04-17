@@ -1,4 +1,4 @@
-package com.example.rewrite.controller;
+package com.example.rewrite.controller.rest;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
