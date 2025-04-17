@@ -11,7 +11,7 @@
 </head>
 <body>
 <div class="container">
-  <form action="/signup" method="post" class="signup-form">
+  <form id="signupForm" class="signup-form">
     <img src="/img/rewrite_logo.png" alt="REWRITE 로고" class="logo-image">
 
     <h2 class="page-title">회원가입</h2>
@@ -29,6 +29,7 @@
     <div class="input-group">
       <label for="pwConfirm">비밀번호 재입력</label>
       <input type="password" id="pwConfirm" name="pwConfirm" required>
+      <!-- JS에서 pw와 비교 후 서버 전송 시에는 제외 -->
     </div>
 
     <div class="input-group">
@@ -37,22 +38,81 @@
     </div>
 
     <div class="input-group">
-      <label for="nickname">이름</label>
+      <label for="nickname">닉네임</label> <!-- 레이블 수정 -->
       <input type="text" id="nickname" name="nickname" required>
     </div>
 
     <div class="input-group">
-      <label for="birthDate">생년월일</label>
-      <input type="text" id="birthDate" name="birthDate" placeholder="예) 19900101" required>
+      <label for="email">이메일</label> <!-- 이메일 필드 추가 -->
+      <input type="email" id="email" name="email" required>
     </div>
 
     <div class="input-group">
-      <label for="phoneNumber">휴대폰번호</label>
-      <input type="tel" id="phoneNumber" name="phoneNumber" placeholder="예) 010-1234-5678" required>
+      <label for="birth">생년월일</label> <!-- type 및 name 수정 -->
+      <input type="date" id="birth" name="birth" required>
+    </div>
+
+    <div class="input-group">
+      <label for="phone">휴대폰번호</label> <!-- name 수정 -->
+      <input type="tel" id="phone" name="phone" placeholder="예) 010-1234-5678" required>
     </div>
 
     <button type="submit" class="submit-button">가입하기</button>
   </form>
 </div>
+
+<script>
+  const signupForm = document.getElementById('signupForm');
+
+  signupForm.addEventListener('submit', async (event) => { //async = 비동기 처리
+    event.preventDefault();
+
+    const password = document.getElementById('pw').value;
+    const pwConfirm = document.getElementById('pwConfirm').value;
+
+    if (password !== pwConfirm) {
+      alert('비밀번호가 일치하지 않습니다.')
+      return;
+    }
+
+    // 폼 데이터 가져오기
+    const formData = new FormData(signupForm);
+    const signUpData = {};
+    formData.forEach((value, key) => {
+      if (key !== 'pwConfirm') {
+        signUpData[key] = value;
+      }
+    });
+
+
+    // 가져온 폼 데이터 API에다가 전송
+
+
+    try {
+      const response = await fetch('/api/auth/signup', {
+        method: 'POST',
+        body: JSON.stringify(signUpData),
+        headers: {
+          'Content-Type': 'application/json'
+        },
+      });
+
+      if (response.ok) {
+      const result = await response.text();
+      alert(result);
+      } else {
+        const result = await response.json();
+        alert(result);
+      }
+
+    }catch (error) {
+      console.log('회원가입 js단 오류발생 ', error);
+      alert(error);
+    }
+  });
+
+
+</script>
+
 </body>
 </html>
