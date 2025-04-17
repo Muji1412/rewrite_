@@ -1,178 +1,113 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>로그인 - REWRITE</title>
-    <style>
-        /* 기본 스타일 (참고용 - 실제 디자인은 CSS 파일에서 작업하세요) */
-        body {
-            font-family: sans-serif;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column; /* 헤더와 푸터 제외하고 중앙 정렬 위해 */
-            align-items: center; /* 가로 중앙 정렬 */
-            min-height: 100vh; /* 최소 높이 */
-            padding-top: 50px; /* 상단 여백 */
-            background-color: #ffffff; /* 기본 배경색 */
-        }
-
-        .login-wrapper {
-            width: 100%;
-            max-width: 400px; /* 로그인 폼 최대 너비 */
-            margin: 20px auto; /* 위아래 여백 및 자동 가로 중앙 정렬 */
-            padding: 20px;
-            box-sizing: border-box; /* 패딩 포함 크기 계산 */
-        }
-
-        .login-title {
-            text-align: center;
-            font-size: 2.5em; /* "Login" 텍스트 크기 */
-            font-weight: bold;
-            margin-bottom: 40px; /* 제목 아래 여백 */
-            color: #333;
-        }
-
-        .login-form .input-group {
-            margin-bottom: 15px;
-        }
-
-        .login-form label {
-            display: block;
-            font-size: 0.9em;
-            color: #555;
-            margin-bottom: 5px;
-        }
-
-        /* input[type=text], input[type=password]를 선택하는 정확한 방법 */
-        .login-form input[type="text"],
-        .login-form input[type="password"] {
-            width: 100%;
-            padding: 12px 0; /* 위아래 패딩, 좌우는 없음 */
-            border: none; /* 테두리 없음 */
-            border-bottom: 1px solid #ccc; /* 아래쪽 선만 */
-            box-sizing: border-box;
-            font-size: 1em;
-            outline: none; /* 포커스 시 외곽선 제거 */
-        }
-        /* 포커스 시 아래쪽 선 스타일 변경 */
-        .login-form input[type="text"]:focus,
-        .login-form input[type="password"]:focus {
-            border-bottom: 2px solid #333;
-        }
-
-
-        .login-form .options {
-            margin-bottom: 30px; /* 로그인 버튼과의 간격 */
-            text-align: left;
-        }
-
-        .login-form .options label {
-            display: inline-flex; /* 체크박스와 라벨 정렬 */
-            align-items: center;
-            font-size: 0.9em;
-            color: #555;
-            cursor: pointer;
-        }
-        /* 기본 체크박스 숨기기 */
-        .login-form .options input[type="checkbox"] {
-            appearance: none; /* 브라우저 기본 스타일 제거 */
-            -webkit-appearance: none;
-            -moz-appearance: none;
-            width: 18px;
-            height: 18px;
-            border: 1px solid #ccc;
-            border-radius: 3px;
-            margin-right: 8px;
-            cursor: pointer;
-            position: relative; /* 가상 요소 위치 기준 */
-            vertical-align: middle; /* 텍스트와 수직 정렬 */
-            outline: none;
-        }
-
-        /* 체크됐을 때 스타일 */
-        .login-form .options input[type="checkbox"]:checked {
-            background-color: #555; /* 이미지의 체크된 배경색 */
-            border-color: #555;
-        }
-
-        /* 체크 표시 (가상 요소 사용) */
-        .login-form .options input[type="checkbox"]:checked::after {
-            content: '✔'; /* 체크 모양 */
-            font-size: 12px;
-            color: white;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-        }
-
-        .login-button {
-            width: 100%;
-            padding: 15px;
-            background-color: #e0e0e0; /* 이미지의 회색 버튼 */
-            border: none;
-            border-radius: 5px;
-            font-size: 1.1em;
-            color: #555; /* 버튼 텍스트 색상 */
-            cursor: pointer;
-            transition: background-color 0.2s;
-        }
-
-        .login-button:hover {
-            background-color: #d0d0d0;
-        }
-
-        .login-links {
-            text-align: center;
-            margin-top: 25px;
-        }
-
-        .login-links a {
-            color: #555;
-            text-decoration: none;
-            margin: 0 15px; /* 링크 사이 간격 */
-            font-size: 0.9em;
-        }
-
-        .login-links a:hover {
-            text-decoration: underline;
-        }
-
-    </style>
+  <meta charset="UTF-8">
+  <title>Login</title>
+  <link rel="stylesheet" href="css/user/login.css">
+  <link rel="stylesheet" href="css/common.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="js/script.js"></script>
 </head>
 <body>
-<div class="login-wrapper">
-    <h2 class="login-title">Login</h2>
-
-    <form action="/loginForm" method="POST" class="login-form">
-        <div class="input-group">
-            <label for="id">아이디</label>
-            <input type="text" id="id" name="id" required>
+    <header class="header">
+        <div class="header_top">
+            <ul class="header_semi_menu">
+                <li><a href="#">고객센터</a></li>
+                <li><a href="#">알림</a></li>
+                <li><a href="#">로그인</a></li>
+            </ul>
         </div>
-
-        <div class="input-group">
-            <label for="pw">비밀번호</label>
-            <input type="password" id="pw" name="pw" required>
+        <div class="header_bottom">
+            <div class="logo_box">
+                <img src="img/rewrite_logo.png" alt="logo">
+            </div>
+            <div class="drop_menu">
+                <ul class="e_drop">
+                    <li>
+                        <a href="#" class="default_m">CLOTHING</a>
+                        <a href="#" class="hover_m">의류</a>
+                    </li>
+                    <li>
+                        <a href="#" class="default_m">GAMES</a>
+                        <a href="#" class="hover_m">게임</a>
+                    </li>
+                    <li>
+                        <a href="#" class="default_m">APPLIANCES</a>
+                        <a href="#" class="hover_m">가전제품</a>
+                    </li>
+                    <li>
+                        <a href="#" class="default_m">ELECTRONICS</a>
+                        <a href="#" class="hover_m">전자기기</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="sub_icon">
+                <img src="img/mypage_icon.png" alt="my_page">
+                <img src="img/mycart_icon.png" alt="my_cart">
+            </div>
         </div>
+    </header>
+        <section class="section">
+        <div class="login-container">
+            <h1>로그인</h1>
+            
+            <form action="#" method="post">
 
-        <div class="options">
-            <label for="remember-id">
-                <input type="checkbox" id="remember-id" name="rememberId" checked>
-                아이디 저장
-            </label>
+                    <span>아이디</span><br>
+                    <input type="text" name="username" class="id" required> <br>
+                    <span>비밀번호</span><br>
+                    <input type="password" name="password" class="pw" required>
+            
+            <div class="save-id">
+                <label>
+                    아이디 저장<input type="checkbox" name="saveId"> 
+                </label>
+            </div>
+
+            <button type="submit">로그인</button>
+            </form>
+
+            <div class="links">
+            <a href="#">회원가입</a>
+            <a href="#">아이디 찾기</a>
+            <a href="#">비밀번호 찾기</a>
+            </div>
+
         </div>
-
-        <button type="submit" class="login-button">로그인</button>
-    </form>
-
-    <div class="login-links">
-        <a href="/signup">회원가입</a>
-        <a href="/find-id">아이디 찾기</a>
-        <a href="/find-password">비밀번호 찾기</a>
-    </div>
-</div>
-
+        </section>
+    <footer class="footer">
+        <div class="footer_wrap">
+            <div class="footer_top">
+                <ul class="f_flex f_top_ul">
+                    <li><a href="#" class="f_single">개인정보처리방침</a></li>
+                    <li><a href="#" class="f_notice">이용안내</a></li>
+                </ul>
+            </div>
+            <div class="footer_mid">
+                <ul class="f_flex">
+                    <li>상호명 : (주)REWRITE</li>
+                    <li>대표자 : 따악코</li>
+                    <li>주소 : 서울시 강남구 테헤란로7길 에스코빌딩</li>
+                    <li>전화번호 : 1234-5678</li>
+                    <li>팩스 : 02-9876-5432</li>
+                    <li>이메일 : rewrite@rewrite.com</li>
+                </ul>
+            </div>
+            <div class="footer_mid_sec">
+                <ul class="f_flex f_mid_sub">
+                    <li>사업자등록번호 : 202-50410</li>
+                    <li>통신판매업신고 : 제25-0410호</li>
+                </ul>
+            </div>
+            <div class="footer_mid_thd">
+                <ul>
+                    <li></li>
+                </ul>
+            </div>
+            <div class="footer_bottom">
+                <p class="f_flex">Copyright © 2025 Jongsu Macne. All rights reserved. Created by JongSu</p>
+            </div>
+        </div>
+    </footer>
 </body>
 </html>
