@@ -15,7 +15,8 @@ a{text-decoration: none;}
 .header_bottom{width: 1650px; height: 50px; display: flex; justify-content: space-around; align-items: center; margin: 0 auto; margin-top: 10px;}
 
 .logo_box{width: 200px;height: 30px;text-align: center;}
-.logo_box img{width:100%;height: 30px;}
+
+.logo_box img{width:160px;height: 25px;}
 
 .drop_menu{width: 800px;height: 25px;}
 .drop_menu ul{display: flex; justify-content: space-around; align-items: center;overflow: hidden;}
@@ -34,9 +35,40 @@ a{text-decoration: none;}
 
 
 
+/* section */
+.section{width: 1000px; height: 600px; margin: 0 auto;}
+
+.con_box{margin-top: 30px;}
+
+/** txt_slide **/
+.txt_slide{width: 684px;height: 60px; margin: 60px auto 0px auto; font-size: 38px;font-weight: bold;}
+.ts_top{width: 270px;float: left;}
+
+#ts_mid{width: 140px;height: 55px; position: relative; overflow:hidden;float: left;}
+#ts_mid div{width: 100%;height: 100%;position: absolute; top: 100%; cursor: pointer;text-align: center;}
+#ts_mid div:nth-child(1){top:0;}
+
+.ts_bottom{width: 270px;float: left;padding-left: 4px;}
+
+/** search_box **/
+.section > nav{width: 800px; height: 60px;border: 1px solid black;  border-radius: 40px;margin: 40px auto 50px auto;}
+.search_head{width: 68px; height: 60px;float: left;}
+/* .search_head img{width: 50px;height: 40px;position: absolute; left: 9px;top: 9px;display: none;} */
+
+.search_sec{width: 660px;height: 60px;float: left;}
+
+.search_foot{width: 68px; height: 60px; cursor: pointer;float: left;position: relative;}
+.search_foot img{width: 40px;height: 40px;position: absolute; left: 10px;top: 10px;}
+
+input[placeholder]{font-size: 20px; width: 660px; height: 60px;border: none;}
+input:focus{outline:none;}
+
+/** category_box **/
+.category_box{width: 1000px;margin: 0 auto;margin-top: 30px;float: left;}
+.category_sec{display: flex; justify-content: space-around; align-items: center;}
 
 /* footer */
-.footer{background: #505050; height: 275px;}
+.footer{background: #505050; height: 260px; margin-top: 50px;}
 
 .f_flex{color: #A4A4A4;}
 
