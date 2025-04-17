@@ -51,5 +51,6 @@ public class Users {
     private String phone;
 
     @Column(name = "role", nullable = false, length = 20)
-    private String role = "user";
+    @Builder.Default // **** 이 어노테이션 추가 ****
+    private String role = "user"; // 자바 객체 생성 시 기본값
 }
