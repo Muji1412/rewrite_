@@ -29,7 +29,13 @@ public class AddressController {
 
     @GetMapping("/reg") //주소지 등록 페이지
     public String addressReg(){
-        return "address/addressReg";
+        return "address/addressWrite";
+    }
+
+    @GetMapping("/edit") //주소지 수정 페이지
+    public String addressEdit(@RequestParam("addressId")String addressId, Model model){
+        System.out.println("addressId = " + addressId);
+        return "address/addressEdit";
     }
 
     @GetMapping("/delete") //주소지 삭제 페이지
