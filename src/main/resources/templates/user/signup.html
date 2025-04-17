@@ -69,24 +69,24 @@
 
     const password = document.getElementById('pw').value;
     const pwConfirm = document.getElementById('pwConfirm').value;
-
+    // 비번 일치하지 않을시 리턴
     if (password !== pwConfirm) {
       alert('비밀번호가 일치하지 않습니다.')
       return;
     }
 
     // 폼 데이터 가져오기
+    // FormData 사용 - 위에 선언한 signupForm 집어넣어서 name 속성을 알아서 가져감
     const formData = new FormData(signupForm);
-    const signUpData = {};
-    formData.forEach((value, key) => {
+    const signUpData = {}; // 빈 객체 생성
+    formData.forEach((value, key) => { // FormData 객체에 저장된 모든 키 - 밸류 쌍 순회,
       if (key !== 'pwConfirm') {
-        signUpData[key] = value;
+        signUpData[key] = value; // signUpData에 pw컨펌 제외한 애들 키-값으로 저장
       }
     });
 
 
-    // 가져온 폼 데이터 API에다가 전송
-
+    // 만든 signUpData signup api에 fetch
 
     try {
       const response = await fetch('/api/auth/signup', {
@@ -97,17 +97,16 @@
         },
       });
 
-      if (response.ok) {
-      const result = await response.text();
-      alert(result);
-      } else {
-        const result = await response.json();
-        alert(result);
+      if (response.ok) { // 성공시
+      const successData = await response.json();
+      alert(successData.message); /*백엔드단에서 body에 map을 실어주면 자동으로 json으로 바꿔줌. 안에 key인 message를 찍으면 에러메세지 반환*/
+      } else { // 실패경우
+        const errorData = await response.json();
+        alert(errorData.message);
       }
-
     }catch (error) {
       console.log('회원가입 js단 오류발생 ', error);
-      alert(error);
+      alert(error.message);
     }
   });
 
