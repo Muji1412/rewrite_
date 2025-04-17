@@ -23,4 +23,9 @@ public class UserController {
     private PasswordEncoder passwordEncoder;
 
 
+    @GetMapping("/mypage")
+    public String myPage(){
+        return "user/mypage";
+    }
+
 }
