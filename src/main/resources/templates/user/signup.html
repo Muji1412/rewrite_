@@ -100,6 +100,7 @@
       if (response.ok) { // 성공시
       const successData = await response.json();
       alert(successData.message); /*백엔드단에서 body에 map을 실어주면 자동으로 json으로 바꿔줌. 안에 key인 message를 찍으면 에러메세지 반환*/
+        window.location.href = '/';
       } else { // 실패경우
         const errorData = await response.json();
         alert(errorData.message);

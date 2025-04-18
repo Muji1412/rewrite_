@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <title>Login</title>
-  <link rel="stylesheet" href="css/user/login.css">
-  <link rel="stylesheet" href="css/common.css">
+  <link rel="stylesheet" href="/css/user/login.css">
+  <link rel="stylesheet" href="/css/common.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="js/script.js"></script>
 </head>
@@ -19,7 +19,7 @@
         </div>
         <div class="header_bottom">
             <div class="logo_box">
-                <img src="img/rewrite_logo.png" alt="logo">
+                <img src="/img/logo.png" alt="logo">
             </div>
             <div class="drop_menu">
                 <ul class="e_drop">
@@ -42,8 +42,8 @@
                 </ul>
             </div>
             <div class="sub_icon">
-                <img src="img/mypage_icon.png" alt="my_page">
-                <img src="img/mycart_icon.png" alt="my_cart">
+                <img src="/img/mypage_icon.png" alt="my_page">
+                <img src="/img/mycart_icon.png" alt="my_cart">
             </div>
         </div>
     </header>
@@ -51,12 +51,12 @@
         <div class="login-container">
             <h1>로그인</h1>
             
-            <form action="#" method="post">
+            <form id="login-form" class="login-form">
 
                     <span>아이디</span><br>
-                    <input type="text" name="username" class="id" required> <br>
+                    <input type="text" name="id" class="id" required> <br>
                     <span>비밀번호</span><br>
-                    <input type="password" name="password" class="pw" required>
+                    <input type="password" name="pw" class="pw" required>
             
             <div class="save-id">
                 <label>
@@ -109,5 +109,55 @@
             </div>
         </div>
     </footer>
+<script>
+    const loginForm = document.getElementById('login-form');
+
+    loginForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        const userId = loginForm.id.value.trim();       // 'username' 대신 'id' 사용
+        const userPw = loginForm.pw.value.trim();       // 'password' 대신 'pw' 사용
+
+        // 변수명도 의미에 맞게 변경하는 것이 좋습니다 (선택 사항)
+        if (userId === '') {
+            alert('아이디를 입력해주세요');
+            return;
+        }
+        if (userPw === '') {
+            alert('비밀번호를 입력해주세요');
+            return;
+        }
+
+        const formData = new FormData(loginForm);
+        const loginData = {};
+        formData.forEach((value, key) =>{
+            loginData[key] = value;
+        })
+
+        try{
+            const response = await fetch('/api/auth/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(loginData)
+            })
+
+            if (response.ok) {
+                const success = await response.json();
+                console.log('로그인 성공', success);
+                window.location.href = '/'
+            }else {
+                const error = await response.json();
+                alert(error.message);
+            }
+        }catch(error){
+            console.log('로그인 오류발생', error);
+            alert(error.message);
+        }
+    });
+
+
+</script>
 </body>
 </html>

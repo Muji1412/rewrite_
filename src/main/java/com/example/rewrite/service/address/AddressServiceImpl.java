@@ -43,4 +43,9 @@ public class AddressServiceImpl implements AddressService{
     public void deleteAddress(Long addressId) {
         addressRepository.deleteAddress(addressId);
     }
+
+    @Override
+    public void addressWrite(Address address) {
+        addressRepository.save(address);
+    }
 }

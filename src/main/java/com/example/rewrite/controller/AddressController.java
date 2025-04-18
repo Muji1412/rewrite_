@@ -56,7 +56,9 @@ public class AddressController {
         return "address/addressWrite";
     }
 
+
     @PostMapping("/write") //주소지 추가
+
     public String addressWrite(Address address,
                                @RequestParam("postcode")String postcode,
                                @RequestParam("addr")String addr,
@@ -65,6 +67,7 @@ public class AddressController {
                                @RequestParam("phone2")String phone2,
                                @RequestParam("phone3")String phone3
                                ){
+
 
         address.setUid("test"); //세션으로 변경 예정
 
@@ -75,10 +78,12 @@ public class AddressController {
         address.setAddress(postcode+"/"+addr+"/"+addressDetail);
         address.setPhoneNum(phone1 + "-" + phone2 +"-"+ phone3);
 
+
         addressService.addressWrite(address);
 
         return "redirect:/address/detail";
     }
+
 
     @PostMapping("/edit") //주소지 수정 페이지
     public String addressEdit(@RequestParam("addressId")Long addressId, Model model){
