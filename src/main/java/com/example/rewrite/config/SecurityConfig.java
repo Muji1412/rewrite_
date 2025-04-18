@@ -56,12 +56,11 @@ public class SecurityConfig {
 
                 .formLogin(formLogin -> formLogin.disable()) // 커스텀 로그인 사용 시 필수
                 .httpBasic(httpBasic -> httpBasic.disable())
-                .logout(logout -> logout
-                        .logoutUrl("/logout")
-                        .logoutSuccessUrl("/login?logout")
-                        .invalidateHttpSession(true)
-                        .deleteCookies("JSESSIONID")
-                        .permitAll()
+                .logout(logout -> logout // 로그아웃 구현
+                        .logoutUrl("/logout") //여기로 보내면
+                        .logoutSuccessUrl("/") //여기로 보내고
+                        .invalidateHttpSession(true) // 세션 부순다
+                        .permitAll() //모든 유저한테
                 );
 
         return http.build();

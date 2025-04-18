@@ -27,6 +27,8 @@ public class UserController {
     public String signup() {
         return "user/signup";
     }
+    @GetMapping("/login")
+    public String login() {return "user/login";}
     @GetMapping("/mypage")
     public String myPage(){
         return "user/mypage";
