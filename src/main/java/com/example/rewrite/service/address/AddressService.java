@@ -6,7 +6,11 @@ import java.util.List;
 
 public interface AddressService {
 
-    //주소 조회
-    public List<Address> getAddress();
+
+    public List<Address> getAddress(String uid);
     public void addressWrite(Address address);
+    public void checkDefault(Long addressId, String uid);
+    public void deleteAddress(Long addressId);
+    public Address updateAddress(Long addressId);
+
 }
