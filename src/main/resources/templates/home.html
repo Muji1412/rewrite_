@@ -28,6 +28,7 @@
     가입정보입니다. <br>
     이름 : <span th:text="${session.user.name}"></span> <br>
     아이디 : <span th:text="${session.user.id}"></span> <br>
+    권한 : <span th:text="${session.user.role}"></span> <br>
 </div>
 
 <p th:unless="${session.user}"><a href="/login">로그인 하러 가기</a></p>
