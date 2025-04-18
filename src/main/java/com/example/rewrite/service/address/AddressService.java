@@ -8,4 +8,5 @@ public interface AddressService {
 
     //주소 조회
     public List<Address> getAddress();
+    public void addressWrite(Address address);
 }
