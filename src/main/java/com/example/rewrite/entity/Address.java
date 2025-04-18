@@ -53,4 +53,8 @@ public class Address {
         this.isDefault = isDefault;
         this.phoneNum = phoneNum;
     }
+
+    @Column(name = "delChk", nullable = true, length = 2)
+    private String delChk; // 삭제 여부
+
 }
