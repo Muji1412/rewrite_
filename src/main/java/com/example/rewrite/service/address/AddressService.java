@@ -12,5 +12,6 @@ public interface AddressService {
     public void checkDefault(Long addressId, String uid);
     public void deleteAddress(Long addressId);
     public Address updateAddress(Long addressId);
+    public void modifyAddress(Address address);
 
 }

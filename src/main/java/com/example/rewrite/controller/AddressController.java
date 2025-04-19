@@ -41,6 +41,9 @@ public class AddressController {
             map.put("postcode", addressParts[0]);
             map.put("addr", addressParts[1]);
             map.put("detailAddress", addressParts[2]);
+            map.put("phoneNum",List.getPhoneNum().substring(0,3)+"-" +
+                    List.getPhoneNum().substring(3,7) +"-"+
+                    List.getPhoneNum().substring(7));
             address.add(map);
         }
 
@@ -68,7 +71,6 @@ public class AddressController {
                                @RequestParam("phone3")String phone3
                                ){
 
-
         address.setUid("test"); //세션으로 변경 예정
 
         address.setIsDefault("N"); //기본값 설정
@@ -76,7 +78,7 @@ public class AddressController {
 
         //분리된 주소, 전화번호 합성 후 DB에 저장
         address.setAddress(postcode+"/"+addr+"/"+addressDetail);
-        address.setPhoneNum(phone1 + "-" + phone2 +"-"+ phone3);
+        address.setPhoneNum(phone1 + phone2 + phone3);
 
 
         addressService.addressWrite(address);
@@ -90,6 +92,7 @@ public class AddressController {
 
         Address entity = addressService.updateAddress(addressId);
 
+        model.addAttribute("entity", entity);
         //주소지 분리
         String[] addressParts = entity.getAddress().split("/");
         model.addAttribute("postCode",addressParts[0]);
@@ -97,12 +100,28 @@ public class AddressController {
         model.addAttribute("detailAddress",addressParts[2]);
 
         //전화번호 분리
-        String[] phoneParts = entity.getPhoneNum().split("-");
-        model.addAttribute("phone1",phoneParts[0]);
-        model.addAttribute("phone2",phoneParts[1]);
-        model.addAttribute("phone3",phoneParts[2]);
+        model.addAttribute("phone1",entity.getPhoneNum().substring(0,3));
+        model.addAttribute("phone2",entity.getPhoneNum().substring(3,7));
+        model.addAttribute("phone3",entity.getPhoneNum().substring(7));
 
         return "address/addressWrite";
+    }
+
+    @PostMapping("/modify") //주소지 수정
+    public String addressModify(Address address,
+                                @RequestParam("postcode")String postcode,
+                                @RequestParam("addr")String addr,
+                                @RequestParam("detailAddress")String addressDetail,
+                                @RequestParam("phone1")String phone1,
+                                @RequestParam("phone2")String phone2,
+                                @RequestParam("phone3")String phone3){
+
+        address.setAddress(postcode+"/"+addr+"/"+addressDetail);
+        address.setPhoneNum(phone1 + phone2 + phone3);
+
+        System.out.println(address.toString());
+        addressService.modifyAddress(address);
+        return "redirect:/address/detail";
     }
 
     @PostMapping("/default") //기본주소지 선택
