@@ -80,6 +80,19 @@ public class AuthController {
                     new UsernamePasswordAuthenticationToken(loginRequestDto.getId(), loginRequestDto.getPw())
             );
 
+            // 얘가 db에 들어가서 알아서 확인하는 역할을 함.
+            // 아무것도 없어보이지만 지가 알아서 db 들어가서 해싱된 비밀번호도 체크하고 할거 다함
+            // admin111 로그인해서 principal 찍어보면 ->
+            //org.springframework.security.core.userdetails.User [Username=admin111, Password=[PROTECTED], Enabled=true, AccountNonExpired=true,
+            //credentialsNonExpired=true, AccountNonLocked=true, Granted Authorities=[ROLE_USER]]
+
+
+            System.out.println(authentication.getPrincipal());
+            System.out.println(authentication.getAuthorities());
+            System.out.println(authentication.getDetails());
+            System.out.println(authentication.getCredentials());
+            System.out.println(authentication.getName());
+
             // 인증 성공 -> 시큐리티 컨텍스트홀더에 인증 정보 저장
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
@@ -90,9 +103,6 @@ public class AuthController {
             // 인증된 사용자 정보 가져오기
             UserDetails userDetails = (UserDetails) authentication.getPrincipal();
             // 유저디테일을 users 엔티티로 변환 (디테일서비스에서는 role 외에는 정보가 딸림)
-
-            // findByUsername(username) 은 Optional<Users> 를 반환
-            Optional<Users> userOptional = usersRepository.findById(userDetails.getUsername());
 
             // Users 엔티티에 넣어줌.
             Users loggedInUser = usersRepository.findById(userDetails.getUsername())
