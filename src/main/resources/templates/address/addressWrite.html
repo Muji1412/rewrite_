@@ -54,39 +54,36 @@
 
         <form action="write" method="post">
         <label>주소지명</label><br>
-        <input type="text" name="addressAlias" placeholder="예: 집" required><br>
+
+        <input type="text" id="aa" name="addressAlias" th:value="${entity != null} ? ${entity.addressAlias}: ''" placeholder="예: 집" required><br>
 
         <label>이름</label><br>
-        <input type="text" name="createdAt" placeholder="예: 안종수" required><br>
+        <input type="text" id="ca" name="createdAt" th:value="${entity != null} ? ${entity.createdAt} : ''" placeholder="예: 안종수" required><br>
 
         <label>주소지 정보</label><br>
-            <input type="text" name="postcode" id="sample6_postcode" placeholder="우편번호" readonly>
+            <input type="text"  name="postcode" id="sample6_postcode" placeholder="우편번호" th:value="${postCode}" readonly >
         <div class="address-search">
 <!--            <button type="button">주소검색</button>-->
-            <input type="text" name = "addr" id="sample6_address" placeholder="주소" required readonly ><br>
+            <input type="text"  name = "addr" id="sample6_address" placeholder="주소" th:value="${addr}" required readonly ><br>
 
             <button type="button" onclick="address()" style="height: 30px; margin-top: 30px " >주소검색</button><br>
 
             </div>
-        <input type="text" id = "sample6_detailAddress" name="detailAddress" placeholder="상세주소" required><br>
+        <input type="text" id = "sample6_detailAddress" name="detailAddress" placeholder="상세주소" th:value="${detailAddress}" required><br>
 
         <label>전화번호</label><br>
         <div class="phone-select">
             <select name="phone1">
-            <option value="010" selected="selected">010</option>
+            <option value="010">010</option>
             <option value="011">011</option>
-            <option value="016">016</option>
-            <option value="017">017</option>
-            <option value="018">018</option>
             </select>
-        
-            <input type="text" name="phone2" maxlength="4">
-            <span>-</span>
-            <input type="text" name="phone3" maxlength="4">
-        </div>
 
+            <input type="text" name="phone2" maxlength="4" th:value="${phone2}">
+            <span>-</span>
+            <input type="text" name="phone3" maxlength="4" th:value="${phone3}">
+        </div>
         <div class="button-group">
-            <button type="submit">등록</button>
+            <button class="btn-reg" type="submit">등록</button>
         </div>
         </form>
 
@@ -141,8 +138,38 @@
         </script>
 
 
-        <script>
+        <!-- edit으로 들어올 시 활성-->
+        <script th:inline="javascript" th:if="${entity != null}">
+            var phone1 = [[${phone1}]];
+            var select = document.querySelector('select[name="phone1"]');
 
+            //휴대폰번호 앞자리 비교
+            Array.from(select.options).forEach(function (option) {
+                if (option.value === phone1) {
+                    option.selected = true;
+                }
+            });
+
+            $(document).ready(function() {
+                var addressId = [[${entity.addressId}]] ;
+
+                //수정 버튼으로 변경
+                $('.btn-reg').text('수정');
+
+
+                //수정 버튼 클릭시 작동
+                $('.btn-reg').click(function() {
+                    var form = $(this).closest('form');
+                    var input = $('<input>').attr({
+                        type: 'hidden',
+                        name: 'addressId',
+                        value: addressId
+                    });
+                    form.append(input);
+                    form.attr('action', '/address/modify');
+                    form.submit();
+                });
+            });
         </script>
 
     </div>
@@ -150,7 +177,7 @@
     <footer class="footer">
         <div class="footer_wrap">
             <div class="footer_top">
-                <ul class="f_flex f_top_ul">
+ㅇ                <ul class="f_flex f_top_ul">
                     <li><a href="#" class="f_single">개인정보처리방침</a></li>
                     <li><a href="#" class="f_notice">이용안내</a></li>
                 </ul>

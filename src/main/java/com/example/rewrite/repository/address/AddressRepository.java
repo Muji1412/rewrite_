@@ -39,6 +39,17 @@ public interface AddressRepository extends JpaRepository<Address,Long> {
             "ORDER BY a.isDefault")
     List<Address> getAddress(@Param("uid") String uid);
 
-    //주소업데이트
+    //주소업데이트 페이지에 출력
     Address findByAddressId(Long addressId);
+
+    //주소지 수정
+    @Modifying
+    @Transactional
+    @Query("UPDATE Address a " +
+            "SET a.addressAlias = :#{#address.addressAlias}, " +
+            "a.createdAt = :#{#address.createdAt}, " +
+            "a.address = :#{#address.address}, " +
+            "a.phoneNum = :#{#address.phoneNum} " +
+            "WHERE a.addressId = :#{#address.addressId}")
+    void modifyAddress(@Param("address") Address address);
 }

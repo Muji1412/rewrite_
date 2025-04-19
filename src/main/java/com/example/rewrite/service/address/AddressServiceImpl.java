@@ -45,7 +45,7 @@ public class AddressServiceImpl implements AddressService{
     }
 
     @Override
-    public void addressWrite(Address address) {
-        addressRepository.save(address);
+    public void modifyAddress(Address address) {
+        addressRepository.modifyAddress(address);
     }
 }

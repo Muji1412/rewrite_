@@ -66,7 +66,8 @@
                         <span>[[${list.addr}]]</span><br>
                         <span>[[${list.detailAddress}]]</span><br>
                         <span>([[${list.postcode}]])</span><br>
-                        <span>[[${list.entity.createdAt}]]</span>
+                        <span>[[${list.entity.createdAt}]] <br>[[${list.phoneNum}]]</span>
+
                     </div>
                     <div class="button-group" style="position: relative;">
                         <form id="actionForm" action="" method="post">
@@ -98,8 +99,9 @@
                 }
 
                 $('.btn-edit').click(function() { //주소지 수정
-                    $('#actionForm').attr('action', '/address/edit');
-                    $('#actionForm').submit(); // form 제출
+                    var form = $(this).closest('form');
+                    form.attr('action', '/address/edit');
+                    form.submit(); // form 제출
                 });
 
                 $('.btn-select').click(function() { //기본주소지 선택
@@ -124,6 +126,7 @@
 
 
                 $('.btn-add').click(function() { //주소지 추가
+
                     window.location.href = '/address/reg'; // 주소지 추가 페이지로 이동
                 });
             });
