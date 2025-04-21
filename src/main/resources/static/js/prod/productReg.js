@@ -21,6 +21,7 @@ document.addEventListener('DOMContentLoaded', function() {
         btn.addEventListener('click', function() {
             mainCategoryBtns.forEach(b => b.classList.remove('selected'));
             this.classList.add('selected');
+            document.getElementById('category_max').value = this.innerText;
             showSubCategory(this.innerText);
         });
     });
@@ -34,10 +35,12 @@ function showSubCategory(mainCategory) {
     const subDiv = document.getElementById('sub-category');
     subDiv.innerHTML = ''; // 기존 중분류 버튼 지우기
     const subs = categoryMap[mainCategory];
+
     if (!subs || subs.length === 0) {
         subDiv.innerHTML = '중분류 없음';
         return;
     }
+
     subs.forEach(sub => {
         const btn = document.createElement('button');
         btn.innerText = sub;
@@ -49,6 +52,7 @@ function showSubCategory(mainCategory) {
             const allBtns = subDiv.querySelectorAll('.category-item');
             allBtns.forEach(b => b.classList.remove('selected'));
             this.classList.add('selected');
+            document.getElementById('category_min').value = sub;
         });
         subDiv.appendChild(btn);
     });
@@ -72,10 +76,12 @@ function initFileUpload() {
         e.preventDefault();
         uploadBox.style.backgroundColor = '#e6f7ff';
     });
+
     uploadBox.addEventListener('dragleave', function(e) {
         e.preventDefault();
         uploadBox.style.backgroundColor = '';
     });
+
     uploadBox.addEventListener('drop', function(e) {
         e.preventDefault();
         uploadBox.style.backgroundColor = '';
@@ -113,7 +119,7 @@ function initFileUpload() {
     function uploadFile(file, type) {
         const formData = new FormData();
         formData.append('file', file);
-        // 필요시 formData.append('folderPath', 'product'); 등 추가
+        formData.append('folderPath', 'product_picture');
 
         fetch('/api/files', {
             method: 'POST',
@@ -193,17 +199,20 @@ function initFileUpload() {
 // 등록하기 버튼 submit 시 URL을 hidden input에 넣어서 전송
 document.getElementById('product-form').addEventListener('submit', function(e) {
     // 이미지 URL hidden input 처리
-    // 기존에 <input type="hidden" name="img_1"> ... <input type="hidden" name="img_4">, <input type="hidden" name="video_url"> 를 form에 추가해두세요.
     for (let i = 0; i < 4; i++) {
-        let input = document.querySelector(`input[name="img_${i+1}"]`);
+        let inputName = `img_${i+1}`;
+        let input = document.querySelector(`input[name="${inputName}"]`);
+
         if (!input) {
             input = document.createElement('input');
             input.type = 'hidden';
-            input.name = `img_${i+1}`;
+            input.name = inputName;
             this.appendChild(input);
         }
-        input.value = uploadedImageUrls[i] || '';
+
+        input.value = (i < uploadedImageUrls.length) ? uploadedImageUrls[i] : '';
     }
+
     let videoInput = document.querySelector('input[name="video_url"]');
     if (!videoInput) {
         videoInput = document.createElement('input');
@@ -212,5 +221,9 @@ document.getElementById('product-form').addEventListener('submit', function(e) {
         this.appendChild(videoInput);
     }
     videoInput.value = uploadedVideoUrl || '';
-    // 이후 서버로 form submit 진행
+
+    console.log('폼 제출 전 값들:', {
+        images: uploadedImageUrls,
+        video: uploadedVideoUrl
+    });
 });

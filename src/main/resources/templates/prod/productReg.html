@@ -3,7 +3,7 @@
 <th:block th:replace="~{/include/include :: def(~{::#wrap})}">
 
     <section id="wrap">
-        <form id="product-form" name="productForm" action="/prod/productReg" method="post">
+        <form id="product-form" name="productForm" action="/prod/productReg" method="post" enctype="multipart/form-data">
             <input type="text" placeholder="상품명 입력" id="prod-name" class="prod-name" name = "title" required>
 
             <!-- 카테고리 테이블 -->
@@ -52,7 +52,7 @@
             <input type="hidden" name="img_4">
             <input type="hidden" name="video_url">
 
-            <button type="submit" class="register-btn" disabled>등록하기</button>
+            <button type="submit" class="register-btn" >등록하기</button>
         </form>
     </section>
 
