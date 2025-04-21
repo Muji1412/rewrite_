@@ -106,4 +106,12 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         return user.isPresent(); // 사용자가 존재하면 true 반환
     }
 
+
+    @Override
+    @Transactional
+    public void userModify(UserVO user) {
+        user.setPw(passwordEncoder.encode(user.getPw()));
+
+        usersRepository.userModify(user);
+    }
 }

@@ -16,6 +16,7 @@ public interface UserService {
 
     Users signup(SignupRequestDto signupRequestDto);
     User loadUserByUsername(String id);
+    void userModify(UserVO user);
     void sendUserIdToEmail(FindIdRequestDto requestDto);
     boolean checkUserByNameAndPhoneAndEmail(FindIdRequestDto requestDto);
 }
