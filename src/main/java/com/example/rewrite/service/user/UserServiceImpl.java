@@ -22,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityNotFoundException;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @Service("UserService")
 @RequiredArgsConstructor
@@ -95,5 +96,14 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         // 실제 발송 성공/실패는 EmailService 내부 로그나 별도 처리 필요.
     }
 
+    @Override
+    public boolean checkUserByNameAndPhoneAndEmail(FindIdRequestDto requestDto) {
+        Optional<Users> user = usersRepository.findByNameAndPhoneAndEmail(
+                requestDto.getName(),
+                requestDto.getPhone(),
+                requestDto.getEmail()
+        );
+        return user.isPresent(); // 사용자가 존재하면 true 반환
+    }
 
 }
