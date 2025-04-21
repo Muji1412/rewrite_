@@ -1,5 +1,6 @@
 package com.example.rewrite.service.user;
 
+import com.example.rewrite.command.UserVO;
 import com.example.rewrite.command.user.SignupRequestDto;
 import com.example.rewrite.entity.Users;
 import com.example.rewrite.repository.users.UsersRepository;
@@ -96,5 +97,12 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         return new User(user.getId(), user.getPw(), authorities);
     }
 
+    @Override
+    @Transactional
+    public void userModify(UserVO user) {
 
+        user.setPw(passwordEncoder.encode(user.getPw()));
+
+        usersRepository.userModify(user);
+    }
 }
