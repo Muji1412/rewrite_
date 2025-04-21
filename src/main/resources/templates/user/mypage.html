@@ -3,7 +3,7 @@
 
     <section id="wrap">
       <!-- 상단단 -->
-      <h1 style="font-size: 30px; margin: 30px 0 10px 10px;">홍길동님 안녕하세요</h1>
+      <h1 style="font-size: 30px; margin: 30px 0 10px 10px;" th:text="${user.name} + '님 안녕하세요'">홍길동님 안녕하세요</h1>
       <div class="profile-section">
         <div class="profile-left">
           <div class="profile-img">
@@ -12,7 +12,7 @@
 
         </div>
         <div class="profile-info">
-          <div class="level">LV.5 고목나무</div>
+          <div class="level" th:text="'LV.' + ${level}+'' + ${avg}">LV.5 고목나무</div>
           <div class="tree-icon">🌳</div>
           <div>매너등급</div>
           <div class="manners-bar">
