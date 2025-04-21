@@ -16,9 +16,6 @@ public interface UserService {
 
     Users signup(SignupRequestDto signupRequestDto);
     User loadUserByUsername(String id);
-
-    int calculateLevel(double avgRating);
-    String getTitleByLevel(int level);
     void userModify(UserVO user);
     void sendUserIdToEmail(FindIdRequestDto requestDto);
     boolean checkUserByNameAndPhoneAndEmail(FindIdRequestDto requestDto);
