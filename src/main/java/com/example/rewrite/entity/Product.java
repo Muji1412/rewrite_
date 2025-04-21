@@ -52,9 +52,6 @@ public class Product {
     @Column(name = "CATEGORY_ID") // 역시 백틱 처리
     private Long categoryId;
 
-    @Column(name = "UID", length = 20)
-    private String uid;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "UID", referencedColumnName = "uid")
     private Users user;
