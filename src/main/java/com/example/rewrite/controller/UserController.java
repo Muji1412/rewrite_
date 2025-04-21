@@ -33,5 +33,5 @@ public class UserController {
     public String myPage(){
         return "user/mypage";
     }
-
+    //안녕
 }
