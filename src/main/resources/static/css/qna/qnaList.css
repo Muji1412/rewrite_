@@ -44,7 +44,17 @@
 
 /* --- 페이지네이션 스타일 --- */
 .pagination-container {display: flex;justify-content: center; /* 가운데 정렬 */margin-top: 30px;padding-bottom: 40px; /* 하단 여백 */}
-.pagination {display: flex;padding-left: 0;list-style: none;border-radius: 0.25rem;}
+/*.pagination {display: flex;padding-left: 0;list-style: none;border-radius: 0.25rem;}*/
+
+/* --- 페이지네이션 스타일 --- */
+.pagination {display: flex; justify-content: center; align-items: center; margin-top: 40px; /* 목록과 페이지네이션 사이 여백 */ padding-bottom: 40px; /* 하단 여백 */}
+
+.page-link {color: #666; text-decoration: none; padding: 8px 12px; margin: 0 3px; font-size: 0.9rem; border-radius: 3px; transition: background-color 0.2s ease, color 0.2s ease;}
+.page-link:hover:not(.disabled):not(.current-page):not(.ellipsis) { background-color: #f0f0f0; color: #333;}
+.page-link.current-page { background-color: #333; /* 현재 페이지 배경색 */ color: #fff; /* 현재 페이지 글자색 */ font-weight: bold;}
+.page-link.disabled { color: #ccc; /* 비활성화된 링크 색상 */ cursor: default; /* 클릭 불가 커서 */}
+.page-link.ellipsis { color: #aaa; cursor: default; padding: 8px 5px; /* 줄임표 여백 조절 */}
+
 
 .page-item {margin: 0 2px; /* 페이지 번호 간격 */}
 .page-item:first-child .page-link {border-top-left-radius: 0.25rem;border-bottom-left-radius: 0.25rem;}
