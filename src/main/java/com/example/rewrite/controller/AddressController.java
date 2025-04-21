@@ -1,5 +1,6 @@
 package com.example.rewrite.controller;
 
+import com.example.rewrite.command.user.UserSessionDto;
 import com.example.rewrite.entity.Address;
 import com.example.rewrite.repository.address.AddressRepository;
 import com.example.rewrite.service.address.AddressService;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -23,8 +25,10 @@ public class AddressController {
     @Autowired
     private AddressService addressService;
 
+
+
     @GetMapping("/detail") //주소지 페이지
-    public String addressDetail(/*@RequestParam("addressId") String addressId,*/ Model model) {
+    public String addressDetail(/*HttpSession session,*/ Model model) {
 
         List<Address> list = addressService.getAddress("test");
         List<Map<String, Object>> address = new ArrayList<>(); //주소지 분리
@@ -46,7 +50,8 @@ public class AddressController {
                     List.getPhoneNum().substring(7));
             address.add(map);
         }
-
+//        UserSessionDto dto = (UserSessionDto)session.getAttribute("user");
+//        System.out.println(dto.toString());
 
         model.addAttribute("list", address);
 
@@ -62,7 +67,7 @@ public class AddressController {
 
     @PostMapping("/write") //주소지 추가
 
-    public String addressWrite(Address address,
+    public String addressWrite(Address address, /*HttpSession session,*/
                                @RequestParam("postcode")String postcode,
                                @RequestParam("addr")String addr,
                                @RequestParam("detailAddress")String addressDetail,
@@ -70,6 +75,11 @@ public class AddressController {
                                @RequestParam("phone2")String phone2,
                                @RequestParam("phone3")String phone3
                                ){
+/*
+        UserSessionDto dto = (UserSessionDto)session.getAttribute("user");
+        System.out.println(dto.toString());
+*/
+
 
         address.setUid("test"); //세션으로 변경 예정
 
