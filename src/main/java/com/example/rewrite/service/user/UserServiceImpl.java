@@ -1,12 +1,9 @@
 package com.example.rewrite.service.user;
 
-import com.example.rewrite.command.UserVO;
-import com.example.rewrite.command.user.LoginRequestDto;
 import com.example.rewrite.command.user.SignupRequestDto;
 import com.example.rewrite.entity.Users;
 import com.example.rewrite.repository.users.UsersRepository;
 import lombok.RequiredArgsConstructor;
-import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

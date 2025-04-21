@@ -34,9 +34,9 @@ public class UserController {
     @GetMapping("/mypage")
     public String myPage(HttpSession session, Model model) {
         UserVO user = (UserVO) session.getAttribute("login");
-        if(user != null) {
-            double avg = ReviewRepository.
-        }
+//        if(user != null) {
+//            double avg = ReviewRepository.
+//        }
         return "user/mypage";
     }
 }

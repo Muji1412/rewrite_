@@ -11,7 +11,7 @@ function uploadImage() {
     formData.append('file', file);
     formData.append('folderPath', 'profile_img'); // 이
 
-    fetch('/api/files/upload', {
+    fetch('/api/files', {
         method: 'POST',
         body: formData
     })
