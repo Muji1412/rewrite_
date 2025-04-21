@@ -30,6 +30,20 @@ public class UserController {
         return "user/signup";
     }
     @GetMapping("/login")
+    public String login() {return "user/login";}
+//    @GetMapping("/mypage")
+//    public String myPage(HttpSession session, Model model) {
+//        UserVO user = (UserVO) session.getAttribute("login");
+//        if(user != null) {
+//            double avg = ReviewRepository.
+//        }
+//        return "user/mypage";
+//    }
+    @GetMapping("/cs_main")
+    public String cs_main() {return "user/cs_main";}
+    @GetMapping("/faq")
+    public String faq() {return "user/faq";}
+  
     public String login() { return "user/login";}
     @GetMapping("/idFind")
     public String idFind(){
@@ -40,6 +54,4 @@ public class UserController {
     public String pwFind(){
         return "user/pwFind";
     }
-
-
 }
