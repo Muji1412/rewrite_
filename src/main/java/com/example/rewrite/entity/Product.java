@@ -49,14 +49,27 @@ public class Product {
     @Column(name = "VIDEO_URL", length = 200)
     private String videoUrl;
 
-    @Column(name = "CATEGORY_ID") // 역시 백틱 처리
-    private Long categoryId;
+    @Column(name = "CATEGORY_MAX", length = 50)
+    private String categoryMax;
+
+    @Column(name = "CATEGORY_MIN", length = 50)
+    private String categoryMin;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "UID", referencedColumnName = "uid")
     private Users user;
 
+    @Column(name = "IMG_1", length = 200)
+    private String img1;
 
+    @Column(name = "IMG_2", length = 200)
+    private String img2;
+
+    @Column(name = "IMG_3", length = 200)
+    private String img3;
+
+    @Column(name = "IMG_4", length = 200)
+    private String img4;
 
 
 }

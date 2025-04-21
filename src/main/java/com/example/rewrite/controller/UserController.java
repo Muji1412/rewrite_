@@ -38,8 +38,8 @@ public class UserController {
 //            double avg = ReviewRepository.
 //        }
 
-        return "user/mypage";
-    }
+       // return "user/mypage";
+
     @GetMapping("/idFind")
     public String idFind(){
         return "user/idFind";
@@ -47,8 +47,8 @@ public class UserController {
 
     @GetMapping("/pwFind")
     public String pwFind(){
+
         return "user/pwFind";
     }
-
 
 }
