@@ -43,13 +43,10 @@ public class UserController {
     public String cs_main() {return "user/cs_main";}
     @GetMapping("/faq")
     public String faq() {return "user/faq";}
-  
-    public String login() { return "user/login";}
     @GetMapping("/idFind")
     public String idFind(){
         return "user/idFind";
     }
-
     @GetMapping("/pwFind")
     public String pwFind(){
         return "user/pwFind";
