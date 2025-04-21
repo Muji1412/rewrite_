@@ -112,15 +112,21 @@
 <script>
     const loginForm = document.getElementById('login-form');
 
+    // async - 비동기로 진행하겠다.
     loginForm.addEventListener('submit', async function(e) {
+
+        // 기본 이벤트 차단하고
         e.preventDefault();
 
-        const userId = loginForm.id.value.trim();       // 'username' 대신 'id' 사용
-        const userPw = loginForm.pw.value.trim();       // 'password' 대신 'pw' 사용
+        //로그인폼에서 id접근 - value 접근해서 가져옴.
+        //혹시나 아이디 비밀번호 입력할때 뒤에 공백칸 붙히고 입력하는 빡통들을 위해 트림을 넣어서 띄어쓰기가 있어도 제거해줌.
+        const userId = loginForm.id.value.trim();
+        const userPw = loginForm.pw.value.trim();
 
-        // 변수명도 의미에 맞게 변경하는 것이 좋습니다 (선택 사항)
+
+        // 아이디, 비밀번호가 빈칸이면
         if (userId === '') {
-            alert('아이디를 입력해주세요');
+            alert('아이디를 입력해주세요.');
             return;
         }
         if (userPw === '') {
@@ -128,12 +134,16 @@
             return;
         }
 
+        //loginForm에 있는 데이터 받아올건데, 이름을 formData라고 명명할거고
         const formData = new FormData(loginForm);
+        // json으로 받기 위한 전처리 - 객체 만들어두기.
         const loginData = {};
+        // json형식으로 받을건데, value, key 값으로 받아서 나중에 dto가 받기 쉽게 만들어줄거임.
         formData.forEach((value, key) =>{
             loginData[key] = value;
         })
 
+        // 이미 만들어놓은 백엔드로 보내줄건데, 포스트, json 타입으로 보낼거임.
         try{
             const response = await fetch('/api/auth/login', {
                 method: 'POST',
@@ -143,14 +153,19 @@
                 body: JSON.stringify(loginData)
             })
 
+            //백엔드에서 ok(200) 을 response한다면 성공이니까, 홈으로 보내줌
             if (response.ok) {
                 const success = await response.json();
                 console.log('로그인 성공', success);
                 window.location.href = '/'
+
+                //그거 아니면 오류니까, 백엔드에서 실어주는 에러메세지(Validation오류 혹은 서버 오류 등) 을 alert해줌
             }else {
                 const error = await response.json();
                 alert(error.message);
             }
+
+            // 네트워크 오류, 타임아웃, 파싱 안될때, 서버 죽었을때, cors 오류 등을 위해서 여기서도 에러처리
         }catch(error){
             console.log('로그인 오류발생', error);
             alert(error.message);
