@@ -14,7 +14,8 @@ import java.time.LocalDateTime;
 @Data
 public class UserVO {
 
-    private long uid; // 고유 사용자 ID (자동 증가) - 기본형 int 대신 Integer 사용 (null 표현 가능)
+
+    private Long uid; // 고유 사용자 ID (자동 증가) - 기본형 int 대신 Integer 사용 (null 표현 가능)
     private String id; // 로그인 아이디
     private String pw; // 비밀번호
     private String nickname; // 사용자 닉네임

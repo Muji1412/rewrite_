@@ -1,9 +1,11 @@
 /* --- 기본 스타일 및 공통 요소 (이전 코드와 유사) --- */
-body {
+* {
     margin: 0;
     padding: 0;
     font-family: 'Noto Sans KR', sans-serif;
-    background-color: #ffffff;
+}
+
+.section {
     display: flex;
     justify-content: center;
     align-items: flex-start; /* 상단 정렬 */
@@ -108,8 +110,9 @@ body {
     white-space: pre-line; /* 방법 1: 줄바꿈 문자는 유지하고, 연속된 공백은 하나로 합침 */
     /* 또는 white-space: pre-wrap; */ /* 방법 1: 줄바꿈 문자 및 연속된 공백 모두 유지 */
 }
+
 .notice-image {
     max-width: 100%; /* 이미지의 최대 너비를 부모 요소 너비의 100%로 제한 */
-    height: auto;    /* 이미지의 가로세로 비율을 유지하면서 높이를 자동으로 조절 */
-    display: block;  /* (선택사항) 이미지 아래에 불필요한 공백이 생기는 것을 방지 */
+    height: auto; /* 이미지의 가로세로 비율을 유지하면서 높이를 자동으로 조절 */
+    display: block; /* (선택사항) 이미지 아래에 불필요한 공백이 생기는 것을 방지 */
 }
