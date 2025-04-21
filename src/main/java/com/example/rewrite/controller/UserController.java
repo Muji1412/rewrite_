@@ -39,4 +39,8 @@ public class UserController {
 //        }
 //        return "user/mypage";
 //    }
+    @GetMapping("/cs_main")
+    public String cs_main() {return "user/cs_main";}
+    @GetMapping("/faq")
+    public String faq() {return "user/faq";}
 }

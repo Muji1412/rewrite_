@@ -13,15 +13,16 @@ public class QnaController {
 
     @GetMapping("/qnaList")
     public String inquiryList(HttpSession session, RedirectAttributes redirectAttributes) {
-        return "Qna/QnaList";
+        return "qna/qnaList";
     }
     @GetMapping("/qnaWrite")
     public String writeInquiry(HttpSession session, RedirectAttributes redirectAttributes) {
-        return "Qna/QnaWrite";
+        return "qna/qnaWrite";
     }
     @GetMapping("/qnaAnswer")
     public String inquiryAnswer(HttpSession session, RedirectAttributes redirectAttributes) {
-        return "qna/QnaAnswer";
+        return "qna/qnaAnswer";
     }
-
+    @GetMapping("/qna")
+    public String inquiry(HttpSession session, RedirectAttributes redirectAttributes) {return "qna/qna";}
 }

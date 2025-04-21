@@ -5,10 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>문의내역 - REWRITE</title>
     <!-- 실제 CSS 파일 경로로 수정하세요 -->
-    <link rel="stylesheet" href="/css/qna.css">
-    <link rel="stylesheet" href="/css/common.css">
+    <link rel="stylesheet" href="/css/common.css" th:href="@{/css/common.css}" />
+    <link rel="stylesheet" href="/css/qna.css" th:href="@{/css/qna/qna.css}" />
+
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <script src="js/script.js"></script>
+    <script src="js/script.js" th:src="@{/js/script.js}"></script>
 </head>
 <body>
     <header class="header">
@@ -21,7 +22,7 @@
         </div>
         <div class="header_bottom">
             <div class="logo_box">
-                <img src="img/logo.png" alt="logo">
+                <img src="img/logo.png" th:src="@{/img/logo.png}" alt="logo">
             </div>
             <div class="drop_menu">
                 <ul class="e_drop">
