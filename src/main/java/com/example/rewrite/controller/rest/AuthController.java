@@ -1,14 +1,14 @@
 package com.example.rewrite.controller.rest;
 
-import com.example.rewrite.command.user.LoginRequestDto;
-import com.example.rewrite.command.user.SignupRequestDto;
-import com.example.rewrite.command.user.UserSessionDto;
+import com.example.rewrite.command.user.*;
 import com.example.rewrite.entity.Users; // 선택사항: 반환값으로 사용자 정보 일부를 포함하고 싶을 때
 import com.example.rewrite.repository.users.UsersRepository;
 import com.example.rewrite.service.user.UserService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.MailException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
@@ -27,6 +28,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
@@ -126,4 +128,36 @@ public class AuthController {
                     .body(errorBody);
         }
     }
+    @PostMapping("/find-id")
+    public ResponseEntity<ApiResponseDto> findIdByEmail(@Valid @RequestBody FindIdRequestDto requestDto) {
+        // @Valid: FindIdRequestDto의 유효성 검사(@NotBlank, @Email) 실행
+        try {
+            userService.sendUserIdToEmail(requestDto);
+            // UserService 호출이 성공하면 (예외가 발생하지 않으면)
+            String successMessage = "아이디 정보가 [" + requestDto.getEmail() + "] 주소로 발송되었습니다. 메일을 확인해주세요.";
+            log.info(successMessage);
+            return ResponseEntity.ok(ApiResponseDto.success(successMessage));
+
+        } catch (EntityNotFoundException e) {
+            // UserService에서 사용자를 찾지 못했을 때
+            log.warn("아이디 찾기 실패 (사용자 없음): {}", e.getMessage());
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND) // 404 Not Found
+                    .body(ApiResponseDto.fail(e.getMessage()));
+
+        } catch (RuntimeException e) {
+            // EmailService에서 메일 발송 실패 등 기타 런타임 예외 처리
+            log.error("아이디 찾기 중 서버 오류 발생: {}", e.getMessage(), e); // 스택 트레이스 포함 로깅
+            String errorMessage;
+            // 메일 발송 관련 예외인지 확인 (더 구체적인 원인 파악 가능)
+            if (e.getCause() instanceof MailException) {
+                errorMessage = "이메일 발송 시스템에 오류가 발생했습니다. 잠시 후 다시 시도해주세요.";
+            } else {
+                errorMessage = "아이디 찾기 처리 중 오류가 발생했습니다.";
+            }
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR) // 500 Internal Server Error
+                    .body(ApiResponseDto.fail(errorMessage));
+        }
+   }
 }
