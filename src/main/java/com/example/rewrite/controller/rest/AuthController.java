@@ -94,6 +94,7 @@ public class AuthController {
 
             // 4. 그 내부에서는 UserDetailsService 에서 유저 정보를 조회하고, PasswordEncoder로 내부적으로 대조해봄.
             // 5. 검증이 완료됐다면, UserDetails 안에 UserDetailsService와 authorities를 담아줌.
+            // . 업로드용
 
             // admin111 로그인해서 principal 찍어보면 ->
             //org.springframework.security.core.userdetails.User [Username=admin111, Password=[PROTECTED], Enabled=true, AccountNonExpired=true,
