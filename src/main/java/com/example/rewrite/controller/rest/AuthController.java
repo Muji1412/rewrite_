@@ -130,7 +130,14 @@ public class AuthController {
     }
     @PostMapping("/find-id")
     public ResponseEntity<ApiResponseDto> findIdByEmail(@Valid @RequestBody FindIdRequestDto requestDto) {
-        // @Valid: FindIdRequestDto의 유효성 검사(@NotBlank, @Email) 실행
+
+
+        if (!userService.checkUserByNameAndPhoneAndEmail(requestDto)){
+            return ResponseEntity.
+                    status(HttpStatus.NOT_FOUND).
+                    body(ApiResponseDto.fail("일치하는 유저가 존재하지 않습니다."));
+        }
+
         try {
             userService.sendUserIdToEmail(requestDto);
             // UserService 호출이 성공하면 (예외가 발생하지 않으면)
