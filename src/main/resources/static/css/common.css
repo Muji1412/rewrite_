@@ -15,7 +15,6 @@ a{text-decoration: none;}
 .header_bottom{width: 1650px; height: 50px; display: flex; justify-content: space-around; align-items: center; margin: 0 auto; margin-top: 10px;}
 
 .logo_box{width: 200px;height: 30px;text-align: center;}
-
 .logo_box img{width:160px;height: 25px;}
 
 .drop_menu{width: 800px;height: 25px;}
@@ -31,14 +30,13 @@ a{text-decoration: none;}
 
 
 .sub_icon{width: 130px;height: 50px; display: flex; justify-content: space-around; align-items: center;}
-.sub_icon img{width: 40px; height: 45px;}
-
+.sub_icon img{width: 40px; height: 45px; cursor: pointer;}
 
 
 /* section */
-.section{width: 1000px; height: 600px; margin: 0 auto;}
+.section_main{width: 1000px; height: 500px; margin: 0 auto;}
 
-.con_box{margin-top: 30px;}
+.con_box{width: 100%; height: auto; margin-top: 150px;}
 
 /** txt_slide **/
 .txt_slide{width: 684px;height: 60px; margin: 60px auto 0px auto; font-size: 38px;font-weight: bold;}
@@ -66,6 +64,8 @@ input:focus{outline:none;}
 /** category_box **/
 .category_box{width: 1000px;margin: 0 auto;margin-top: 30px;float: left;}
 .category_sec{display: flex; justify-content: space-around; align-items: center;}
+
+
 
 /* footer */
 .footer{background: #505050; height: 260px; margin-top: 50px;}

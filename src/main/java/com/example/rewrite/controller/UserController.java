@@ -31,13 +31,12 @@ public class UserController {
     }
     @GetMapping("/login")
     public String login() {return "user/login";}
-    @GetMapping("/mypage")
-    public String myPage(HttpSession session, Model model) {
-        UserVO user = (UserVO) session.getAttribute("login");
+//    @GetMapping("/mypage")
+//    public String myPage(HttpSession session, Model model) {
+//        UserVO user = (UserVO) session.getAttribute("login");
 //        if(user != null) {
 //            double avg = ReviewRepository.
 //        }
-        return "user/mypage";
-    }
-
+//        return "user/mypage";
+//    }
 }
