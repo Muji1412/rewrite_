@@ -1,9 +1,13 @@
 package com.example.rewrite.service.user;
 
+import com.example.rewrite.command.UserVO;
+import com.example.rewrite.command.user.FindIdRequestDto;
+import com.example.rewrite.command.user.LoginRequestDto;
 import com.example.rewrite.command.user.SignupRequestDto;
 import com.example.rewrite.entity.Users;
 import com.example.rewrite.repository.users.UsersRepository;
 import lombok.RequiredArgsConstructor;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -28,29 +32,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     private final UsersRepository usersRepository;
     private final PasswordEncoder passwordEncoder;
 
-    //레벨 계산 함수
-    public int calculateLevel(double avgRating) {
-        if (avgRating < 2.0 ) return 1;
-        else if (avgRating < 3.0 ) return 2;
-        else if (avgRating < 4.0 ) return 3;
-        else if (avgRating < 5.0 ) return 4;
-        else return 5;
-    }
-
-    //타이틀 반환 함수
-    public String getTitleByLevel(int level) {
-        if(level == 1){
-            return "새싹";
-        }else if(level == 2){
-            return "가지";
-        }else if(level == 3){
-            return "나뭇가지";
-        }else if(level == 4){
-            return "어린나무";
-        }else {
-            return "전설의 나무";
-        }
-    }
 
     @Override
     @Transactional
@@ -94,6 +75,11 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         // 3. 코드가 간결해지고, 효율성 좋고, 불변성임.
         // 하지만 여러 권한이 필요한 경우에는 ArrayList를 사용해야함 (한명이 여러개의 권한을 동적으로 가지는 경우)
         return new User(user.getId(), user.getPw(), authorities);
+    }
+
+    @Override
+    public void sendUserIdToEmail(FindIdRequestDto requestDto) {
+
     }
 
 
