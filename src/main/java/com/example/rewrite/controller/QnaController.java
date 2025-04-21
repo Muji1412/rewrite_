@@ -63,5 +63,9 @@ public class QnaController {
         return "qna/qna";
     }
 
+    @GetMapping("/inquiry/submit")
+    public String submitInquiry(HttpSession session, RedirectAttributes redirectAttributes) {
+        return "qna/qnaList";
+    }
 
 }
