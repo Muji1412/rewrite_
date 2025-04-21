@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>문의내역 - REWRITE</title>
+    <!-- 실제 CSS 파일 경로로 수정하세요 -->
+    <link rel="stylesheet" href="/css/common.css">
+    <link rel="stylesheet" href="/css/qnaList.css" th:href="@{/css/qna/qnaList.css}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+</head>
+
+<body>
+    <header class="header">
+        <div class="header_top">
+            <ul class="header_semi_menu">
+                <li><a href="#">고객센터</a></li>
+                <li><a href="#">알림</a></li>
+                <li><a href="#">로그인</a></li>
+            </ul>
+        </div>
+        <div class="header_bottom">
+            <div class="logo_box">
+                <img src="img/logo.png" alt="logo">
+            </div>
+            <div class="drop_menu">
+                <ul class="e_drop">
+                    <li>
+                        <a href="#" class="default_m">CLOTHING</a>
+                        <a href="#" class="hover_m">의류</a>
+                    </li>
+                    <li>
+                        <a href="#" class="default_m">GAMES</a>
+                        <a href="#" class="hover_m">게임</a>
+                    </li>
+                    <li>
+                        <a href="#" class="default_m">APPLIANCES</a>
+                        <a href="#" class="hover_m">가전제품</a>
+                    </li>
+                    <li>
+                        <a href="#" class="default_m">ELECTRONICS</a>
+                        <a href="#" class="hover_m">전자기기</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="sub_icon">
+                <img src="img/mypage_icon.png" alt="my_page">
+                <img src="img/mycart_icon.png" alt="my_cart">
+            </div>
+        </div>
+    </header>
+    <section class="section">
+        <div class="container inquiry-list-container">
+            <!-- 필요 시 로고 이미지 추가 -->
+            <!-- <img src="/img/rewrite_logo.png" alt="REWRITE 로고" class="logo-image"> -->
+
+            <h2 class="page-title">문의내역</h2>
+
+            <div class="inquiry-table-container">
+                <table class="inquiry-table">
+                    <thead>
+                        <tr>
+                            <th class="col-id">문의번호</th>
+                            <th class="col-subject">문의내용</th>
+                            <th class="col-writer">작성자</th>
+                            <th class="col-type">문의유형</th>
+                            <th class="col-status">답변여부</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- 예시 데이터 행 (실제 데이터로 반복될 부분) -->
+                        <tr>
+                            <td>1번</td>
+                            <td class="subject-cell">
+                                <a href="#">배송 언제와요!</a>
+                            </td>
+                            <td>김형석</td>
+                            <td>배송</td>
+                            <td>답변완료</td>
+                        </tr>
+                        <tr>
+                            <td>2번</td>
+                            <td class="subject-cell">
+                                <a href="#">배송 언제와요!</a>
+                            </td>
+                            <td>김형석</td>
+                            <td>배송</td>
+                            <td>답변완료</td>
+                        </tr>
+                        <tr>
+                            <td>1번</td>
+                            <td class="subject-cell">
+                                <a href="#">배송 언제와요!</a>
+                            </td>
+                            <td>김형석</td>
+                            <td>배송</td>
+                            <td>답변완료</td>
+                        </tr>
+                        <tr>
+                            <td>2번</td>
+                            <td class="subject-cell">
+                                <a href="#">배송 언제와요!</a>
+                            </td>
+                            <td>김형석</td>
+                            <td>배송</td>
+                            <td>답변완료</td>
+                        </tr>
+                        <tr>
+                            <td>1번</td>
+                            <td class="subject-cell">
+                                <a href="#">배송 언제와요!</a>
+                            </td>
+                            <td>김형석</td>
+                            <td>배송</td>
+                            <td>답변완료</td>
+                        </tr>
+                        <tr>
+                            <td>2번</td>
+                            <td class="subject-cell">
+                                <a href="#">배송 언제와요!</a>
+                            </td>
+                            <td>김형석</td>
+                            <td>배송</td>
+                            <td>답변완료</td>
+                        </tr>
+                        <tr>
+                            <td>1번</td>
+                            <td class="subject-cell">
+                                <a href="#">배송 언제와요!</a>
+                            </td>
+                            <td>김형석</td>
+                            <td>배송</td>
+                            <td>답변완료</td>
+                        </tr>
+                        <tr>
+                            <td>2번</td>
+                            <td class="subject-cell">
+                                <a href="#">배송 언제와요!</a>
+                            </td>
+                            <td>김형석</td>
+                            <td>배송</td>
+                            <td>답변완료</td>
+                        </tr>
+                        <tr>
+                            <td>1번</td>
+                            <td class="subject-cell">
+                                <a href="#">배송 언제와요!</a>
+                            </td>
+                            <td>김형석</td>
+                            <td>배송</td>
+                            <td>답변완료</td>
+                        </tr>
+                        <!-- 데이터 없을 경우 (주석 처리) -->
+                        <!--
+            <tr>
+                <td colspan="5" class="no-data">문의 내역이 없습니다.</td>
+            </tr>
+             -->
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="action-container">
+                <!-- 실제 문의 작성 페이지 링크로 수정하세요 -->
+                <a href="#" class="write-button">문의하기</a>
+            </div>
+
+            <!-- 페이지네이션 (정적 예시) -->
+            <nav class="pagination-container" aria-label="Page navigation">
+                <ul class="pagination">
+                    <!-- Previous Button (비활성화 예시) -->
+                    <li class="page-item disabled">
+                        <a class="page-link" href="#" aria-label="Previous">
+                            ← Prev
+                        </a>
+                    </li>
+
+                    <!-- Page Numbers -->
+                    <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item"><a class="page-link" href="#">4</a></li>
+                    <li class="page-item"><a class="page-link" href="#">5</a></li>
+                    <li class="page-item"><a class="page-link" href="#">6</a></li>
+                    <li class="page-item"><a class="page-link" href="#">8</a></li>
+                    <li class="page-item"><a class="page-link" href="#">9</a></li>
+                    <li class="page-item"><a class="page-link" href="#">10</a></li>
+
+                    <!-- Next Button (활성화 예시) -->
+                    <li class="page-item">
+                        <a class="page-link" href="#" aria-label="Next">
+                            Next →
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="footer_wrap">
+            <div class="footer_top">
+                <ul class="f_flex f_top_ul">
+                    <li><a href="#" class="f_single">개인정보처리방침</a></li>
+                    <li><a href="#" class="f_notice">이용안내</a></li>
+                </ul>
+            </div>
+            <div class="footer_mid">
+                <ul class="f_flex">
+                    <li>상호명 : (주)REWRITE</li>
+                    <li>대표자 : 따악코</li>
+                    <li>주소 : 서울시 강남구 테헤란로7길 에스코빌딩</li>
+                    <li>전화번호 : 1234-5678</li>
+                    <li>팩스 : 02-9876-5432</li>
+                    <li>이메일 : rewrite@rewrite.com</li>
+                </ul>
+            </div>
+            <div class="footer_mid_sec">
+                <ul class="f_flex f_mid_sub">
+                    <li>사업자등록번호 : 202-50410</li>
+                    <li>통신판매업신고 : 제25-0410호</li>
+                </ul>
+            </div>
+            <div class="footer_mid_thd">
+                <ul>
+                    <li></li>
+                </ul>
+            </div>
+            <div class="footer_bottom">
+                <p class="f_flex">Copyright © 2025 Jongsu Macne. All rights reserved. Created by JongSu</p>
+            </div>
+        </div>
+    </footer>
+</body>
+
+</html>

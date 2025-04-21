@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>문의하기 - REWRITE</title>
+    <!-- 실제 CSS 파일 경로로 수정하세요 -->
+    <link rel="stylesheet" href="/css/common.css">
+    <link rel="stylesheet" href="/css/writeInquiry.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- Font Awesome (파일 첨부 아이콘) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="js/QnaWrite.js"></script>
+</head>
+<body>
+    <header class="header">
+        <div class="header_top">
+            <ul class="header_semi_menu">
+                <li><a href="#">고객센터</a></li>
+                <li><a href="#">알림</a></li>
+                <li><a href="#">로그인</a></li>
+            </ul>
+        </div>
+        <div class="header_bottom">
+            <div class="logo_box">
+                <img src="img/logo.png" alt="logo">
+            </div>
+            <div class="drop_menu">
+                <ul class="e_drop">
+                    <li>
+                        <a href="#" class="default_m">CLOTHING</a>
+                        <a href="#" class="hover_m">의류</a>
+                    </li>
+                    <li>
+                        <a href="#" class="default_m">GAMES</a>
+                        <a href="#" class="hover_m">게임</a>
+                    </li>
+                    <li>
+                        <a href="#" class="default_m">APPLIANCES</a>
+                        <a href="#" class="hover_m">가전제품</a>
+                    </li>
+                    <li>
+                        <a href="#" class="default_m">ELECTRONICS</a>
+                        <a href="#" class="hover_m">전자기기</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="sub_icon">
+                <img src="img/mypage_icon.png" alt="my_page">
+                <img src="img/mycart_icon.png" alt="my_cart">
+            </div>
+        </div>
+    </header>
+
+    <section class="section">
+<div class="container inquiry-form-container"> <!-- 컨테이너 클래스 변경 -->
+    <!-- 로고는 필요 시 여기에 추가 -->
+    <!-- <img src="/img/rewrite_logo.png" alt="REWRITE 로고" class="logo-image"> -->
+
+    <form action="/inquiry/submit" method="post" class="inquiry-form" enctype="multipart/form-data"> <!-- form 태그 및 클래스 변경, 파일 첨부 시 enctype 추가 -->
+        <h2 class="page-title">문의하기</h2>
+
+        <div class="form-group"> <!-- 클래스명 변경 (input-group 대신) -->
+            <label for="inquiryType">문의 유형</label>
+            <div class="input-wrapper select-wrapper"> <!-- 입력 요소 감싸기 -->
+                <select id="inquiryType" name="inquiryType" required>
+                    <option value="" disabled selected>선택해주세요</option>
+                    <option value="배송">배송 문의</option>
+                    <option value="상품">상품 문의</option>
+                    <option value="결제">결제 문의</option>
+                    <option value="기타">기타 문의</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="inquirySubject">문의 제목</label>
+            <div class="input-wrapper">
+                <input type="text" id="inquirySubject" name="inquirySubject" placeholder="제목을 입력해 주세요." required>
+            </div>
+        </div>
+
+        <div class="form-group form-group-textarea"> <!-- Textarea 그룹 클래스 추가 -->
+            <label for="inquiryContent">문의 내용</label>
+            <div class="input-wrapper">
+                <textarea id="inquiryContent" name="inquiryContent" rows="8" placeholder="내용을 입력해 주세요." required></textarea>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="fileAttachment">파일 첨부</label>
+            <div class="input-wrapper file-input-wrapper">
+                <!-- 실제 파일 입력은 숨김 -->
+                <input type="file" id="fileAttachment" name="fileAttachment" class="file-input-hidden" multiple>
+                <!-- 파일 선택 버튼 역할 -->
+                <label for="fileAttachment" class="file-select-button">+파일첨부</label>
+                <!-- 선택된 파일 목록 표시 영역 (선택적) -->
+                <span id="file-list" class="file-list-display"></span>
+                <!-- 클립 아이콘 -->
+                <label for="fileAttachment" class="file-clip-icon">
+                    <i class="fas fa-paperclip"></i>
+                </label>
+            </div>
+        </div>
+
+        <button type="submit" class="submit-button">문의 접수</button>
+    </form>
+</div>
+</section>
+
+<footer class="footer">
+    <div class="footer_wrap">
+        <div class="footer_top">
+            <ul class="f_flex f_top_ul">
+                <li><a href="#" class="f_single">개인정보처리방침</a></li>
+                <li><a href="#" class="f_notice">이용안내</a></li>
+            </ul>
+        </div>
+        <div class="footer_mid">
+            <ul class="f_flex">
+                <li>상호명 : (주)REWRITE</li>
+                <li>대표자 : 따악코</li>
+                <li>주소 : 서울시 강남구 테헤란로7길 에스코빌딩</li>
+                <li>전화번호 : 1234-5678</li>
+                <li>팩스 : 02-9876-5432</li>
+                <li>이메일 : rewrite@rewrite.com</li>
+            </ul>
+        </div>
+        <div class="footer_mid_sec">
+            <ul class="f_flex f_mid_sub">
+                <li>사업자등록번호 : 202-50410</li>
+                <li>통신판매업신고 : 제25-0410호</li>
+            </ul>
+        </div>
+        <div class="footer_mid_thd">
+            <ul>
+                <li></li>
+            </ul>
+        </div>
+        <div class="footer_bottom">
+            <p class="f_flex">Copyright © 2025 Jongsu Macne. All rights reserved. Created by JongSu</p>
+        </div>
+    </div>
+</footer>
+</body>
+</html>
