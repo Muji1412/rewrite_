@@ -20,8 +20,15 @@ public class ProdController {
     public String orderDetail() {
         return "prod/orderDetail";
     }
-    @GetMapping("/reg")
+    @GetMapping("/productReg")
     public String reg(){
         return "prod/productReg";
     }
+    @GetMapping("/prodDetail")
+    public String prodDetail(){ return "prod/prodDetail"; }
+    @GetMapping("/prodList")
+    public String prodList(){ return "prod/prodList"; }
+    @GetMapping("/orderList")
+    public String orderList(){ return "prod/orderList"; }
+
 }
