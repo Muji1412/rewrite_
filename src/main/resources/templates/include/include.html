@@ -1,19 +1,14 @@
+<th:block th:fragment="def (item)">
 <!DOCTYPE html>
-<!-- Thymeleaf 네임스페이스 추가 -->
-<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- 제목도 동적으로 설정 가능 (선택 사항) -->
-    <title th:text="| - REWRITE 공지사항|">공지사항 상세 - REWRITE</title>
-    <!-- CSS 링크에 th:href 사용 (Context Path 자동 처리) -->
+    <title>Document</title>
     <link rel="stylesheet" href="/css/common.css">
-    <link rel="stylesheet" href="/css/noticeDetail.css" th:href="@{/css/noticeDetail.css}">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="js/script.js"></script>
 </head>
 
 <body>
@@ -50,57 +45,13 @@
                 </ul>
             </div>
             <div class="sub_icon">
-                <img src="img/mypage_icon.png" alt="my_page">
-                <img src="img/mycart_icon.png" alt="my_cart">
+                <img src="/img/mypage_icon.png" alt="my_page">
+                <img src="/img/mycart_icon.png" alt="my_cart">
             </div>
         </div>
     </header>
 
-    <section class="section">
-        <div class="container notice-detail-container">
-
-            <h2 class="page-title">공지사항</h2>
-
-            <div class="detail-section">
-                <div class="detail-label">제목</div>
-                <!-- th:text를 사용하여 제목 출력 (HTML 태그 escape) -->
-                <div class="detail-content subject-content" th:text="${dto.title}">
-                    공지사항 제목 예시
-                </div>
-            </div>
-            <div class="detail-section">
-                <div class="detail-label">내용</div>
-                <!--
-          내용 출력 방식 선택:
-
-          방법 1: CSS white-space 사용 (권장 - 더 깔끔)
-             - CSS 파일의 .main-content 클래스에 white-space: pre-line; 또는 pre-wrap; 추가
-             - th:text 사용 (줄바꿈 문자(\n)가 CSS에 의해 처리됨)
-        -->
-                <div class="detail-content main-content">
-                    <th:block th:if="${dto.img != null and dto.img != ''}">
-                        <img th:src="${dto.img}" alt="공지사항 이미지" class="notice-image">
-                    </th:block>
-                    <p th:text="${dto.content}"></p>
-                </div>
-                <!--
-          방법 2: Thymeleaf 유틸리티로 \n을 <br>로 변환 (HTML에 <br> 직접 삽입)
-             - th:utext 사용 (HTML 태그 escape 안 함)
-             - CSS에 white-space 속성 불필요 (또는 normal)
-        <div class="detail-content main-content"
-             th:utext="${#strings.replace(notice.content, '\n', '<br />')}">
-             여기에 공지사항 내용이 표시됩니다. <br />
-             이 방식은 내용에 <br> 태그가 삽입됩니다.
-        </div>
-         -->
-            </div>
-            <div class="button-container">
-                <!-- 목록 링크에 th:href 사용 -->
-                <a href="/notice/noticeList" th:href="@{/notice/noticeList(page=${pageable.pageNumber})}"
-                    class="list-button">목록으로</a>
-            </div>
-        </div>
-    </section>
+        <th:block th:replace="${item}"></th:block>
 
     <footer class="footer">
         <div class="footer_wrap">
@@ -136,6 +87,8 @@
             </div>
         </div>
     </footer>
+
 </body>
 
 </html>
+</th:block>

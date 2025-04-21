@@ -1,16 +1,8 @@
 /* --- 기본 스타일 및 폰트 설정 (이전과 유사) --- */
-body {
-    margin: 0;
-    padding: 0;
-    font-family: 'Noto Sans KR', sans-serif;
-    background-color: #ffffff;
-    display: flex;
-    justify-content: center;
-    align-items: flex-start; /* 상단 정렬 */
-    min-height: 100vh;
-    box-sizing: border-box;
-    padding: 50px 20px; /* 상하 여백 */
-}
+*{margin: 0;padding: 0;font-family: 'Noto Sans KR', sans-serif;}
+
+.section {color: #333;display: flex;justify-content: center;align-items: flex-start;min-height: 500px;box-sizing: border-box;padding: 50px 20px;}
+
 
 .container {
     width: 100%;
