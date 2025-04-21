@@ -39,6 +39,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity5'
+    implementation 'org.springframework.boot:spring-boot-starter-mail'
 
     // 수정 후: 버전 번호 추가
     testImplementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter-test:2.2.0'
