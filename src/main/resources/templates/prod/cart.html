@@ -1,13 +1,7 @@
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>장바구니</title>
-  <link rel="stylesheet" href="/css/prod/cart.css" th:href="@{/css/prod/cart.css}">
-</head>
-<body>
-<div class="cart-container">
+<link rel="stylesheet" href="../css/prod/cart.css">
+<th:block th:replace="~{/include/include :: def(~{::#wrap})}">
+<section id="wrap">
+  <div class="cart-container">
   <!-- 페이지 헤더: 제목 + 진행 단계 -->
   <div class="cart-header">
     <h1>장바구니</h1>
@@ -27,60 +21,27 @@
       <input type="checkbox" id="select-all">
       <label for="select-all">전체 선택</label>
     </div>
-    <button class="delete-selected-button">선택 삭제</button>
+    <button class="delete-selected-button">삭제</button>
   </div>
 
   <!-- 장바구니 상품 목록 -->
   <div class="cart-items">
     <!-- 상품 1 -->
-    <div class="cart-item">
+    <div  th:each="item : ${cartItems}" class="cart-item">
       <div class="item-selection">
-        <input type="checkbox" id="item1" class="item-checkbox">
-        <label for="item1" class="visually-hidden">상품 1 선택</label> <!-- 스크린리더용 레이블 -->
+        <input type="checkbox" th:id=" 'item' + ${item.cartId}" th:name="'item' + ${item.cartId}" class="item-checkbox" th:checked="${item.select}">
+        <label th:for="'item' + ${item.cartId}" class="visually-hidden">상품 ${item.prodId.name} 선택</label> <!-- 스크린리더용 레이블 -->
       </div>
-      <img src="/img/prod/shirt.png" alt="나이키 에어포스 1 '07 화이트" class="item-thumbnail">
+      <img src="@{'/img/prod/' + ${item.prodId.img_1}"  th:alt="${item.prodId.name}" class="item-thumbnail">
       <div class="item-details">
-        <h3 class="item-name">나이키 에어포스 1 '07 화이트</h3>
-        <span class="item-seller">판매자명 : 김김김</span>
-        <span class="item-category">카테고리 : 신발</span>
+        <h3 class="item-name" th:text="${item.prodId.name}">상품평</h3>
+        <span class="item-seller" th:text="'판매자명 : ' + ${item.prodId.user.nickname}">판매자명</span>
+        <span class="item-category"th:text="'카테고리 : ' + ${item.prodId.category}">카테고리</span>
       </div>
-      <div class="item-price">1,000,000원</div>
+      </div>
+
       <button class="item-delete-button">삭제</button>
     </div>
-
-    <!-- 상품 2 -->
-    <div class="cart-item">
-      <div class="item-selection">
-        <input type="checkbox" id="item2" class="item-checkbox">
-        <label for="item2" class="visually-hidden">상품 2 선택</label>
-      </div>
-      <img src="/img/prod/shirt.png" alt="나이키 에어포스 1 '07 화이트" class="item-thumbnail">
-      <div class="item-details">
-        <h3 class="item-name">나이키 에어포스 1 '07 화이트</h3>
-        <span class="item-seller">판매자명 : 김김김</span>
-        <span class="item-category">카테고리 : 신발</span>
-      </div>
-      <div class="item-price">1,000,000원</div>
-      <button class="item-delete-button">삭제</button>
-    </div>
-
-    <!-- 상품 3 -->
-    <div class="cart-item">
-      <div class="item-selection">
-        <input type="checkbox" id="item3" class="item-checkbox">
-        <label for="item3" class="visually-hidden">상품 3 선택</label>
-      </div>
-      <img src="/img/prod/shirt.png" alt="나이키 에어포스 1 '07 화이트" class="item-thumbnail">
-      <div class="item-details">
-        <h3 class="item-name">나이키 에어포스 1 '07 화이트</h3>
-        <span class="item-seller">판매자명 : 김김김</span>
-        <span class="item-category">카테고리 : 신발</span>
-      </div>
-      <div class="item-price">1,000,000원</div>
-      <button class="item-delete-button">삭제</button>
-    </div>
-
-    <!-- 여기에 더 많은 상품 .cart-item 을 추가할 수 있습니다. -->
   </div>
 
   <!-- 하단 주문 버튼 -->
@@ -89,8 +50,9 @@
   </div>
 
 </div>
-
+</section>
 
 <script src="/js/prod/cart.js"></script>
 </body>
 </html>
+</th:block>

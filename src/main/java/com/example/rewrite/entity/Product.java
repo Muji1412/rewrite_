@@ -52,6 +52,18 @@ public class Product {
     @Column(name = "CATEGORY_ID") // 역시 백틱 처리
     private Long categoryId;
 
+    @Column(name = "img_1")
+    private String img_1;
+
+    @Column(name = "img_2")
+    private String img_2;
+
+    @Column(name = "img_3")
+    private String img_3;
+
+    @Column(name = "img_4")
+    private String img_4;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "UID", referencedColumnName = "uid")
     private Users user;

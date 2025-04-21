@@ -13,4 +13,7 @@ public interface UserService {
 
     Users signup(SignupRequestDto signupRequestDto);
     User loadUserByUsername(String id);
+
+    int calculateLevel(double avgRating);
+    String getTitleByLevel(int level);
 }
