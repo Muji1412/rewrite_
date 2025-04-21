@@ -74,15 +74,27 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<?> login(@Valid @RequestBody LoginRequestDto loginRequestDto, HttpServletRequest request) {
 
+        // 받아온 Dto를 기반으로 auth 토큰 생성
+        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(loginRequestDto.getId(), loginRequestDto.getPw());
+
         try {
             //auth매니저한테 인증요청 보내봄
-            Authentication authentication = authenticationManager.authenticate(
-                    // 지금 받은 id/pw로 토큰 생성함
-                    new UsernamePasswordAuthenticationToken(loginRequestDto.getId(), loginRequestDto.getPw())
-            );
+            Authentication authentication = authenticationManager.authenticate(token);
 
             // 얘가 db에 들어가서 알아서 확인하는 역할을 함.
-            // 아무것도 없어보이지만 지가 알아서 db 들어가서 해싱된 비밀번호도 체크하고 할거 다함
+
+            // DaoAuthenticationProvider 얘를 쓰는거임
+            // 1. 유저측에서 받아온 유저네임, 패스워드를 받음
+            // 2. authenticationManager 안에 있는 ProviderManager한테 위임.
+
+            // 3. DaoAuthenticationProvider 한테 다시 위임해주고, provide 된 후 내부적으로 처리하기 시작함.
+            // DaoAuthenticationProvider -> 스레드 분산같은게 아니고, JWT, Oauth 등 여러가지 인증 토큰을 처리할수 있음
+            // 지금 우리가 보내는 토큰은 UsernamePasswordAuthenticationToken 토큰인데, 얘는 DaoAuthenticationProvider가 처리함.
+            // 만약 JWT 토큰을 보내준다면, JwtAuthenticationToken을 인식해서 JwtAuthenticationProvider가 처리해주는 구조임.
+
+            // 4. 그 내부에서는 UserDetailsService 에서 유저 정보를 조회하고, PasswordEncoder로 내부적으로 대조해봄.
+            // 5. 검증이 완료됐다면, UserDetails 안에 UserDetailsService와 authorities를 담아줌.
+
             // admin111 로그인해서 principal 찍어보면 ->
             //org.springframework.security.core.userdetails.User [Username=admin111, Password=[PROTECTED], Enabled=true, AccountNonExpired=true,
             //credentialsNonExpired=true, AccountNonLocked=true, Granted Authorities=[ROLE_USER]]
@@ -95,6 +107,15 @@ public class AuthController {
             System.out.println(authentication.getName());
 
             // 인증 성공 -> 시큐리티 컨텍스트홀더에 인증 정보 저장
+            // 나중에 다른 곳에서도 접근 가능함
+            //SecurityContext context = SecurityContextHolder.getContext();
+            //Authentication authentication = context.getAuthentication();
+            //String username = authentication.getName();
+            // 또한 스프링 시큐리티에서 사용자 인증여부도 판단함.
+            // 예를 들어
+            //.antMatchers("/adminPage").access("hasRole('ROLE_ADMIN')")
+            //.antMatchers("/userPage").access("hasRole('ROLE_USER')")
+            // 이런 식으로 role에 따라 들어갈 수 있는지 없는지 판단하는 곳에 넣어줌.
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
             // 세션 생성하기
