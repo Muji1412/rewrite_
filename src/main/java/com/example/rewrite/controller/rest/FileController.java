@@ -1,4 +1,4 @@
-package com.example.rewrite.controller;
+package com.example.rewrite.controller.rest;
 
 import com.example.rewrite.service.fileUpload.FileUploadService;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +18,7 @@ import java.io.IOException;
 public class FileController {
     private final FileUploadService fileUploadService;
 
-    @PostMapping("/upload")
+    @PostMapping()
     public ResponseEntity<String> uploadFile(
             @RequestParam("file") MultipartFile file,
             @RequestParam(value = "folderPath", required = false, defaultValue = "") String folderPath) {
