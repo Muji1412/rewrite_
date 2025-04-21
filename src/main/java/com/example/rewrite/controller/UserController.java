@@ -37,6 +37,18 @@ public class UserController {
 //        if(user != null) {
 //            double avg = ReviewRepository.
 //        }
-//        return "user/mypage";
-//    }
+
+        return "user/mypage";
+    }
+    @GetMapping("/idFind")
+    public String idFind(){
+        return "user/idFind";
+    }
+
+    @GetMapping("/pwFind")
+    public String pwFind(){
+        return "user/pwFind";
+    }
+
+
 }
