@@ -16,7 +16,7 @@ public class AddressServiceImpl implements AddressService{
 
     //주소지 리스트
     @Override
-    public List<Address> getAddress(Long uid) {
+    public List<Address> getAddress(String uid) {
         return addressRepository.getAddress(uid);
     }
 
@@ -28,7 +28,7 @@ public class AddressServiceImpl implements AddressService{
 
     //기본 주소지 체크
     @Override
-    public void checkDefault(Long addressId, Long uid) {
+    public void checkDefault(Long addressId, String uid) {
         addressRepository.checkDefault(addressId, uid);
     }
 
