@@ -98,25 +98,25 @@ public class QnaController {
 //    }
 
 //    // 문의 상세 페이지
-//    @GetMapping("/qnaDetail")
-//    public String qnaDetail(@RequestParam("id") Long qnaId, Model model,
-//                            HttpSession session, RedirectAttributes redirectAttributes) {
-//        // 문의 조회
-//        Qna qna = qnaRepository.findById(qnaId)
-//                .orElseThrow(() -> new IllegalArgumentException("해당 문의가 존재하지 않습니다."));
-//
-//        // 문의 작성자 또는 관리자만 조회 가능 (선택적)
-//        String userId = (String) session.getAttribute("userId");
-//        boolean isAdmin = "admin".equals(session.getAttribute("userRole"));
-//
-//        if (!isAdmin && !qna.getUid().equals(userId)) {
-//            redirectAttributes.addFlashAttribute("message", "권한이 없습니다.");
-//            return "redirect:/qna/qnaList";
-//        }
-//
-//        model.addAttribute("qna", qna);
-//        return "qna/qnaDetail";
-//    }
+    @GetMapping("/qnaDetail")
+    public String qnaDetail(@RequestParam("id") Long qnaId, Model model,
+                            HttpSession session, RedirectAttributes redirectAttributes) {
+        // 문의 조회
+        Qna qna = qnaRepository.findById(qnaId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 문의가 존재하지 않습니다."));
+
+        // 문의 작성자 또는 관리자만 조회 가능 (선택적)
+        String userId = (String) session.getAttribute("userId");
+        boolean isAdmin = "admin".equals(session.getAttribute("userRole"));
+
+        if (!isAdmin && !qna.getUid().equals(userId)) {
+            redirectAttributes.addFlashAttribute("message", "권한이 없습니다.");
+            return "redirect:/qna/qnaList";
+        }
+
+        model.addAttribute("qna", qna);
+        return "qna/qnaDetail";
+    }
 
 
 
