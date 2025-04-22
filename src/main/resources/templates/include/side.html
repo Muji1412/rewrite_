@@ -1,14 +1,16 @@
 <th:block th:fragment="def (item)">
 <!DOCTYPE html>
 <html lang="en">
-<html xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link rel="stylesheet" href="/css/common.css">
+    <link rel="stylesheet" href="../css/sideBar.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="js/script.js"></script>
+    <script src="../js/sideBar.js"></script>
 </head>
 
 <body>
@@ -17,18 +19,12 @@
             <ul class="header_semi_menu">
                 <li><a href="#">고객센터</a></li>
                 <li><a href="#">알림</a></li>
-                <li th:unless="${session.user}">
-                    <a th:href="@{/user/login}">로그인</a>  <!-- 로그인 페이지로 이동 -->
-                </li>
-
-                <li th:if="${session.user}">
-                    <a th:href="@{/logout}">로그아웃</a>
-                </li>
+                <li><a href="#">로그인</a></li>
             </ul>
         </div>
         <div class="header_bottom">
             <div class="logo_box">
-                <a href="/"><img src="/img/logo.png" alt="logo"></a>
+                <img src="/img/logo.png" alt="logo">
             </div>
             <div class="drop_menu">
                 <ul class="e_drop">
@@ -56,6 +52,53 @@
             </div>
         </div>
     </header>
+    <wrap style ="position: absolute">
+        <div class="myPage">
+            <span class="title2">마이 페이지</span>
+
+            <ul class="side-list">
+                <p class="sub_title">주문/판매내역 조회</p>
+                <li>
+                    <a href="#">주문내역</a>
+                </li>
+                <li>
+                    <a href="#">판매내역</a>
+                </li>
+                <li>
+                    <a href="#">찜목록</a>
+                </li>
+            </ul>
+
+            <ul class="side-list">
+
+
+                <p class="sub_title">회원정보</p>
+                <li>
+                    <a href="/address/detail">주소지관리</a>
+                </li>
+                <li>
+                    <a href="/user/edit">회원정보수정</a>
+                </li>
+            </ul>
+
+            <ul class="side-list">
+                <p class="sub_title">리뷰내역</p>
+                <li>
+                    <a href="#">매너등급</a>
+                </li>
+            </ul>
+
+            <ul class="side-list" >
+                <p class="sub_title">문의</p>
+                <li>
+                    <a href="#">문의하기</a>
+                </li>
+                <li>
+                    <a href="#">문의내역</a>
+                </li>
+            </ul>
+        </div>
+    </wrap>
 
         <th:block th:replace="${item}"></th:block>
 
