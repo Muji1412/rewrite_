@@ -136,29 +136,19 @@ public class AuthController {
             // 성공 응답 반환
             return ResponseEntity.ok(userSessionDto);
 
-        }catch (BadCredentialsException e) { // 인증 실패 (비번 틀림 등)
-            Map<String, String> errorBody = new HashMap<>();
-            errorBody.put("message", e.getMessage() + "아이디 혹은 비밀번호가 잘못되었습니다.");
+        }catch (BadCredentialsException e) { // 인증 실패 -> HashMap 방식에서 ApiResponseDto로 반환
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(errorBody);
+                    .body(ApiResponseDto.fail("아이디나 비밀번호가 일치하지 않습니다"));
 
         }catch (Exception e) { // 기타 서버 에러 발생시
-            Map<String, String> errorBody = new HashMap<>();
-            errorBody.put("message", e.getMessage() + " 기타 오류가 발생하였습니다.");
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(errorBody);
+                    .body(ApiResponseDto.fail("기타 오류가 발생하였습니다."));
         }
     }
     @PostMapping("/find-id")
     public ResponseEntity<ApiResponseDto> findIdByEmail(@Valid @RequestBody FindIdRequestDto requestDto) {
 
-
-        if (!userService.checkUserByNameAndPhoneAndEmail(requestDto)){
-            return ResponseEntity.
-                    status(HttpStatus.NOT_FOUND).
-                    body(ApiResponseDto.fail("일치하는 유저가 존재하지 않습니다."));
-        }
-
+        // 이프(이름, 전화번호, 이메일을 받아서 유저가 있는지 조회하는)문 삭제 - service 안에 넣어서 일관성 있게 해결함
         try {
             userService.sendUserIdToEmail(requestDto);
             // UserService 호출이 성공하면 (예외가 발생하지 않으면)
@@ -166,23 +156,27 @@ public class AuthController {
             log.info(successMessage);
             return ResponseEntity.ok(ApiResponseDto.success(successMessage));
 
+            // 캐치해야할거,
+            // EntityNotFoundException (sendUserIdToEmail 에서 던져줌)
+            // MailException - 메일 보낼때 오류
+            // RuntimeException - 서버 오류
         } catch (EntityNotFoundException e) {
             // UserService에서 사용자를 찾지 못했을 때
             log.warn("아이디 찾기 실패 (사용자 없음): {}", e.getMessage());
             return ResponseEntity
                     .status(HttpStatus.NOT_FOUND) // 404 Not Found
-                    .body(ApiResponseDto.fail(e.getMessage()));
-
-        } catch (RuntimeException e) {
+                    .body(ApiResponseDto.fail(e.getMessage())); // sendUserIdToEmail에서 실어둔 메세지가 실림
+        } catch (MailException e) {
+            log.error("이메일 전송 중 서버 오류 발생: {}", e.getMessage(), e);
+            String errorMessage = "이메일 전송중 오류가 발생했습니다. 다시 시도해주세요";
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(ApiResponseDto.fail(errorMessage));
+        }
+        catch (RuntimeException e) {
             // EmailService에서 메일 발송 실패 등 기타 런타임 예외 처리
             log.error("아이디 찾기 중 서버 오류 발생: {}", e.getMessage(), e); // 스택 트레이스 포함 로깅
-            String errorMessage;
-            // 메일 발송 관련 예외인지 확인 (더 구체적인 원인 파악 가능)
-            if (e.getCause() instanceof MailException) {
-                errorMessage = "이메일 발송 시스템에 오류가 발생했습니다. 잠시 후 다시 시도해주세요.";
-            } else {
-                errorMessage = "아이디 찾기 처리 중 오류가 발생했습니다.";
-            }
+            String errorMessage = "아이디 찾기 중 오류가 발생했습니다.";
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR) // 500 Internal Server Error
                     .body(ApiResponseDto.fail(errorMessage));
@@ -190,12 +184,6 @@ public class AuthController {
    }
     @PostMapping("/reset-pw")
     public ResponseEntity<ApiResponseDto> resetPassword(@Valid @RequestBody FindIdRequestDto requestDto){
-        // 유저 있는지 없는지 체크
-        if (!userService.checkUserByIdAndEmailAndPhoneAndPassword(requestDto)){
-            return (ResponseEntity
-                    .status(HttpStatus.NOT_FOUND)
-                    .body(ApiResponseDto.fail("일치하는 유저가 존재하지 않습니다.")));
-        }
 
         try {
             userService.sendUserPwdToEmail(requestDto);
@@ -205,19 +193,24 @@ public class AuthController {
             return ResponseEntity
                     .ok(ApiResponseDto.success(successMessage));
 
+        }catch (EntityNotFoundException e) {
+            log.warn("비밀번호 리셋 - 유저 찾기 실패 (사용자 없음): {}", e.getMessage());
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body(ApiResponseDto.fail(e.getMessage()));
+        }catch (MailException e) { // 런타임보다 전에 선언돼야함. 런타임 안에 메일익셉션 있음.
+            log.error("이메일 전송 중 서버 오류 발생: {}", e.getMessage(), e);
+            String errorMessage = "이메일 전송중 오류가 발생했습니다. 다시 시도해주세요";
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(ApiResponseDto.fail(errorMessage));
         }catch (RuntimeException e) {
             log.error("비밀번호 리셋 중 오류 발생 : {}", e.getMessage(), e);
-            String errorMessage;
-            if (e.getCause() instanceof MailException) {
-                errorMessage = "이메일 발송 시스템에 오류가 발생했습니다. 잠시 후 다시 시도해주세요.";
-            } else {
-                errorMessage = "아이디 찾기 처리 중 오류가 발생했습니다.";
-            }
+            String errorMessage = "아이디 찾기 처리 중 오류가 발생했습니다.";
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(ApiResponseDto.fail(errorMessage));
         }
-
     }
 
 }
