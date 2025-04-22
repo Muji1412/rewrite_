@@ -1,114 +1,99 @@
+<!-- 파일: templates/user/login.html -->
 <!DOCTYPE html>
-<html lang="ko">
-<head>
-  <meta charset="UTF-8">
-  <title>Login</title>
-  <link rel="stylesheet" href="/css/user/login.css">
-  <link rel="stylesheet" href="/css/common.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <script src="js/script.js"></script>
-</head>
-<body>
-    <header class="header">
-        <div class="header_top">
-            <ul class="header_semi_menu">
-                <li><a href="#">고객센터</a></li>
-                <li><a href="#">알림</a></li>
-                <li><a href="#">로그인</a></li>
-            </ul>
-        </div>
-        <div class="header_bottom">
-            <div class="logo_box">
-                <img src="/img/logo.png" alt="logo">
-            </div>
-            <div class="drop_menu">
-                <ul class="e_drop">
-                    <li>
-                        <a href="#" class="default_m">CLOTHING</a>
-                        <a href="#" class="hover_m">의류</a>
-                    </li>
-                    <li>
-                        <a href="#" class="default_m">GAMES</a>
-                        <a href="#" class="hover_m">게임</a>
-                    </li>
-                    <li>
-                        <a href="#" class="default_m">APPLIANCES</a>
-                        <a href="#" class="hover_m">가전제품</a>
-                    </li>
-                    <li>
-                        <a href="#" class="default_m">ELECTRONICS</a>
-                        <a href="#" class="hover_m">전자기기</a>
-                    </li>
-                </ul>
-            </div>
-            <div class="sub_icon">
-                <img src="/img/mypage_icon.png" alt="my_page">
-                <img src="/img/mycart_icon.png" alt="my_cart">
-            </div>
-        </div>
-    </header>
-        <section class="section">
+<!--
+    1. th:replace: 이 파일 전체를 'include/include' 파일의 'def' 프래그먼트로 교체합니다.
+    2. 파라미터 전달: ~{::.login-wrapper} 를 사용하여 아래 정의된 section 전체를 item 파라미터로 전달합니다.
+-->
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{include/include :: def(~{::.login-wrapper})}">
+
+<!--
+    이 login-wrapper 클래스를 가진 section 전체가 레이아웃의 item 파라미터로 전달됩니다.
+    따라서 페이지별 스타일과 스크립트는 이 section 내부에 포함되어야 합니다.
+-->
+<section class="login-wrapper"> <!-- 감싸는 요소에 클래스 또는 ID 부여 -->
+
+    <!-- 페이지별 스타일 시트 링크 (콘텐츠 내부에 위치) -->
+    <link rel="stylesheet" th:href="@{/css/user/login.css}">
+
+    <!-- 실제 로그인 페이지 콘텐츠 -->
+    <div class="section"> <!-- 기존 구조 유지를 위해 div 사용 또는 클래스명 변경 고려 -->
         <div class="login-container">
             <h1>로그인</h1>
-            
+
             <form id="login-form" class="login-form">
-
-                    <span>아이디</span><br>
-                    <input type="text" name="id" class="id" required> <br>
-                    <span>비밀번호</span><br>
-                    <input type="password" name="pw" class="pw" required>
-            
-            <div class="save-id">
-                <label>
-                    아이디 저장<input type="checkbox" name="saveId"> 
-                </label>
-            </div>
-
-            <button type="submit">로그인</button>
+                <span>아이디</span><br>
+                <input type="text" name="id" class="id" required> <br>
+                <span>비밀번호</span><br>
+                <input type="password" name="pw" class="pw" required>
+                <button type="submit">로그인</button>
             </form>
 
             <div class="links">
-            <a href="#">회원가입</a>
-            <a href="#">아이디 찾기</a>
-            <a href="#">비밀번호 찾기</a>
+                <a th:href="@{/user/signup}">회원가입</a>
+                <a th:href="@{/user/idFind}">아이디 찾기</a>
+                <a th:href="@{/user/pwFind}">비밀번호 찾기</a>
             </div>
+        </div>
+    </div>
 
-        </div>
-        </section>
-    <footer class="footer">
-        <div class="footer_wrap">
-            <div class="footer_top">
-                <ul class="f_flex f_top_ul">
-                    <li><a href="#" class="f_single">개인정보처리방침</a></li>
-                    <li><a href="#" class="f_notice">이용안내</a></li>
-                </ul>
-            </div>
-            <div class="footer_mid">
-                <ul class="f_flex">
-                    <li>상호명 : (주)REWRITE</li>
-                    <li>대표자 : 따악코</li>
-                    <li>주소 : 서울시 강남구 테헤란로7길 에스코빌딩</li>
-                    <li>전화번호 : 1234-5678</li>
-                    <li>팩스 : 02-9876-5432</li>
-                    <li>이메일 : rewrite@rewrite.com</li>
-                </ul>
-            </div>
-            <div class="footer_mid_sec">
-                <ul class="f_flex f_mid_sub">
-                    <li>사업자등록번호 : 202-50410</li>
-                    <li>통신판매업신고 : 제25-0410호</li>
-                </ul>
-            </div>
-            <div class="footer_mid_thd">
-                <ul>
-                    <li></li>
-                </ul>
-            </div>
-            <div class="footer_bottom">
-                <p class="f_flex">Copyright © 2025 Jongsu Macne. All rights reserved. Created by JongSu</p>
-            </div>
-        </div>
-    </footer>
+    <!-- 페이지별 스크립트 (콘텐츠 내부에 위치) -->
+    <script>
+        // 여기에 login.html에 필요한 JavaScript 코드를 넣습니다.
+        const loginForm = document.getElementById('login-form');
+
+        loginForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const userId = loginForm.id.value.trim();
+            const userPw = loginForm.pw.value.trim();
+
+            if (userId === '') {
+                alert('아이디를 입력해주세요.');
+                return;
+            }
+            if (userPw === '') {
+                alert('비밀번호를 입력해주세요');
+                return;
+            }
+
+            const formData = new FormData(loginForm);
+            const loginData = {};
+            formData.forEach((value, key) => {
+                loginData[key] = value;
+            });
+
+            try {
+                const response = await fetch('/api/auth/login', { // 실제 API 엔드포인트 확인
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(loginData)
+                });
+
+                if (response.ok) {
+                    console.log('로그인 성공');
+                    // 성공 시 서버 응답에 따라 추가 처리 가능 (예: JWT 토큰 저장)
+                    // const result = await response.json();
+                    window.location.href = '/'; // 홈페이지 또는 대시보드로 리디렉션
+                } else {
+                    try {
+                        const error = await response.json();
+                        alert(error.message || `로그인 실패 (${response.status})`);
+                    } catch (jsonError) {
+                        alert(`로그인 처리 중 오류 발생 (${response.status})`);
+                    }
+                }
+            } catch (error) {
+                console.error('로그인 요청 오류:', error);
+                alert('로그인 요청 중 문제가 발생했습니다.');
+            }
+        });
+    </script>
+
+</section> <!-- /.login-wrapper -->
+
+</html> <!-- 이 태그는 th:replace 때문에 실제로는 렌더링되지 않음 -->
 <script>
     const loginForm = document.getElementById('login-form');
 
