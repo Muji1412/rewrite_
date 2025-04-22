@@ -99,18 +99,18 @@
     <script>
         //바디생성함수
         function createBody(items) {
-            const tableBody = document.getElementById("tableBody");
+            var tableBody = document.getElementById("tableBody");
 
             if (items.length === 0) {
                 tableBody.innerHTML = '<tr><td colspan="5" class="no-data">문의 내역이 없습니다.</td></tr>';
                 return;
             }
 
-            let str = "";
-            items.forEach(function (item) {
+            var str = "";
+            items.forEach(function(item) {
                 str += "<tr>";
                 str += "<td>" + item.qna_id + "</td>";
-                str += `<td class="subject-cell"><a href="/qna/detail?id=${item.qna_id}">${item.title}</a></td>`;
+                str += "<td class='subject-cell'><a href='/qna/qnaDetail?id=" + item.qna_id + "'>" + item.title + "</a></td>";
                 str += "<td>" + item.uid + "</td>";
                 str += "<td>" + item.category + "</td>";
                 str += "<td>" + (item.answer ? "답변완료" : "답변대기") + "</td>";
@@ -118,6 +118,7 @@
             });
             tableBody.innerHTML = str;
         }
+
 
     </script>
     </body>
