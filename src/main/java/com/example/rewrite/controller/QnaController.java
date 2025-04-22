@@ -6,6 +6,7 @@ import com.example.rewrite.entity.Users;
 import com.example.rewrite.repository.Notice.NoticeRepository;
 import com.example.rewrite.repository.qna.QnaRepository;
 import com.example.rewrite.repository.users.UsersRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -20,6 +21,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import javax.servlet.http.HttpSession;
 import java.time.LocalDateTime;
 
+@Slf4j
 @Controller
 @RequestMapping("/qna")
 public class QnaController {
@@ -69,7 +71,7 @@ public class QnaController {
         String userId = (String) session.getAttribute("userId");
         if (userId == null) {
             redirectAttributes.addFlashAttribute("message", "로그인이 필요한 서비스입니다.");
-//            return "redirect:/login";
+            // return "redirect:/login";
             return "qna/qnaWrite";
         }
 
@@ -90,7 +92,7 @@ public class QnaController {
         }
 
         // 사용자 ID 설정
-        qna.setUid(userId);
+//        qna.setuserId);
         // 등록일 설정
         qna.setRegDate(String.valueOf(LocalDateTime.now()));
         // 저장
@@ -99,10 +101,9 @@ public class QnaController {
         return "redirect:/qna/qnaList";
     }
 
-
     // 문의 상세 페이지
     @GetMapping("/qnaDetail")
-    public String qnaDetail(@RequestParam("id") Long qnaId, Model model,
+    public String qnaDetail(@RequestParam(name="id",required = false) Long qnaId, Model model,
                             HttpSession session, RedirectAttributes redirectAttributes) {
         // 문의 조회
         Qna qna = qnaRepository.findById(qnaId)
@@ -112,17 +113,17 @@ public class QnaController {
         String userId = (String) session.getAttribute("userId");
         boolean isAdmin = "admin".equals(session.getAttribute("userRole"));
 
-        if (!isAdmin && !qna.getUid().equals(userId)) {
+        log.info("isAdmin:{}", isAdmin);
+
+        if (isAdmin || qna.getUid().equals(userId)) {
+        } else {
             redirectAttributes.addFlashAttribute("message", "권한이 없습니다.");
-            return "/qna/qnaList";
+            return "redirect:/qna/qnaList";  // redirect: 추가
         }
-//        redirect:
 
         model.addAttribute("qna", qna);
         return "qna/qnaDetail";
     }
-
-
 
     // 관리자용 답변 페이지
     @GetMapping("/qnaAnswer")
@@ -167,17 +168,17 @@ public class QnaController {
         return "redirect:/qna/qnaDetail?id=" + qnaId;
     }
 
+    // URL 중복 문제 해결 - /qna/qna 대신 /qna 또는 빈 문자열로 변경
+//    @GetMapping("")
+//    public String inquiry(HttpSession session, RedirectAttributes redirectAttributes) {
+//        return "qna/qna";
+//    }
 
-    @GetMapping("/qna")
-    public String inquiry(HttpSession session, RedirectAttributes redirectAttributes) {
-        return "qna/qna";
-    }
-
-    // 문의 제출 처리 메서드 (추가 필요)
+    // 문의 제출 처리 메서드
     @PostMapping("/inquiry/submit")
-    public String processInquiry(@RequestParam("category") String category,
-                                 @RequestParam("title") String title,
-                                 @RequestParam("content") String content,
+    public String processInquiry(@RequestParam("inquiryType") String category,
+                                 @RequestParam("inquirySubject") String title,
+                                 @RequestParam("inquiryContent") String content,
                                  HttpSession session,
                                  RedirectAttributes redirectAttributes) {
         // 세션에서 사용자 ID 가져오기
@@ -187,14 +188,11 @@ public class QnaController {
         qna.setCategory(category);
         qna.setTitle(title);
         qna.setContent(content);
-        qna.setUid(userId != null ? userId : "guest"); // 로그인 안 된 경우 기본값
+        qna.setUSERID(userId != null ? userId : "guest"); // 로그인 안 된 경우 기본값
         qna.setRegDate(String.valueOf(LocalDateTime.now()));
         // 저장
         qnaRepository.save(qna);
         redirectAttributes.addFlashAttribute("message", "문의가 성공적으로 등록되었습니다.");
         return "redirect:/qna/qnaList";
     }
-
-
-
 }
