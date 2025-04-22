@@ -16,6 +16,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpSession;
@@ -81,24 +82,28 @@ public class QnaController {
         return "qna/qnaWrite";
     }
 
-    @PostMapping("/qnaWrite")
+    @PostMapping("/qnaSubmit")
     public String saveInquiry(@ModelAttribute Qna qna, HttpSession session,
                               RedirectAttributes redirectAttributes) {
         // 로그인 체크
-        String userId = (String) session.getAttribute("userId");
-        if (userId == null) {
-            redirectAttributes.addFlashAttribute("message", "로그인이 필요한 서비스입니다.");
-            return "redirect:/login";
-        }
+//        String userId = (String) session.getAttribute("userId");
+//        if (userId == null) {
+//            redirectAttributes.addFlashAttribute("message", "로그인이 필요한 서비스입니다.");
+//            return "redirect:/";
+//        }
+        Qna newQna = Qna.builder()
+                .category(qna.getCategory())
+                .title(qna.getTitle())
+                .content(qna.getContent())
+                .USERID(session.getId())
+                .build();
 
-        // 사용자 ID 설정
-//        qna.setuserId);
-        // 등록일 설정
-        qna.setRegDate(String.valueOf(LocalDateTime.now()));
+        log.info("newQna : {}", newQna);
+
         // 저장
-        qnaRepository.save(qna);
+        qnaRepository.save(newQna);
         redirectAttributes.addFlashAttribute("message", "문의가 등록되었습니다.");
-        return "redirect:/qna/qnaList";
+        return "redirect:/";
     }
 
     // 문의 상세 페이지
@@ -179,6 +184,7 @@ public class QnaController {
     public String processInquiry(@RequestParam("inquiryType") String category,
                                  @RequestParam("inquirySubject") String title,
                                  @RequestParam("inquiryContent") String content,
+                                 @RequestParam("fileAttachment") MultipartFile fileAttachment,
                                  HttpSession session,
                                  RedirectAttributes redirectAttributes) {
         // 세션에서 사용자 ID 가져오기
@@ -188,6 +194,7 @@ public class QnaController {
         qna.setCategory(category);
         qna.setTitle(title);
         qna.setContent(content);
+        qna.setFileAttachment(String.valueOf(fileAttachment));
         qna.setUSERID(userId != null ? userId : "guest"); // 로그인 안 된 경우 기본값
         qna.setRegDate(String.valueOf(LocalDateTime.now()));
         // 저장
