@@ -23,20 +23,22 @@
                     </thead>
                     <tbody id="tableBody">
                     <!-- 데이터가 없을 경우 -->
-                    <tr th:if="${qnaPage.content.size() == 0}">
+                    <tr th:if="${qnaPage != null && #lists.isEmpty(qnaPage.content)}">
                         <td colspan="5" class="no-data">문의 내역이 없습니다.</td>
                     </tr>
 
+
                     <!-- QnA 데이터 출력 -->
                     <tr th:each="qna : ${qnaPage.content}">
-                        <td th:text="${qna.qna_id}">문의번호</td>
+                        <td th:text="${qna.qnaId}">문의번호</td>
                         <td class="subject-cell">
-                            <a th:href="@{/qna/qnaDetail(id=${qna.qna_id})}" th:text="${qna.title}">문의내용</a>
+                            <a th:href="@{/qna/qnaDetail(id=${qna.qnaId})}" th:text="${qna.title}">문의내용</a>
                         </td>
                         <td th:text="${qna.uid}">작성자</td>
                         <td th:text="${qna.category}">문의유형</td>
                         <td th:text="${qna.answer != null ? '답변완료' : '답변대기'}">답변여부</td>
                     </tr>
+                    <!--  -->
                     </tbody>
                 </table>
             </div>
@@ -88,8 +90,8 @@
                            class="page-link" th:text="${pageNumber}"></a>
                     </th:block>
 
-                    <a th:href="${qnaPage.last} ? '#' : @{/qna/qnaList(page=${qnaPage.number + 1})}"
-                       class="page-link" th:classappend="${qnaPage.last} ? 'disabled'">
+                    <a th:href="${qnaPage != null && qnaPage.last} ? '#' : @{/qna/qnaList(page=${qnaPage != null ? qnaPage.number + 1 : 0})}"
+                       class="page-link" th:classappend="${qnaPage != null && qnaPage.last} ? 'disabled'">
                         Next →
                     </a>
                 </div>
@@ -109,8 +111,8 @@
             var str = "";
             items.forEach(function(item) {
                 str += "<tr>";
-                str += "<td>" + item.qna_id + "</td>";
-                str += "<td class='subject-cell'><a href='/qna/qnaDetail?id=" + item.qna_id + "'>" + item.title + "</a></td>";
+                str += "<td>" + item.qnaId + "</td>";
+                str += "<td class='subject-cell'><a href='/qna/qnaDetail?id=" + item.qnaId + "'>" + item.title + "</a></td>";
                 str += "<td>" + item.uid + "</td>";
                 str += "<td>" + item.category + "</td>";
                 str += "<td>" + (item.answer ? "답변완료" : "답변대기") + "</td>";

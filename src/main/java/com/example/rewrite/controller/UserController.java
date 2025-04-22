@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -29,6 +30,8 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+    @Autowired
+    private AuthenticationManager authenticationManager;
 
     @GetMapping("/signup")
     public String signup() {
@@ -73,12 +76,12 @@ public class UserController {
         return "/user/mypage";
     }
 
-    @GetMapping("/delete")    //회원 탈퇴
+    @PostMapping("/delete")    //회원 탈퇴
     public String delete(HttpSession session){
+        // 여유 남을때 session이 null인 경우도 체크하면 좋음
         UserSessionDto user = (UserSessionDto) session.getAttribute("user");
-        userService.userDelete(user.getUid());
-        session.invalidate();
-        return "redirect:/";
+        userService.userDelete(user.getUid()); 
+        return "redirect:/logout"; //스프링 시큐리티 로그아웃 
     }
     @GetMapping("/cs_main")
     public String cs_main() {return "user/cs_main";}
@@ -90,9 +93,6 @@ public class UserController {
         return "user/idFind";
     }
     @GetMapping("/pwFind")
-    public String pwFind(){
-
-        return "user/pwFind";
-    }
+    public String pwFind(){return "user/pwFind";}
 }
 

@@ -4,12 +4,13 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import java.time.LocalDateTime;
 
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class ProductVO {
+public class ProductDTO {
 
     private int prodId;
     private String categoryMax;
@@ -17,10 +18,10 @@ public class ProductVO {
     private String title;
     private String description;
     private String pickupAddress;
-    private java.time.LocalDateTime pickupDate;
+    private LocalDateTime pickupDate;
     private String pickupStatus;
     private String prodStatus;
-    private java.time.LocalDateTime regDate;
+    private LocalDateTime regDate;
     private String price;
     private String videoUrl;
     private int viewcount;

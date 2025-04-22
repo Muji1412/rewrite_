@@ -40,8 +40,10 @@ public class Users {
     @Column(name = "birth") // DATE 타입은 LocalDate와 매핑
     private LocalDate birth;
 
+
     @Column(name = "img_url", length = 512)
-    private String imgUrl;
+    @Builder.Default
+    private String imgUrl = "https://storage.googleapis.com/rewrite_project/profile_img/user_default.png";
 
     @CreationTimestamp // 엔티티 생성 시 자동으로 현재 시간 저장
     @Column(name = "reg_date", nullable = false, updatable = false)

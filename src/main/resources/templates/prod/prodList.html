@@ -1,151 +1,55 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
 
-    <link rel="stylesheet" href="/css/prod/prodList.css">
-    <link rel="stylesheet" href="../css/common.css">
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <script src="../js/prodList.js"></script>
+<th:block th:replace="~{include/include :: def(~{::#wrap})} ">
 
-    <script>
-        $(function() {
-          $("#sidebar").load("sideBar.html");
-        });
-    </script>
-    
 
-</head>
-<body>
-    
-    <header class="header">
-        <div class="header_top">
-            <ul class="header_semi_menu">
-                <li><a href="#">고객센터</a></li>
-                <li><a href="#">알림</a></li>
-                <li><a href="#">로그인</a></li>
-            </ul>
-        </div>
-        <div class="header_bottom">
-            <div class="logo_box">
-                <img src="../img/logo.png" alt="logo">
-            </div>
-            <div class="drop_menu">
-                <ul class="e_drop">
-                    <li>
-                        <a href="#" class="default_m">CLOTHING</a>
-                        <a href="#" class="hover_m">의류</a>
-                    </li>
-                    <li>
-                        <a href="#" class="default_m">GAMES</a>
-                        <a href="#" class="hover_m">게임</a>
-                    </li>
-                    <li>
-                        <a href="#" class="default_m">APPLIANCES</a>
-                        <a href="#" class="hover_m">가전제품</a>
-                    </li>
-                    <li>
-                        <a href="#" class="default_m">ELECTRONICS</a>
-                        <a href="#" class="hover_m">전자기기</a>
-                    </li>
-                </ul>
-            </div>
-            <div class="sub_icon">
-                <img src="img/mypage_icon.png" alt="my_page">
-                <img src="img/mycart_icon.png" alt="my_cart">
-            </div>
-        </div>
-    </header>
+    <section id="wrap" class="section">
 
-    <section class="section">
-        <div id="sidebar"></div>
         <div class="box">
-            
+
             <div class="title-box">
                 <h2>상품 리스트</h2>
             </div>
-            <form action="#">
 
                 <div class="card-container">
-                    <div class="card">
-                        <img src="../img/까마릴라.jpg" alt="이미지" class="prodImg">
-                        <p class="title">까마릴라 팝니당</p>
-                        <strong class="price">44,000원</strong>
-                        <p class="date">25.04.14</p>
-                    </div>
-                        
-                    <div class="card">
-                        <img src="../img/드릴시바.jpeg" alt="이미지" class="prodImg">
-                        <p class="title">까마릴라 팝니당</p>
-                        <strong class="price">44,000원</strong>
-                        <p class="date">25.04.14</p>
+                    <!-- 상품 목록 반복 -->
+                    <div class="card" th:each="product : ${products}" th:data-prod-id="${product.prodId}">
+                        <!-- 비디오 및 이미지 컨테이너 -->
+                        <div class="media-container">
+                            <!-- 메인 이미지 -->
+                            <img th:src="${product.img1 != null ? product.img1 : '/img/no-image.jpg'}"
+                                 alt="상품 이미지" class="prodImg">
+
+                            <!-- 비디오 요소 (기본적으로 숨겨짐) -->
+                            <video class="prod-video" th:if="${product.videoUrl != null}"
+                                   th:data-src="${product.videoUrl}" muted preload="none"></video>
+
+                            <!-- 호버 텍스트 -->
+
+                        </div>
+
+                        <!-- 상품 정보 -->
+                        <p class="title" th:text="${product.title}">상품명</p>
+                        <strong class="price" th:text="${#numbers.formatInteger(product.price, 1, 'COMMA')} + '원'">가격</strong>
+
+                        <p class="date" th:text="${#temporals.format(product.regDate, 'yy.MM.dd')}">날짜</p>
                     </div>
 
-                    <div class="card">
-                        <img src="../img/따봉도치.jpeg" alt="이미지" class="prodImg">
-                        <p class="title">까마릴라 팝니당</p>
-                        <strong class="price">44,000원</strong>
-                        <p class="date">25.04.14</p>
+                    <!-- 상품이 없을 경우 메시지 출력 -->
+                    <div class="no-products" th:if="${#lists.isEmpty(products)}">
+                        <p>등록된 상품이 없습니다.</p>
                     </div>
-
-                    <div class="card">
-                        <img src="../img/라이트훅시바.jpeg" alt="이미지" class="prodImg">
-                        <p class="title">까마릴라 팝니당</p>
-                        <strong class="price">44,000원</strong>
-                        <p class="date">25.04.14</p>
-                    </div>
-                    
+                </div>
             </form>
-         </div>
+        </div>
 
         </div>
 
         <button class="top" onclick="scrollToTop()">TOP</button>
-    </form>
-    </section>
-    <footer class="footer">
-        <div class="footer_wrap">
-            <div class="footer_top">
-                <ul class="f_flex f_top_ul">
-                    <li><a href="#" class="f_single">개인정보처리방침</a></li>
-                    <li><a href="#" class="f_notice">이용안내</a></li>
-                </ul>
-            </div>
-            <div class="footer_mid">
-                <ul class="f_flex">
-                    <li>상호명 : (주)REWRITE</li>
-                    <li>대표자 : 따악코</li>
-                    <li>주소 : 서울시 강남구 테헤란로7길 에스코빌딩</li>
-                    <li>전화번호 : 1234-5678</li>
-                    <li>팩스 : 02-9876-5432</li>
-                    <li>이메일 : rewrite@rewrite.com</li>
-                </ul>
-            </div>
-            <div class="footer_mid_sec">
-                <ul class="f_flex f_mid_sub">
-                    <li>사업자등록번호 : 202-50410</li>
-                    <li>통신판매업신고 : 제25-0410호</li>
-                </ul>
-            </div>
-            <div class="footer_mid_thd">
-                <ul>
-                    <li></li>
-                </ul>
-            </div>
-            <div class="footer_bottom">
-                <p class="f_flex">Copyright © 2025 Jongsu Macne. All rights reserved. Created by JongSu</p>
-            </div>
-        </div>
-    </footer>
 
-    <script>
-        function scrollToTop() {
-          window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-        </script>
-    
-</body>
-</html>
+    </section>
+
+    </body>
+</th:block>
+<link rel="stylesheet" href="/css/prod/prodList.css" th:href="@{/css/prod/prodList.css}">
+<script src="/js/prod/prodList.js" th:src="@{/js/prod/prodList.js}"></script>
