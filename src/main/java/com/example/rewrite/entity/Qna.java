@@ -17,8 +17,9 @@ import java.time.LocalDateTime; // regDate 컬럼에 권장되는 타입 (현재
 public class Qna {
 
     @Id // QNA_ID를 기본 키로 가정합니다. SQL에 PRIMARY KEY 제약조건이 명시되지 않았습니다.
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "QNA_ID", nullable = false, length = 255) // SQL 정의에 따라 NOT NULL 및 길이 지정
-    private String qnaId; // SQL 타입 VARCHAR -> Java String
+    private Long qnaId; // SQL 타입 VARCHAR -> Java String
 
     @Column(name = "TITLE", nullable = true, length = 255) // SQL 정의에 따라 nullable 및 길이 지정
     private String title;
@@ -40,18 +41,18 @@ public class Qna {
     @Column(name = "CATEGORY", nullable = true, length = 255)
     private String category;
 
-    @Column(name = "Key2", nullable = false, length = 255) // SQL 컬럼명 'Key2' 와 동일하게 지정
-    private String key2; // Java 필드명은 camelCase 권장 (key2)
+    @Column(name = "uid", nullable = false, length = 255) // SQL 컬럼명 'Key2' 와 동일하게 지정
+    private String uid; // Java 필드명은 camelCase 권장 (key2)
 
     // 모든 필드를 받는 생성자 (필요에 따라 추가)
-    public Qna(String qnaId, String title, String content, String regDate, String answer, String category, String key2) {
+    public Qna(Long qnaId, String title, String content, String regDate, String answer, String category, String uid) {
         this.qnaId = qnaId;
         this.title = title;
         this.content = content;
         this.regDate = regDate;
         this.answer = answer;
         this.category = category;
-        this.key2 = key2;
+        this.uid = uid;
     }
 
     // Lombok @NoArgsConstructor 가 기본 생성자를 만들어줍니다.
