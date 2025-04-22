@@ -1,23 +1,24 @@
 package com.example.rewrite.controller;
 
-import com.example.rewrite.entity.Product;
+import com.example.rewrite.command.ProductDTO;
 import com.example.rewrite.repository.product.ProductRepository;
+import com.example.rewrite.service.prod.ProdService;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
+import java.util.List;
 
 @Controller
 @RequestMapping("/prod")
 public class ProdController {
 
     private final ProductRepository productRepository;
+    private final ProdService prodService;
 
-    public ProdController(ProductRepository productRepository) {
+    public ProdController(ProductRepository productRepository, ProdService prodService) {
         this.productRepository = productRepository;
+        this.prodService = prodService;
     }
 
     @GetMapping("/checkout")
@@ -33,46 +34,35 @@ public class ProdController {
         return "prod/orderDetail";
     }
 
-    @GetMapping("/prodDetail")
-    public String prodDetail(){ return "prod/prodDetail"; }
-    @GetMapping("/prodList")
-    public String prodList(){ return "prod/prodList"; }
-    @GetMapping("/orderList")
-    public String orderList(){ return "prod/orderList"; }
-
     @GetMapping("/productReg")
-    public String reg(){
+    public String productReg() {
         return "prod/productReg";
+    }
+
+    @GetMapping("/prodDetail")
+    public String prodDetail(@RequestParam int prodId, Model model){
+        // 서비스를 통해 상품 상세 정보를 가져옴
+        ProductDTO product = prodService.getProductById(prodId);
+        // 모델에 상품 정보 추가
+        model.addAttribute("product", product);
+        return "prod/prodDetail";
+    }
+
+    @GetMapping("/prodList")
+    public String prodList(Model model) {
+        // 서비스를 통해 모든 상품 목록을 가져옴
+        List<ProductDTO> products = prodService.getAllProducts();
+        // 모델에 상품 목록 추가
+        model.addAttribute("products", products);
+        return "prod/prodList";
     }
 
     @PostMapping("/productReg")
     public String register(
-            @RequestParam String title,
-            @RequestParam String category_max,
-            @RequestParam String category_min,
-            @RequestParam String price,
-            @RequestParam String description,
-            @RequestParam(required = false) String img_1,
-            @RequestParam(required = false) String img_2,
-            @RequestParam(required = false) String img_3,
-            @RequestParam(required = false) String img_4,
-            @RequestParam(required = false) String video_url
-    ) {
-        Product product = Product.builder()
-                .title(title)
-                .categoryMax(category_max)
-                .categoryMin(category_min)
-                .price(price)
-                .description(description)
-                .img1(img_1)
-                .img2(img_2)
-                .img3(img_3)
-                .img4(img_4)
-                .videoUrl(video_url)
-                .regDate(LocalDateTime.now())
-                .build();
+            @ModelAttribute ProductDTO productDTO) {
 
-        productRepository.save(product);
+        // 서비스 레이어를 통해 상품 등록
+        prodService.registerProduct(productDTO);
         return "redirect:/prod/prodList";
     }
 }
