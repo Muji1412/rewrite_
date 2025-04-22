@@ -76,12 +76,12 @@ public class UserController {
         return "/user/mypage";
     }
 
-    @GetMapping("/delete")    //회원 탈퇴
+    @PostMapping("/delete")    //회원 탈퇴
     public String delete(HttpSession session){
+        // 여유 남을때 session이 null인 경우도 체크하면 좋음
         UserSessionDto user = (UserSessionDto) session.getAttribute("user");
-        userService.userDelete(user.getUid());
-        session.invalidate();
-        return "redirect:/";
+        userService.userDelete(user.getUid()); 
+        return "redirect:/logout"; //스프링 시큐리티 로그아웃 
     }
     @GetMapping("/cs_main")
     public String cs_main() {return "user/cs_main";}
