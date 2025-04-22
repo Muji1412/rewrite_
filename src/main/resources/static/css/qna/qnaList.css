@@ -23,7 +23,7 @@
 
 /* 특정 컬럼 정렬 및 너비 (예시) */
 .inquiry-table .col-id { width: 10%; }
-.inquiry-table .col-subject { width: 40%; text-align: left; }
+.inquiry-table .col-subject { width: 40%; text-align: center; }
 .inquiry-table .col-writer { width: 15%; }
 .inquiry-table .col-type { width: 15%; }
 .inquiry-table .col-status { width: 20%; }
