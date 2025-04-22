@@ -29,7 +29,7 @@ public interface AddressRepository extends JpaRepository<Address,Long> {
             "    ELSE a.isDefault " +
             "END " +
             "WHERE a.uid = :uid")
-    void checkDefault(Long addressId, String uid);
+    void checkDefault(Long addressId, Long uid);
 
     //주소지 조회
     @Query("SELECT a FROM Address a " +
@@ -37,7 +37,7 @@ public interface AddressRepository extends JpaRepository<Address,Long> {
             "AND a.delChk !='C'" +
             "OR a.delChk IS NULL " + //delChk가 C 가 아닌 것만 조회 //C일경우 삭제상태인것
             "ORDER BY a.isDefault")
-    List<Address> getAddress(@Param("uid") String uid);
+    List<Address> getAddress(@Param("uid") Long uid);
 
     //주소업데이트 페이지에 출력
     Address findByAddressId(Long addressId);
