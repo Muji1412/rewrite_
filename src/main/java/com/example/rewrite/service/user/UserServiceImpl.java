@@ -3,7 +3,6 @@ package com.example.rewrite.service.user;
 import com.example.rewrite.command.UserVO;
 import com.example.rewrite.command.user.ApiResponseDto;
 import com.example.rewrite.command.user.FindIdRequestDto;
-import com.example.rewrite.command.user.LoginRequestDto;
 import com.example.rewrite.command.user.SignupRequestDto;
 import com.example.rewrite.entity.Users;
 import com.example.rewrite.repository.users.UsersRepository;
@@ -134,6 +133,11 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         foundUser.setPw(encodedPassword);
         log.info("비밀번호 변경 - 바뀐 비밀번호" + foundUser.getPw());
         usersRepository.save(foundUser);
+    }
+
+    @Override
+    public Optional<Users> findById(String id) {
+        return usersRepository.findById(id);
     }
 
 

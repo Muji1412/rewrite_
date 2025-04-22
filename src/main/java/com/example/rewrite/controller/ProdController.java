@@ -1,24 +1,36 @@
 package com.example.rewrite.controller;
 
-import com.example.rewrite.command.ProductDTO;
+import com.example.rewrite.command.user.UserSessionDto;
+import com.example.rewrite.entity.Cart;
+import com.example.rewrite.entity.Product;
 import com.example.rewrite.repository.product.ProductRepository;
-import com.example.rewrite.service.prod.ProdService;
+import com.example.rewrite.service.cart.CartService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.servlet.http.HttpSession;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Controller
 @RequestMapping("/prod")
 public class ProdController {
 
-    private final ProductRepository productRepository;
-    private final ProdService prodService;
+    @Autowired
+    private CartService cartService;
 
-    public ProdController(ProductRepository productRepository, ProdService prodService) {
+    @Autowired
+    private ProdService prodService;
+
+    private final ProductRepository productRepository;
+
+    public ProdController(ProductRepository productRepository) {
         this.productRepository = productRepository;
-        this.prodService = prodService;
     }
 
     @GetMapping("/checkout")
@@ -26,16 +38,39 @@ public class ProdController {
         return "prod/checkout";
     }
     @GetMapping("/cart")
-    public String cart() {
+    public String cart(Model model, HttpSession session) {
+        UserSessionDto user = (UserSessionDto)session.getAttribute("user");
+        if(user == null) {
+            return "redirect:/user/login";
+        }
+        Long uid = user.getUid();
+        System.out.println(uid);
+        List<Cart> cartList = cartService.getCarts(uid);
+        int totalPrice = cartService.calculateTotalPrice(cartList);
+
+        model.addAttribute("cartList", cartList);
+        for (Cart cart : cartList) {
+            System.out.println("cart tostring");
+            System.out.println(cart.toString());
+            System.out.println("cart getUser tostring");
+            System.out.println(cart.getUser().toString());
+            System.out.println("cart getProduct tostring");
+            System.out.println(cart.getProduct().toString());
+
+        }
+        model.addAttribute("totalPrice", totalPrice);
+
         return "prod/cart";
     }
+
     @GetMapping("/orderDetail")
     public String orderDetail() {
         return "prod/orderDetail";
     }
 
+
     @GetMapping("/productReg")
-    public String productReg() {
+    public String reg(){
         return "prod/productReg";
     }
 

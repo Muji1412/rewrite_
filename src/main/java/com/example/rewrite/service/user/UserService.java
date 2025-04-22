@@ -2,9 +2,14 @@ package com.example.rewrite.service.user;
 
 import com.example.rewrite.command.UserVO;
 import com.example.rewrite.command.user.FindIdRequestDto;
+import com.example.rewrite.command.user.LoginRequestDto;
 import com.example.rewrite.command.user.SignupRequestDto;
 import com.example.rewrite.entity.Users;
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.security.core.userdetails.User;
+
+import java.util.Optional;
 
 
 public interface UserService {
@@ -16,4 +21,6 @@ public interface UserService {
     void sendUserIdToEmail(FindIdRequestDto requestDto);
     boolean checkUserByIdAndEmailAndPhoneAndPassword(FindIdRequestDto requestDto);
     void sendUserPwdToEmail(FindIdRequestDto requestDto);
+    boolean checkUserByNameAndPhoneAndEmail(FindIdRequestDto requestDto);
+    Optional<Users> findById(String id);
 }
