@@ -57,11 +57,11 @@
                 <h3>비밀번호 찾기</h3>
             </div>
             
-            <form action="#">
+            <form action="#" id = "findPwForm">
             
                 <div class="id_box box2">
                     <p>아이디</p>
-                    <input type="text" placeholder="아이디를 입력해주세요">
+                    <input type="text" name = "id" placeholder="아이디를 입력해주세요">
                 </div>
 
                 <div class="name_box box2">
@@ -75,8 +75,8 @@
                 </div>
 
                 <div class="brith_box box2">
-                    <p>생년월일</p>
-                    <input type="text" name = "email" placeholder="생년월일 6자리를 입력해주세요">
+                    <p>이메일</p>
+                    <input type="text" name = "email" placeholder="이메일을 입력해주세요">
                 </div>
 
 
@@ -90,7 +90,7 @@
         </div>
         
     </section>
-    
+
     <footer class="footer">
         <div class="footer_wrap">
             <div class="footer_top">
@@ -126,5 +126,62 @@
         </div>
     </footer>
 
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+
+        const pwFindForm = document.getElementById('findPwForm');
+        pwFindForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const id = document.querySelector('[name=id]').value;
+            const email = document.querySelector('[name=email]').value;
+            const phone = document.querySelector('[name=phone]').value;
+            const name = document.querySelector('[name=name]').value;
+
+            // 이메일 형식 검사
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                alert('유효한 이메일 주소를 입력해주세요.');
+                return;
+            }
+
+            // 전화번호 형식 검사 (010-1234-5678 형식)
+            const phoneRegex = /^\d{3}-\d{3,4}-\d{4}$/;
+            if (!phoneRegex.test(phone)) {
+                alert('전화번호 형식이 올바르지 않습니다. 010-1234-5678 형식으로 입력해주세요.');
+                return;
+            }
+
+            const requestData = {
+                id: id,
+                email: email,
+                phone: phone,
+                name: name,
+            }
+
+            try {const response = await fetch('/api/auth/reset-pw', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(requestData)
+            })
+                if (response.ok) {
+                    const success = await response.json();
+                    console.log('비밀번호 리셋 성공', success);
+                    alert("비밀번호가 재설정되었습니다. 메일을 확인해주세요.")
+                    window.location.href = '/'
+
+                }else {
+                    const error = await response.json();
+                    alert(error.message);
+                }
+
+            }catch (error) {
+                console.log(error);
+                alert('에러가 발생했습니다. 문의바랍니다', error.message);
+            }
+        })
+    })
+</script>
 </body>
 </html>
