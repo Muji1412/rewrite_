@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import javax.transaction.Transactional;
 import java.util.Optional;
+import java.util.UUID;
 
 @Repository
 public interface UsersRepository extends JpaRepository<Users, Long> {
@@ -26,5 +27,20 @@ public interface UsersRepository extends JpaRepository<Users, Long> {
             "Set u.nickname = :#{#user.nickname}, " +
             "u.pw = :#{#user.pw} " +
             "where u.uid = :#{#user.uid}")
-    void userModify(@Param("user")UserVO users);
+    void userModify(@Param("user")UserVO users); //회원 정보 수정
+
+    @Modifying
+    @Transactional
+    @Query("UPDATE Users u " +
+            "set u.email = '탈퇴한회원'," +
+            "u.id=:uuid," +
+            "u.name='탈퇴한 회원'," +
+            "u.nickname='탈퇴한 회원'," +
+            "u.phone='탈퇴한회원'," +
+            "u.pw=:uuid," +
+            "u.role='탈퇴한회원'" +
+            "where u.uid = :uid")
+    void userDelete(@Param("uid") Long uid,
+                    @Param("uuid")String uuid); //회원 탈퇴
+
 }
