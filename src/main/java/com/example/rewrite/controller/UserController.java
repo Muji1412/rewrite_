@@ -48,10 +48,12 @@ public class UserController {
         return "user/edit_profile";
     }
 
-    @PostMapping("/modify")
+    @PostMapping("/modify")    //회원 정보 수정
     public String modify(HttpSession session, @RequestParam("nickname")String nickname,
                          @RequestParam("password")String password,
-                         @RequestParam("eqpassword")String eqpassword){
+                         @RequestParam("eqpassword")String eqpassword,
+                         RedirectAttributes redirectAttributes){
+
         UserSessionDto user = (UserSessionDto) session.getAttribute("user");
         UserVO vo = new UserVO();
         System.out.println("닉네임:  "+ user.getNickname() +"uid: "+ user.getUid() );
@@ -60,7 +62,7 @@ public class UserController {
         vo.setUid(user.getUid());
 
         if(!(password.equals(eqpassword))){
-
+            redirectAttributes.addFlashAttribute("message", "비밀번호가 일치하지 않습니다.");
             return "redirect:/user/edit";
         }
 
@@ -69,6 +71,14 @@ public class UserController {
         user.setNickname(nickname);
         session.setAttribute("users",user);
         return "/user/mypage";
+    }
+
+    @GetMapping("/delete")    //회원 탈퇴
+    public String delete(HttpSession session){
+        UserSessionDto user = (UserSessionDto) session.getAttribute("user");
+        userService.userDelete(user.getUid());
+        session.invalidate();
+        return "redirect:/";
     }
     @GetMapping("/cs_main")
     public String cs_main() {return "user/cs_main";}

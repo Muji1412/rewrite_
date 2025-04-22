@@ -10,13 +10,15 @@ import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpSession;
+import java.time.LocalDateTime;
 
 @Controller
 @RequestMapping("/qna")
@@ -24,11 +26,17 @@ public class QnaController {
 
     @Autowired
     private QnaRepository qnaRepository;
-    @GetMapping("/qnaList")
-    public String inquiryList(HttpSession session, RedirectAttributes redirectAttributes, Pageable pageable, Model model) {
 
-        // 아래 detail 과 동일하게 @PageableDefault 의 size 디폴트값이 10이므로, page만 받아서 진행함.
-        Page<Qna> qnaPage = qnaRepository.findAll(pageable); // 페이지에이블
+    @Autowired
+    private UsersRepository usersRepository;
+
+    // 문의 목록 페이지
+    @GetMapping("/qnaList")
+    public String inquiryList(HttpSession session, RedirectAttributes redirectAttributes,
+                              @PageableDefault(size = 10, sort = "qnaId", direction = Sort.Direction.DESC) Pageable pageable,
+                              Model model) {
+        // 페이지에이블로 데이터 조회
+        Page<Qna> qnaPage = qnaRepository.findAll(pageable);
         model.addAttribute("qnaPage", qnaPage);
 
         // 페이지 블록 계산 - 10개씩
@@ -48,24 +56,144 @@ public class QnaController {
         return "qna/qnaList";
     }
 
+    // 문의 작성 페이지
     @GetMapping("/qnaWrite")
-    public String writeInquiry(HttpSession session, RedirectAttributes redirectAttributes) {
+    public String writeInquiry(HttpSession session, RedirectAttributes redirectAttributes, Model model) {
+        // 로그인 체크 (선택적)
+        String userId = (String) session.getAttribute("userId");
+        if (userId == null) {
+            redirectAttributes.addFlashAttribute("message", "로그인이 필요한 서비스입니다.");
+//            return "redirect:/login";
+            return "qna/qnaWrite";
+        }
+
+        // 빈 Qna 객체를 모델에 추가하여 폼 바인딩에 사용
+        model.addAttribute("qna", new Qna());
+
         return "qna/qnaWrite";
     }
 
+    // 문의 작성 처리 (POST)
+//    @PostMapping("/qnaWrite")
+//    public String saveInquiry(@ModelAttribute Qna qna, HttpSession session,
+//                              RedirectAttributes redirectAttributes) {
+//        // 로그인 체크
+//        String userId = (String) session.getAttribute("userId");
+//        if (userId == null) {
+//            redirectAttributes.addFlashAttribute("message", "로그인이 필요한 서비스입니다.");
+//            return "redirect:/login";
+//        }
+//
+//        // 사용자 ID 설정
+//        qna.setUid(userId);
+//
+//        // 등록일 설정
+//        qna.setRegDate(String.valueOf(LocalDateTime.now()));
+//
+//        // 저장
+//        qnaRepository.save(qna);
+//
+//        redirectAttributes.addFlashAttribute("message", "문의가 등록되었습니다.");
+//        return "redirect:/qna/qnaList";
+//    }
+
+//    // 문의 상세 페이지
+//    @GetMapping("/qnaDetail")
+//    public String qnaDetail(@RequestParam("id") Long qnaId, Model model,
+//                            HttpSession session, RedirectAttributes redirectAttributes) {
+//        // 문의 조회
+//        Qna qna = qnaRepository.findById(qnaId)
+//                .orElseThrow(() -> new IllegalArgumentException("해당 문의가 존재하지 않습니다."));
+//
+//        // 문의 작성자 또는 관리자만 조회 가능 (선택적)
+//        String userId = (String) session.getAttribute("userId");
+//        boolean isAdmin = "admin".equals(session.getAttribute("userRole"));
+//
+//        if (!isAdmin && !qna.getUid().equals(userId)) {
+//            redirectAttributes.addFlashAttribute("message", "권한이 없습니다.");
+//            return "redirect:/qna/qnaList";
+//        }
+//
+//        model.addAttribute("qna", qna);
+//        return "qna/qnaDetail";
+//    }
+
+
+
+    // 관리자용 답변 페이지
     @GetMapping("/qnaAnswer")
-    public String inquiryAnswer(HttpSession session, RedirectAttributes redirectAttributes) {
+    public String inquiryAnswer(@RequestParam("id") Long qnaId, Model model,
+                                HttpSession session, RedirectAttributes redirectAttributes) {
+        // 관리자 권한 체크
+        boolean isAdmin = "admin".equals(session.getAttribute("userRole"));
+        if (!isAdmin) {
+            redirectAttributes.addFlashAttribute("message", "관리자만 접근 가능합니다.");
+            return "redirect:/qna/qnaList";
+        }
+
+        // 문의 조회
+        Qna qna = qnaRepository.findById(qnaId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 문의가 존재하지 않습니다."));
+
+        model.addAttribute("qna", qna);
         return "qna/qnaAnswer";
     }
+
+    // 답변 저장 처리
+    @PostMapping("/qnaAnswer")
+    public String saveAnswer(@RequestParam("id") Long qnaId,
+                             @RequestParam("answer") String answer,
+                             HttpSession session, RedirectAttributes redirectAttributes) {
+        // 관리자 권한 체크
+        boolean isAdmin = "admin".equals(session.getAttribute("userRole"));
+        if (!isAdmin) {
+            redirectAttributes.addFlashAttribute("message", "관리자만 접근 가능합니다.");
+            return "redirect:/qna/qnaList";
+        }
+
+        // 문의 조회
+        Qna qna = qnaRepository.findById(qnaId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 문의가 존재하지 않습니다."));
+
+        // 답변 저장
+        qna.setAnswer(answer);
+        qnaRepository.save(qna);
+
+        redirectAttributes.addFlashAttribute("message", "답변이 등록되었습니다.");
+        return "redirect:/qna/qnaDetail?id=" + qnaId;
+    }
+
 
     @GetMapping("/qna")
     public String inquiry(HttpSession session, RedirectAttributes redirectAttributes) {
         return "qna/qna";
     }
 
-    @GetMapping("/inquiry/submit")
-    public String submitInquiry(HttpSession session, RedirectAttributes redirectAttributes) {
-        return "qna/qnaList";
+    // 문의 제출 처리 메서드 (추가 필요)
+    @PostMapping("/inquiry/submit")
+    public String processInquiry(@RequestParam("category") String category,
+                                 @RequestParam("title") String title,
+                                 @RequestParam("content") String content,
+                                 HttpSession session,
+                                 RedirectAttributes redirectAttributes) {
+
+        // 세션에서 사용자 ID 가져오기
+        String userId = (String) session.getAttribute("userId");
+
+        // Qna 객체 생성
+        Qna qna = new Qna();
+        qna.setCategory(category);
+        qna.setTitle(title);
+        qna.setContent(content);
+        qna.setUid(userId != null ? userId : "guest"); // 로그인 안 된 경우 기본값
+        qna.setRegDate(String.valueOf(LocalDateTime.now()));
+
+        // 저장
+        qnaRepository.save(qna);
+
+        redirectAttributes.addFlashAttribute("message", "문의가 성공적으로 등록되었습니다.");
+        return "redirect:/qna/qnaList";
     }
+
 
 }
