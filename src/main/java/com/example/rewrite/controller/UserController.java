@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -29,6 +30,8 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+    @Autowired
+    private AuthenticationManager authenticationManager;
 
     @GetMapping("/signup")
     public String signup() {
@@ -90,9 +93,6 @@ public class UserController {
         return "user/idFind";
     }
     @GetMapping("/pwFind")
-    public String pwFind(){
-
-        return "user/pwFind";
-    }
+    public String pwFind(){return "user/pwFind";}
 }
 

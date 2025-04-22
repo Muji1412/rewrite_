@@ -26,7 +26,6 @@ import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 @Slf4j
 @RestController
@@ -189,4 +188,36 @@ public class AuthController {
                     .body(ApiResponseDto.fail(errorMessage));
         }
    }
+    @PostMapping("/reset-pw")
+    public ResponseEntity<ApiResponseDto> resetPassword(@Valid @RequestBody FindIdRequestDto requestDto){
+        // 유저 있는지 없는지 체크
+        if (!userService.checkUserByIdAndEmailAndPhoneAndPassword(requestDto)){
+            return (ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body(ApiResponseDto.fail("일치하는 유저가 존재하지 않습니다.")));
+        }
+
+        try {
+            userService.sendUserPwdToEmail(requestDto);
+            //성공시
+            String successMessage = "비밀번호 정보가 [" + requestDto.getEmail() + "] 주소로 발송되었습니다. 메일을 확인해주세요.";
+            log.info(successMessage);
+            return ResponseEntity
+                    .ok(ApiResponseDto.success(successMessage));
+
+        }catch (RuntimeException e) {
+            log.error("비밀번호 리셋 중 오류 발생 : {}", e.getMessage(), e);
+            String errorMessage;
+            if (e.getCause() instanceof MailException) {
+                errorMessage = "이메일 발송 시스템에 오류가 발생했습니다. 잠시 후 다시 시도해주세요.";
+            } else {
+                errorMessage = "아이디 찾기 처리 중 오류가 발생했습니다.";
+            }
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(ApiResponseDto.fail(errorMessage));
+        }
+
+    }
+
 }

@@ -8,6 +8,7 @@ import com.example.rewrite.entity.Users;
 import com.example.rewrite.repository.users.UsersRepository;
 import com.example.rewrite.service.mail.MailService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
@@ -25,6 +26,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+@Slf4j
 @Service("UserService")
 @RequiredArgsConstructor
 @Transactional(readOnly = true) // 기본적으로 읽기 전용 트랜잭션, 쓰기 작업 메소드에 @Transactional 추가
@@ -88,7 +90,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
         // 1. 이메일로 사용자 조회
         Users foundUser = usersRepository.findByEmail(email)
-                .orElseThrow(() -> new EntityNotFoundException("해당 이메일(" + email + ")로 가입된 사용자를 찾을 수 없습니다."));
+                .orElseThrow(() -> new EntityNotFoundException("해당 정보로 가입된 사용자를 찾을 수 없습니다."));
 
         // 2. 사용자가 존재하면 EmailService를 통해 아이디 발송
         mailService.sendUserIdByEmail(foundUser.getEmail(), foundUser.getId());
@@ -107,6 +109,35 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         return user.isPresent(); // 사용자가 존재하면 true 반환
     }
 
+    @Override
+    public boolean checkUserByIdAndEmailAndPhoneAndPassword(FindIdRequestDto requestDto) {
+        Optional<Users> user = usersRepository.findByIdAndNameAndPhoneAndEmail(
+                requestDto.getId(),
+                requestDto.getName(),
+                requestDto.getPhone(),
+                requestDto.getEmail()
+        );
+        return user.isPresent(); // 존재시 true 반환
+    }
+
+    @Override
+    @Transactional
+    public void sendUserPwdToEmail(FindIdRequestDto requestDto) {
+        String email = requestDto.getEmail();
+        String tempPassword = UUID.randomUUID().toString().substring(0, 10);
+        String encodedPassword = passwordEncoder.encode(tempPassword);
+
+        // 사용자 조회
+        Users foundUser = usersRepository.findByEmail(email)
+                .orElseThrow(() -> new EntityNotFoundException("해당 정보로 가입된 사용자를 찾을 수 없습니다."));
+        // 메일로 임시비밀번호 전송
+        mailService.sendUserIdPasswordByEmail(foundUser.getEmail(), foundUser.getId(), tempPassword);
+
+        foundUser.setPw(encodedPassword);
+        log.info("비밀번호 변경 - 바뀐 비밀번호" + foundUser.getPw());
+        usersRepository.save(foundUser);
+    }
+
 
     //회원정보 수정
     @Override
@@ -122,7 +153,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     @Transactional
     public void userDelete(Long uid) {
-        String genId = "deleted_" + UUID.randomUUID().toString();
+        String genId = "deleted_" + UUID.randomUUID().toString().substring(0, 8);
         usersRepository.userDelete(uid, genId);
     }
 }
