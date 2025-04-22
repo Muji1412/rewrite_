@@ -1,10 +1,14 @@
 package com.example.rewrite.service.user;
 
 import com.example.rewrite.command.UserVO;
+import com.example.rewrite.command.user.FindIdRequestDto;
+import com.example.rewrite.command.user.LoginRequestDto;
 import com.example.rewrite.command.user.SignupRequestDto;
 import com.example.rewrite.entity.Users;
 import com.example.rewrite.repository.users.UsersRepository;
+import com.example.rewrite.service.mail.MailService;
 import lombok.RequiredArgsConstructor;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -15,8 +19,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service("UserService")
@@ -29,30 +35,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     private final UsersRepository usersRepository;
     private final PasswordEncoder passwordEncoder;
+    private final MailService mailService;
 
-    //레벨 계산 함수
-    public int calculateLevel(double avgRating) {
-        if (avgRating < 2.0 ) return 1;
-        else if (avgRating < 3.0 ) return 2;
-        else if (avgRating < 4.0 ) return 3;
-        else if (avgRating < 5.0 ) return 4;
-        else return 5;
-    }
-
-    //타이틀 반환 함수
-    public String getTitleByLevel(int level) {
-        if(level == 1){
-            return "새싹";
-        }else if(level == 2){
-            return "가지";
-        }else if(level == 3){
-            return "나뭇가지";
-        }else if(level == 4){
-            return "어린나무";
-        }else {
-            return "전설의 나무";
-        }
-    }
 
     @Override
     @Transactional
@@ -98,11 +82,36 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         return new User(user.getId(), user.getPw(), authorities);
     }
 
+    @Transactional(readOnly = true) // 조회 작업이므로 readOnly
+    public void sendUserIdToEmail(FindIdRequestDto requestDto) {
+        String email = requestDto.getEmail();
+
+        // 1. 이메일로 사용자 조회
+        Users foundUser = usersRepository.findByEmail(email)
+                .orElseThrow(() -> new EntityNotFoundException("해당 이메일(" + email + ")로 가입된 사용자를 찾을 수 없습니다."));
+
+        // 2. 사용자가 존재하면 EmailService를 통해 아이디 발송
+        mailService.sendUserIdByEmail(foundUser.getEmail(), foundUser.getId());
+
+        // EmailService가 @Async 이므로, 여기서의 성공은 '발송 요청 성공'을 의미.
+        // 실제 발송 성공/실패는 EmailService 내부 로그나 별도 처리 필요.
+    }
+
+    @Override
+    public boolean checkUserByNameAndPhoneAndEmail(FindIdRequestDto requestDto) {
+        Optional<Users> user = usersRepository.findByNameAndPhoneAndEmail(
+                requestDto.getName(),
+                requestDto.getPhone(),
+                requestDto.getEmail()
+        );
+        return user.isPresent(); // 사용자가 존재하면 true 반환
+    }
+
+
     //회원정보 수정
     @Override
     @Transactional
     public void userModify(UserVO user) {
-
         user.setPw(passwordEncoder.encode(user.getPw()));
 
         usersRepository.userModify(user);

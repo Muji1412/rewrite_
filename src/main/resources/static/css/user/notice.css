@@ -1,9 +1,12 @@
 /* --- 기본 스타일 및 공통 요소 (이전 코드와 유사) --- */
-body {
+* {
     margin: 0;
     padding: 0;
     font-family: 'Noto Sans KR', sans-serif;
-    background-color: #ffffff;
+
+}
+
+.section {
     display: flex;
     justify-content: center;
     align-items: flex-start; /* 컨텐츠가 길어질 수 있으므로 상단 정렬 */
