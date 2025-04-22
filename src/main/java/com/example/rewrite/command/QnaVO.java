@@ -12,7 +12,7 @@ public class QnaVO {
     private String answer;
     private String category;
     private String content;
-    private String key2;
-    private String reg_data;
+    private String uid;
+    private String reg_date;
     private String title;
 }
