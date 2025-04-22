@@ -13,13 +13,31 @@
 
             <form action="/user/modify" method="post">
                 <input type="text" name="nickname" th:value="${user.nickname}" placeholder="닉네임" /><br />
-                <input type="text" name="password"  placeholder="비밀번호" /><br />
-                <input type="text" name="eqpassword" placeholder="비밀번호 재입력" /><br/>
+                <input type="text" name="password"  placeholder="비밀번호 변경" required/><br />
+                <input type="text" name="eqpassword" placeholder="비밀번호 재입력" required /><br/>
                 <div class="actions">
                     <p><a href="#" class="withdraw">회원탈퇴</a></p>
                 </div>          
                 <button type="submit">수정하기</button>
             </form>
             </div>
+            <div id="flash-message" th:if="${message}" th:text="${message}" style="display: none;"></div>
         </section>
     </th:block>
+
+ <script>
+     document.addEventListener("DOMContentLoaded", function () {
+         const flashMessage = document.getElementById("flash-message");
+         if (flashMessage && flashMessage.textContent.trim() !== "") {
+             alert(flashMessage.textContent); // 메시지를 알림으로 표시
+         }
+     });
+
+     var del = document.querySelector(".withdraw");
+        del.addEventListener("click", function (event) {
+            if (confirm("정말로 탈퇴하시겠습니까?")) {
+                alert("삭제 되었습니다.")
+                window.location.href = "/user/delete";
+            }
+        });
+ </script>

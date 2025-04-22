@@ -28,9 +28,10 @@ public class AddressController {
 
 
     @GetMapping("/detail") //주소지 페이지
-    public String addressDetail(/*HttpSession session,*/ Model model) {
+    public String addressDetail(HttpSession session, Model model) {
 
-        List<Address> list = addressService.getAddress("test");
+        UserSessionDto dto = (UserSessionDto)session.getAttribute("user");
+        List<Address> list = addressService.getAddress(dto.getUid());
         List<Map<String, Object>> address = new ArrayList<>(); //주소지 분리
 
         for(Address List : list){
@@ -50,8 +51,7 @@ public class AddressController {
                     List.getPhoneNum().substring(7));
             address.add(map);
         }
-//        UserSessionDto dto = (UserSessionDto)session.getAttribute("user");
-//        System.out.println(dto.toString());
+
 
         model.addAttribute("list", address);
 
@@ -67,7 +67,7 @@ public class AddressController {
 
     @PostMapping("/write") //주소지 추가
 
-    public String addressWrite(Address address, /*HttpSession session,*/
+    public String addressWrite(Address address, HttpSession session,
                                @RequestParam("postcode")String postcode,
                                @RequestParam("addr")String addr,
                                @RequestParam("detailAddress")String addressDetail,
@@ -75,13 +75,11 @@ public class AddressController {
                                @RequestParam("phone2")String phone2,
                                @RequestParam("phone3")String phone3
                                ){
-/*
+
         UserSessionDto dto = (UserSessionDto)session.getAttribute("user");
-        System.out.println(dto.toString());
-*/
 
 
-        address.setUid("test"); //세션으로 변경 예정
+        address.setUid(dto.getUid()); //세션으로 변경 예정
 
         address.setIsDefault("N"); //기본값 설정
         address.setDelChk("N"); //기본값 설정
@@ -135,9 +133,9 @@ public class AddressController {
     }
 
     @PostMapping("/default") //기본주소지 선택
-    public String checkDefault(@RequestParam("uid")String uid , @RequestParam("addressId")Long addressId){ //세션으로변경 예정
-
-        addressService.checkDefault(addressId, uid);
+    public String checkDefault(HttpSession session, @RequestParam("addressId")Long addressId){ //세션으로변경 예정
+        UserSessionDto uid = (UserSessionDto)session.getAttribute("user");
+        addressService.checkDefault(addressId, uid.getUid());
         return "redirect:/address/detail";
     }
 
