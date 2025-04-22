@@ -26,7 +26,7 @@ public class Address {
     private String address; // 주소
 
     @Column(name = "uid", nullable = true, length = 255)
-    private String uid; // 사용자 ID (외래키)
+    private Long uid; // 사용자 ID (외래키)
 
     @Column(name = "addressAlias", nullable = true, length = 255)
     private String addressAlias; // 주소 별칭
@@ -42,7 +42,7 @@ public class Address {
 
     @Column(name = "phoneNum", nullable = true, length = 12)
     private String phoneNum; // 전화번호
-    public Address(long addressId, String address, String uid, String addressAlias,
+    public Address(long addressId, String address, Long uid, String addressAlias,
                    String recipient, String createdAt, String isDefault, String phoneNum) {
         this.addressId = addressId;
         this.address = address;

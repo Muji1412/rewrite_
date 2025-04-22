@@ -23,6 +23,7 @@ import javax.persistence.EntityNotFoundException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service("UserService")
 @RequiredArgsConstructor
@@ -107,11 +108,21 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
 
+    //회원정보 수정
     @Override
     @Transactional
     public void userModify(UserVO user) {
+
         user.setPw(passwordEncoder.encode(user.getPw()));
 
         usersRepository.userModify(user);
+    }
+
+    //회원탈퇴
+    @Override
+    @Transactional
+    public void userDelete(Long uid) {
+        String genId = "deleted_" + UUID.randomUUID().toString();
+        usersRepository.userDelete(uid, genId);
     }
 }

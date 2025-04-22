@@ -1,5 +1,5 @@
 <link rel="stylesheet" href="/css/address/addressdetail.css">
-    <th:block th:replace="~{/include/include :: def(~{::#wrap})}">
+<th:block th:replace="~{/include/include :: def(~{::#wrap})}">
 
     <section id="wrap">
         <div style="margin:20px 0 20px 0 ;">
@@ -8,74 +8,73 @@
 
                 <!-- 카드 -->
                 <div th:each = "list : ${list}">
-                <div class="address-box">
-                    <div class="address-info">
-                        <span>[[${list.entity.addressAlias}]]</span>
-                        <span class="default">[[${list.entity.isDefault}]]</span><br>
-                        <span>[[${list.addr}]]</span><br>
-                        <span>[[${list.detailAddress}]]</span><br>
-                        <span>([[${list.postcode}]])</span><br>
-                        <span>[[${list.entity.createdAt}]] <br>[[${list.phoneNum}]]</span>
+                    <div class="address-box">
+                        <div class="address-info">
+                            <span>[[${list.entity.addressAlias}]]</span>
+                            <span class="default">[[${list.entity.isDefault}]]</span><br>
+                            <span>[[${list.addr}]]</span><br>
+                            <span>[[${list.detailAddress}]]</span><br>
+                            <span>([[${list.postcode}]])</span><br>
+                            <span>[[${list.entity.createdAt}]] <br>[[${list.phoneNum}]]</span>
 
-                    </div>
-                    <div class="button-group" style="position: relative;">
-                        <form id="actionForm" action="" method="post">
-                            <input type="hidden" name="addressId" th:value="${list.entity.addressId}">
-                            <input type="hidden" name="uid" value ="test"> <!-- 세션 대신 사용 -->
-                            <button type="button" class="btn btn-edit">수정</button>
-                            <button type="button" class="btn btn-select" >선택</button>
-                            <button type="button" class="btn btn-delete">삭제</button>
-                        </form>
+                        </div>
+                        <div class="button-group" style="position: relative;">
+                            <form id="actionForm" action="" method="post">
+                                <input type="hidden" name="addressId" th:value="${list.entity.addressId}">
+                                <button type="button" class="btn btn-edit">수정</button>
+                                <button type="button" class="btn btn-select" >선택</button>
+                                <button type="button" class="btn btn-delete">삭제</button>
+                            </form>
+                        </div>
                     </div>
                 </div>
-                </div>
 
-                
+
             </div>
             <div style="display: flex; justify-content: flex-end;">
-            <button class="btn btn-add" >주소지 추가</button>
-        </div>
+                <button class="btn btn-add" >주소지 추가</button>
+            </div>
         </div>
     </section>
 </th:block>
-        <script>
-            $(document).ready(function() {
+<script>
+    $(document).ready(function() {
 
-                //아무 주소지도 없을경우
-                if ($('.address-list').children().length === 0) {
-                    $('.address-list').append('<div class="no-address">등록된 주소지가 없습니다.</div>');
-                }
+        //아무 주소지도 없을경우
+        if ($('.address-list').children().length === 0) {
+            $('.address-list').append('<div class="no-address">등록된 주소지가 없습니다.</div>');
+        }
 
-                $('.btn-edit').click(function() { //주소지 수정
-                    var form = $(this).closest('form');
-                    form.attr('action', '/address/edit');
-                    form.submit(); // form 제출
-                });
+        $('.btn-edit').click(function() { //주소지 수정
+            var form = $(this).closest('form');
+            form.attr('action', '/address/edit');
+            form.submit(); // form 제출
+        });
 
-                $('.btn-select').click(function() { //기본주소지 선택
-                    var form = $(this).closest('form');
-                    form.attr('action', '/address/default');
-                    form.submit(); // form 제출
-                });
+        $('.btn-select').click(function() { //기본주소지 선택
+            var form = $(this).closest('form');
+            form.attr('action', '/address/default');
+            form.submit(); // form 제출
+        });
 
-                $('.btn-delete').click(function() { //삭제 버튼
-                    var form = $(this).closest('form');
+        $('.btn-delete').click(function() { //삭제 버튼
+            var form = $(this).closest('form');
 
-                    if(form.parent().prev().find('.default').text()=== '기본주소지') { //기본주소지 삭제 방지
-                        alert("기본 주소지는 삭제할 수 없습니다.");
-                        return;
-                    }
-                    if (confirm("정말 삭제 하시겠습니까?")) {
-                        form.attr('action', '/address/delete'); // form action 설정
-                        form.submit(); // form 제출
-                    }
-                });
+            if(form.parent().prev().find('.default').text()=== '기본주소지') { //기본주소지 삭제 방지
+                alert("기본 주소지는 삭제할 수 없습니다.");
+                return;
+            }
+            if (confirm("정말 삭제 하시겠습니까?")) {
+                form.attr('action', '/address/delete'); // form action 설정
+                form.submit(); // form 제출
+            }
+        });
 
 
 
-                $('.btn-add').click(function() { //주소지 추가
+        $('.btn-add').click(function() { //주소지 추가
 
-                    window.location.href = '/address/reg'; // 주소지 추가 페이지로 이동
-                });
-            });
-        </script>
+            window.location.href = '/address/reg'; // 주소지 추가 페이지로 이동
+        });
+    });
+</script>

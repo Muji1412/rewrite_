@@ -29,4 +29,18 @@ public interface UsersRepository extends JpaRepository<Users, Long> {
             "u.pw = :#{#user.pw} " +
             "where u.uid = :#{#user.uid}")
     void userModify(@Param("user")UserVO users);
+
+    @Modifying
+    @Transactional
+    @Query("UPDATE Users u " +
+            "set u.email = '탈퇴한회원'," +
+            "u.id=:uuid," +
+            "u.name='탈퇴한 회원'," +
+            "u.nickname='탈퇴한 회원'," +
+            "u.phone='탈퇴한회원'," +
+            "u.pw=:uuid," +
+            "u.role='탈퇴한회원'" +
+            "where u.uid = :uid")
+    void userDelete(@Param("uid") Long uid,
+                    @Param("uuid")String uuid); //회원 탈퇴
 }
