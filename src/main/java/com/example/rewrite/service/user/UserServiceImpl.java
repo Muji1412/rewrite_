@@ -36,6 +36,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Autowired
     private UserMapper userMapper;
+    //나는바보입니다
 
     private final UsersRepository usersRepository;
     private final PasswordEncoder passwordEncoder;
@@ -136,10 +137,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public Optional<Users> findById(String id) {
-        return usersRepository.findById(id);
+    public boolean checkUserByNameAndPhoneAndEmail(FindIdRequestDto requestDto) {
+        return false;
     }
-
 
     //회원정보 수정
     @Override
