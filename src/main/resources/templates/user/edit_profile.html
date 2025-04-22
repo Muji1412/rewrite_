@@ -1,17 +1,19 @@
 <link rel="stylesheet" href="/css/user/edit_profile.css" />
+
 <th:block th:replace="~{/include/include :: def(~{::#wrap})}">
     <section id="wrap" class="section">
         <div class="profile-container">
             <h1>회원정보수정</h1>
             <div class="img">
                 <img class="profileImg" src="/img/profileImg.png" alt="회원정보수정이미지" />
-                <img class="profileImg" src="/img/camera.png" alt="회원정보수정이미지" />
+                <a href="javascript:void(0);" id="cameraIcon"><img class="profileImg" src="/img/camera.png" alt="회원정보수정이미지" /></a>
             </div>
             <p><a href="/address/detail">주소지 관리</a></p>
             <!-- 숨겨진 파일 선택 input -->
-            <input type="file" id="imgInput" accept="image/*" style="display: none;" />
+<!--            <input type="file" id="imgInput" accept="image/*" style="display: none;" />-->
 
-            <form action="/user/modify" method="post">
+            <form action="/user/modify" method="post" enctype="multipart/form-data">
+                <input type="file" id="imgInput" name="profileImage" accept="image/*" style="display: none;" />
                 <input type="text" name="nickname" th:value="${user.nickname}" placeholder="닉네임" /><br />
                 <input type="text" name="password"  placeholder="비밀번호 변경" required/><br />
                 <input type="text" name="eqpassword" placeholder="비밀번호 재입력" required /><br/>
@@ -24,12 +26,32 @@
         <div id="flash-message" th:if="${message}" th:text="${message}" style="display: none;"></div>
     </section>
 </th:block>
-
+<script src="/js/upload.js"></script>
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         const flashMessage = document.getElementById("flash-message");
         if (flashMessage && flashMessage.textContent.trim() !== "") {
             alert(flashMessage.textContent); // 메시지를 알림으로 표시
+        }
+    });
+
+    // 카메라 아이콘 클릭 시 파일 선택 창 열기
+    const cameraIcon = document.getElementById("cameraIcon");
+    const imgInput = document.getElementById("imgInput");
+
+    cameraIcon.addEventListener("click", function() {
+        imgInput.click(); // 숨겨진 파일 입력 요소 클릭
+    });
+
+    // 파일이 선택되었을 때 프로필 이미지 미리보기
+    imgInput.addEventListener("change", function() {
+        if (this.files && this.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const profileImg = document.querySelector(".profileImg:first-child");
+                profileImg.src = e.target.result;
+            };
+            reader.readAsDataURL(this.files[0]);
         }
     });
 

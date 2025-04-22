@@ -26,7 +26,8 @@ public interface UsersRepository extends JpaRepository<Users, Long> {
     @Transactional
     @Query("UPDATE Users u " +
             "Set u.nickname = :#{#user.nickname}, " +
-            "u.pw = :#{#user.pw} " +
+            "u.pw = :#{#user.pw}," +
+            " u.imgUrl = :#{#user.imgUrl} " +
             "where u.uid = :#{#user.uid}")
     void userModify(@Param("user")UserVO users);
 
@@ -43,4 +44,11 @@ public interface UsersRepository extends JpaRepository<Users, Long> {
             "where u.uid = :uid")
     void userDelete(@Param("uid") Long uid,
                     @Param("uuid")String uuid); //회원 탈퇴
+
+    @Query("SELECT COUNT(p)" +
+            "FROM Product p WHERE p.user.uid = :uid ")
+    String sellCount(@Param("uid")Long uid);
+
+    @Query("SELECT u FROM Users u WHERE u.uid = :uid")
+    Users findUsersById(Long uid);
 }

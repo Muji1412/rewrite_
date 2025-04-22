@@ -17,10 +17,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpSession;
 import javax.transaction.Transactional;
+import java.io.File;
+import java.util.UUID;
 
 @Slf4j
 @Controller
@@ -36,9 +39,13 @@ public class UserController {
     }
     @GetMapping("/login")
     public String login() {return "user/login";}
-    @GetMapping("/mypage")
-    public String myPage(Model model) {
 
+    @GetMapping("/mypage")
+    public String myPage(HttpSession session ,Model model) {
+        UserSessionDto user = (UserSessionDto) session.getAttribute("user");
+        model.addAttribute("nickname", user.getNickname());
+        model.addAttribute("user", userService.getProfile(user.getUid()));
+        model.addAttribute("sellcount", userService.sellCount(user.getUid()));
         return "user/mypage";
     }
     @GetMapping("/edit")
@@ -48,15 +55,16 @@ public class UserController {
         return "user/edit_profile";
     }
 
-    @PostMapping("/modify")    //회원 정보 수정
-    public String modify(HttpSession session, @RequestParam("nickname")String nickname,
-                         @RequestParam("password")String password,
-                         @RequestParam("eqpassword")String eqpassword,
-                         RedirectAttributes redirectAttributes){
+    @PostMapping("/modify")
+    public String modify(HttpSession session,
+                         @RequestParam("profileImage") MultipartFile profileImage,
+                         @RequestParam("nickname") String nickname,
+                         @RequestParam("password") String password,
+                         @RequestParam("eqpassword") String eqpassword,
+                         RedirectAttributes redirectAttributes) {
 
         UserSessionDto user = (UserSessionDto) session.getAttribute("user");
         UserVO vo = new UserVO();
-        System.out.println("닉네임:  "+ user.getNickname() +"uid: "+ user.getUid() );
         vo.setNickname(nickname);
         vo.setPw(eqpassword);
         vo.setUid(user.getUid());
@@ -66,11 +74,45 @@ public class UserController {
             return "redirect:/user/edit";
         }
 
-        userService.userModify(vo);
+        try {
+            if (!profileImage.isEmpty()) {
+                // 현재 프로젝트의 resources/static 경로 가져오기
+                String projectPath = new File("").getAbsolutePath();
+                String uploadDir = projectPath + "/src/main/resources/static/img/uploads";
 
-        user.setNickname(nickname);
-        session.setAttribute("users",user);
-        return "/user/mypage";
+                File uploadPath = new File(uploadDir);
+                if (!uploadPath.exists()) {
+                    uploadPath.mkdirs();
+                }
+
+                String fileName = profileImage.getOriginalFilename();
+                String fileExtension = fileName.substring(fileName.lastIndexOf("."));
+                String savedFilename = UUID.randomUUID().toString() + fileExtension;
+
+                // 파일 저장
+                File dest = new File(uploadPath + File.separator + savedFilename);
+                profileImage.transferTo(dest);
+
+                // 브라우저에서 접근할 수 있는 상대 경로
+                String imageUrl = "/img/uploads/" + savedFilename;
+                vo.setImgUrl(imageUrl);
+            }
+
+            userService.userModify(vo);
+            user.setNickname(nickname);
+            if (vo.getImgUrl() != null) {
+                user.setImgUrl(vo.getImgUrl());
+            }
+            session.setAttribute("user", user);
+
+            redirectAttributes.addFlashAttribute("message", "회원정보가 수정되었습니다.");
+            return "redirect:/user/mypage";
+
+        } catch (Exception e) {
+            log.error("파일 업로드 중 오류 발생: {}", e.getMessage(), e);
+            redirectAttributes.addFlashAttribute("message", "회원정보 수정 중 오류가 발생했습니다.");
+            return "redirect:/user/edit";
+        }
     }
 
     @GetMapping("/delete")    //회원 탈퇴
