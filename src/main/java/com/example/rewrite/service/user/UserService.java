@@ -14,7 +14,6 @@ public interface UserService {
     void userModify(UserVO user);
     void userDelete(Long uid);
     void sendUserIdToEmail(FindIdRequestDto requestDto);
-    boolean checkUserByNameAndPhoneAndEmail(FindIdRequestDto requestDto);
     boolean checkUserByIdAndEmailAndPhoneAndPassword(FindIdRequestDto requestDto);
     void sendUserPwdToEmail(FindIdRequestDto requestDto);
 }

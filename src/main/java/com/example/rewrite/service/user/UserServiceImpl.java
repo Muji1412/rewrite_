@@ -1,6 +1,7 @@
 package com.example.rewrite.service.user;
 
 import com.example.rewrite.command.UserVO;
+import com.example.rewrite.command.user.ApiResponseDto;
 import com.example.rewrite.command.user.FindIdRequestDto;
 import com.example.rewrite.command.user.LoginRequestDto;
 import com.example.rewrite.command.user.SignupRequestDto;
@@ -11,6 +12,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
@@ -38,7 +41,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     private final UsersRepository usersRepository;
     private final PasswordEncoder passwordEncoder;
     private final MailService mailService;
-
 
     @Override
     @Transactional
@@ -86,28 +88,18 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Transactional(readOnly = true) // 조회 작업이므로 readOnly
     public void sendUserIdToEmail(FindIdRequestDto requestDto) {
-        String email = requestDto.getEmail();
 
-        // 1. 이메일로 사용자 조회
-        Users foundUser = usersRepository.findByEmail(email)
-                .orElseThrow(() -> new EntityNotFoundException("해당 정보로 가입된 사용자를 찾을 수 없습니다."));
-
-        // 2. 사용자가 존재하면 EmailService를 통해 아이디 발송
-        mailService.sendUserIdByEmail(foundUser.getEmail(), foundUser.getId());
-
-        // EmailService가 @Async 이므로, 여기서의 성공은 '발송 요청 성공'을 의미.
-        // 실제 발송 성공/실패는 EmailService 내부 로그나 별도 처리 필요.
-    }
-
-    @Override
-    public boolean checkUserByNameAndPhoneAndEmail(FindIdRequestDto requestDto) {
-        Optional<Users> user = usersRepository.findByNameAndPhoneAndEmail(
+        //사용자 존재 체크 + 유저 불러오기
+        Users foundUser = usersRepository.findByNameAndPhoneAndEmail(
                 requestDto.getName(),
                 requestDto.getPhone(),
                 requestDto.getEmail()
-        );
-        return user.isPresent(); // 사용자가 존재하면 true 반환
+        ).orElseThrow(() -> new EntityNotFoundException("입력한 정보와 일치하는 유저가 없습니다22."));
+
+        // 사용자가 존재하면 EmailService를 통해 아이디 발송
+        mailService.sendUserIdByEmail(foundUser.getEmail(), foundUser.getId());
     }
+
 
     @Override
     public boolean checkUserByIdAndEmailAndPhoneAndPassword(FindIdRequestDto requestDto) {
@@ -123,13 +115,19 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     @Transactional
     public void sendUserPwdToEmail(FindIdRequestDto requestDto) {
-        String email = requestDto.getEmail();
+
+        // 사용자 조회
+        Users foundUser = usersRepository.findByIdAndNameAndPhoneAndEmail(
+                requestDto.getId(),
+                requestDto.getName(),
+                requestDto.getPhone(),
+                requestDto.getEmail()
+            ).orElseThrow(() -> new EntityNotFoundException("해당 정보로 가입된 사용자를 찾을 수 없습니다."));
+
         String tempPassword = UUID.randomUUID().toString().substring(0, 10);
         String encodedPassword = passwordEncoder.encode(tempPassword);
 
-        // 사용자 조회
-        Users foundUser = usersRepository.findByEmail(email)
-                .orElseThrow(() -> new EntityNotFoundException("해당 정보로 가입된 사용자를 찾을 수 없습니다."));
+
         // 메일로 임시비밀번호 전송
         mailService.sendUserIdPasswordByEmail(foundUser.getEmail(), foundUser.getId(), tempPassword);
 

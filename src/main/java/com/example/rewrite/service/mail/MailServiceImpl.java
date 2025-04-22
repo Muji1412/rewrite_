@@ -43,7 +43,7 @@ public class MailServiceImpl implements MailService {
         message.setTo(toEmail);
         message.setSubject("[Rewrite] 비밀번호 찾기 결과 안내");
         message.setText("안녕하세요.\n\n" +
-                "요청하신 비밀번호는" + password + "입니다." +
+                "요청하신 비밀번호는 " + password + " 입니다." +
                 "\n\n" +
                 "로그인 하신 후 즉시 비밀번호를 변경하여 사용해주시길 바랍니다." +
                 "서비스를 이용해주셔서 감사합니다.");
