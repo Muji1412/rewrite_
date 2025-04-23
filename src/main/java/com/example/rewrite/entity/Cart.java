@@ -32,10 +32,4 @@ public class Cart {
     @Column(name = "added_at")
     @CreationTimestamp
     private LocalDateTime addedAt;
-
-
-    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.LAZY)
-    @ToString.Exclude // 양방향 연관관계 ToString 무한 루프 방지
-    private List<Cart> cartItems = new ArrayList<>();
-
 }
