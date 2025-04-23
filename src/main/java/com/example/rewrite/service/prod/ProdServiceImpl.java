@@ -31,9 +31,15 @@ public class ProdServiceImpl implements ProdService {
 
     // 상품 상세 조회
     @Override
+    @Transactional
     public ProductDTO getProductById(int id) {
-        Product product = productRepository.findById(id)
+        // 조회수 증가
+        productRepository.incrementViewCount(id);
+
+        // 사용자 정보와 함께 상품 조회
+        Product product = productRepository.findProductWithUserById(id)
                 .orElseThrow(() -> new RuntimeException("상품을 찾을 수 없습니다."));
+
         return convertToDto(product);
     }
 
@@ -61,7 +67,7 @@ public class ProdServiceImpl implements ProdService {
 
     // 엔티티를 DTO로 변환
     private ProductDTO convertToDto(Product product) {
-        return ProductDTO.builder()
+        ProductDTO.ProductDTOBuilder build = ProductDTO.builder()
                 .prodId(product.getProdId())
                 .title(product.getTitle())
                 .categoryMax(product.getCategoryMax())
@@ -74,7 +80,39 @@ public class ProdServiceImpl implements ProdService {
                 .img4(product.getImg4())
                 .videoUrl(product.getVideoUrl())
                 .regDate(product.getRegDate())
-                // 나머지 필드도 필요에 따라 추가
-                .build();
+                .viewcount(product.getViewCount() != null ? product.getViewCount() : 0);
+
+        // 연관된 사용자 정보가 있다면 추가
+        if (product.getUser() != null) {
+            build.uid(product.getUser().getUid())
+                    .userNickname(product.getUser().getNickname())
+                    .userImgUrl(product.getUser().getImgUrl());
+        }
+
+        return build.build();
     }
+
+    @Override
+    @Transactional
+    public ProductDTO updateProduct(ProductDTO productDTO) {
+        Product product = productRepository.findById(productDTO.getProdId())
+                .orElseThrow(() -> new RuntimeException("상품을 찾을 수 없습니다."));
+
+        // 변경 가능한 필드 업데이트
+        product.setTitle(productDTO.getTitle());
+        product.setCategoryMax(productDTO.getCategoryMax());
+        product.setCategoryMin(productDTO.getCategoryMin());
+        product.setPrice(productDTO.getPrice());
+        product.setDescription(productDTO.getDescription());
+        product.setImg1(productDTO.getImg1());
+        product.setImg2(productDTO.getImg2());
+        product.setImg3(productDTO.getImg3());
+        product.setImg4(productDTO.getImg4());
+        product.setVideoUrl(productDTO.getVideoUrl());
+
+        Product updatedProduct = productRepository.save(product);
+        return convertToDto(updatedProduct);
+    }
+
+
 }
