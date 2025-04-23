@@ -73,8 +73,8 @@ public class QnaController {
         UserSessionDto user = (UserSessionDto) session.getAttribute("user");
         if (user == null) {
             redirectAttributes.addFlashAttribute("message", "로그인이 필요한 서비스입니다.");
-            // return "redirect:/login";
-            return "qna/qnaWrite";
+             return "redirect:/user/login";
+//            return "qna/qnaWrite";
         }
 
         // 빈 Qna 객체를 모델에 추가하여 폼 바인딩에 사용
@@ -119,12 +119,12 @@ public class QnaController {
                 .orElseThrow(() -> new IllegalArgumentException("해당 문의가 존재하지 않습니다."));
 
         // 문의 작성자 또는 관리자만 조회 가능 (선택적)
-        String userId = (String) session.getAttribute("userId");
-        boolean isAdmin = "admin".equals(session.getAttribute("userRole"));
+        UserSessionDto user= (UserSessionDto) session.getAttribute("user");
+        boolean isAdmin = "admin".equals(user.getRole());
 
         log.info("isAdmin:{}", isAdmin);
 
-        if (isAdmin || qna.getUid().equals(userId)) {
+        if (isAdmin || (qna.getUSERID() != null && qna.getUSERID().equals(user.getId()))) {
         } else {
             redirectAttributes.addFlashAttribute("message", "권한이 없습니다.");
             return "redirect:/qna/qnaList";  // redirect: 추가

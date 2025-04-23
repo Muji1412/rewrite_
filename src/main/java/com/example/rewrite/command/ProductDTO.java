@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @Data
 public class ProductDTO {
 
-    private int prodId;
+    private Long prodId;
     private String categoryMax;
     private String categoryMin;
     private String title;
@@ -24,7 +24,7 @@ public class ProductDTO {
     private LocalDateTime regDate;
     private String price;
     private String videoUrl;
-    private int viewcount;
+    private Long viewcount;
     private Long uid;
     private String img1;
     private String img2;

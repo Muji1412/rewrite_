@@ -28,6 +28,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 return response.json();
             })
             .then(product => {
+                console.log('불러온 상품 정보:', product); // 디버깅용
+
                 // 폼 필드에 기존 데이터 채우기
                 document.querySelector('input[name="title"]').value = product.title;
                 document.querySelector('input[name="price"]').value = product.price;
@@ -40,11 +42,14 @@ document.addEventListener('DOMContentLoaded', function() {
                     document.querySelectorAll('.category-box .category-item').forEach(btn => {
                         if (btn.innerText === product.categoryMax) {
                             btn.classList.add('selected');
+
+                            // 하위 카테고리 표시
                             showSubCategory(product.categoryMax);
 
                             // 하위 카테고리 선택 (타이밍 문제로 setTimeout 사용)
                             if (product.categoryMin) {
                                 document.getElementById('category_min').value = product.categoryMin;
+                                // 지연 시간 증가 (300ms → 500ms)
                                 setTimeout(() => {
                                     const subButtons = document.querySelectorAll('#sub-category .category-item');
                                     subButtons.forEach(btn => {
@@ -52,7 +57,12 @@ document.addEventListener('DOMContentLoaded', function() {
                                             btn.classList.add('selected');
                                         }
                                     });
-                                }, 300);
+                                }, 500);
+                            }
+
+                            // 하위 카테고리가 없는 경우 처리
+                            else if (document.getElementById('sub-category').innerText === '중분류 없음') {
+                                document.getElementById('category_min').value = "전체";
                             }
                         }
                     });
@@ -102,6 +112,8 @@ function showSubCategory(mainCategory) {
 
     if (!subs || subs.length === 0) {
         subDiv.innerHTML = '중분류 없음';
+        // 중분류가 없는 경우 "전체"로 값 설정
+        document.getElementById('category_min').value = "전체";
         return;
     }
 
@@ -264,9 +276,38 @@ function renderPreview() {
     }
 }
 
-// 등록하기/수정하기 버튼 submit 시 REST API 호출
+// 등록하기/수정하기 버튼 submit 시 폼 처리
 document.getElementById('product-form').addEventListener('submit', function(e) {
     e.preventDefault(); // 기본 폼 제출 방지
+
+    // 기본 유효성 검사
+    const title = document.querySelector('input[name="title"]').value;
+    const price = document.querySelector('input[name="price"]').value;
+    const description = document.querySelector('textarea[name="description"]').value;
+    const categoryMax = document.getElementById('category_max').value;
+
+    if (!title.trim()) {
+        alert("상품명을 입력해주세요");
+        document.querySelector('input[name="title"]').focus();
+        return;
+    }
+
+    if (!price.trim()) {
+        alert("가격을 입력해주세요");
+        document.querySelector('input[name="price"]').focus();
+        return;
+    }
+
+    if (!description.trim()) {
+        alert("상품 설명을 입력해주세요");
+        document.querySelector('textarea[name="description"]').focus();
+        return;
+    }
+
+    if (!categoryMax) {
+        alert("카테고리를 선택해주세요");
+        return;
+    }
 
     // URL에서 prodId 확인
     const urlParams = new URLSearchParams(window.location.search);
@@ -279,48 +320,138 @@ document.getElementById('product-form').addEventListener('submit', function(e) {
         imageUrls.push(uploadedImageUrls[i]);
     }
 
-    // 폼 데이터 JSON 객체로 변환
-    const productData = {
-        title: document.querySelector('input[name="title"]').value,
-        categoryMax: document.getElementById('category_max').value,
-        categoryMin: document.getElementById('category_min').value,
-        price: document.querySelector('input[name="price"]').value,
-        description: document.querySelector('textarea[name="description"]').value,
-        img1: imageUrls[0] || "",
-        img2: imageUrls[1] || "",
-        img3: imageUrls[2] || "",
-        img4: imageUrls[3] || "",
-        videoUrl: uploadedVideoUrl || ""
-    };
-
-    // 수정 모드일 경우 prodId 추가
     if (isUpdateMode) {
-        productData.prodId = parseInt(prodId);
-    }
+        // 수정 모드일 경우 폼 직접 제출
+        const form = this;
+        form.action = '/prod/productUpdate';
+        form.method = 'post';
 
-    // API 호출 (등록 또는 수정)
-    fetch(isUpdateMode ? `/api/products/${prodId}` : '/api/products', {
-        method: isUpdateMode ? 'PUT' : 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(productData)
-    })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('서버 응답 오류: ' + response.status);
-            }
-            return response.json();
-        })
-        .then(data => {
-            console.log(isUpdateMode ? '상품 수정 성공:' : '상품 등록 성공:', data);
-            // 성공 시 상품 상세 또는 목록 페이지로 이동
-            window.location.href = isUpdateMode
-                ? `/prod/prodDetail?prodId=${prodId}`
-                : '/prod/prodList';
-        })
-        .catch(error => {
-            console.error(isUpdateMode ? '상품 수정 실패:' : '상품 등록 실패:', error);
-            alert(isUpdateMode ? '상품 수정에 실패했습니다.' : '상품 등록에 실패했습니다. 다시 시도해주세요.');
+        // 히든 필드로 데이터 추가
+        // prodId 필드 추가
+        let prodIdField = document.querySelector('input[name="prodId"]');
+        if (!prodIdField) {
+            prodIdField = document.createElement('input');
+            prodIdField.type = 'hidden';
+            prodIdField.name = 'prodId';
+            form.appendChild(prodIdField);
+        }
+        prodIdField.value = prodId;
+
+        // 이미지 URL들 추가
+        let img1Field = document.querySelector('input[name="img1"]');
+        if (!img1Field) {
+            img1Field = document.createElement('input');
+            img1Field.type = 'hidden';
+            img1Field.name = 'img1';
+            form.appendChild(img1Field);
+        }
+        img1Field.value = imageUrls[0] || "";
+
+        let img2Field = document.querySelector('input[name="img2"]');
+        if (!img2Field) {
+            img2Field = document.createElement('input');
+            img2Field.type = 'hidden';
+            img2Field.name = 'img2';
+            form.appendChild(img2Field);
+        }
+        img2Field.value = imageUrls[1] || "";
+
+        let img3Field = document.querySelector('input[name="img3"]');
+        if (!img3Field) {
+            img3Field = document.createElement('input');
+            img3Field.type = 'hidden';
+            img3Field.name = 'img3';
+            form.appendChild(img3Field);
+        }
+        img3Field.value = imageUrls[2] || "";
+
+        let img4Field = document.querySelector('input[name="img4"]');
+        if (!img4Field) {
+            img4Field = document.createElement('input');
+            img4Field.type = 'hidden';
+            img4Field.name = 'img4';
+            form.appendChild(img4Field);
+        }
+        img4Field.value = imageUrls[3] || "";
+
+        let videoField = document.querySelector('input[name="videoUrl"]');
+        if (!videoField) {
+            videoField = document.createElement('input');
+            videoField.type = 'hidden';
+            videoField.name = 'videoUrl';
+            form.appendChild(videoField);
+        }
+        videoField.value = uploadedVideoUrl || "";
+
+        let categoryMaxField = document.querySelector('input[name="categoryMax"]');
+        if (!categoryMaxField) {
+            categoryMaxField = document.createElement('input');
+            categoryMaxField.type = 'hidden';
+            categoryMaxField.name = 'categoryMax';
+            form.appendChild(categoryMaxField);
+        }
+        categoryMaxField.value = document.getElementById('category_max').value;
+
+        let categoryMinField = document.querySelector('input[name="categoryMin"]');
+        if (!categoryMinField) {
+            categoryMinField = document.createElement('input');
+            categoryMinField.type = 'hidden';
+            categoryMinField.name = 'categoryMin';
+            form.appendChild(categoryMinField);
+        }
+        categoryMinField.value = document.getElementById('category_min').value;
+
+        console.log('수정 폼 제출 준비 완료:', {
+            prodId: prodId,
+            title: document.querySelector('input[name="title"]').value,
+            categoryMax: document.getElementById('category_max').value,
+            categoryMin: document.getElementById('category_min').value,
+            img1: imageUrls[0] || "",
+            img2: imageUrls[1] || "",
+            img3: imageUrls[2] || "",
+            img4: imageUrls[3] || ""
         });
+
+        // 폼 제출
+        form.submit();
+    } else {
+        // 등록 모드는 기존 API 호출 방식 유지
+        const productData = {
+            title: document.querySelector('input[name="title"]').value,
+            categoryMax: document.getElementById('category_max').value,
+            categoryMin: document.getElementById('category_min').value,
+            price: document.querySelector('input[name="price"]').value,
+            description: document.querySelector('textarea[name="description"]').value,
+            img1: imageUrls[0] || "",
+            img2: imageUrls[1] || "",
+            img3: imageUrls[2] || "",
+            img4: imageUrls[3] || "",
+            videoUrl: uploadedVideoUrl || ""
+        };
+
+        console.log('등록 데이터:', productData); // 디버깅용
+
+        fetch('/api/products', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(productData)
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('서버 응답 오류: ' + response.status);
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('상품 등록 성공:', data);
+                alert('상품이 성공적으로 등록되었습니다.');
+                window.location.href = '/prod/prodList';
+            })
+            .catch(error => {
+                console.error('상품 등록 실패:', error);
+                alert('상품 등록에 실패했습니다. 다시 시도해주세요.');
+            });
+    }
 });
