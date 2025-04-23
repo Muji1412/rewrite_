@@ -140,7 +140,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public Users getUserInfo(Long uid) {
-        return usersRepository.findUsersById(uid);
+        return usersRepository.findUserByUid(uid);
     }
 
     //회원정보 수정
