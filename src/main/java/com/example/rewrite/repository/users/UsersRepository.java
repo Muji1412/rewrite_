@@ -54,8 +54,7 @@ public interface UsersRepository extends JpaRepository<Users, Long> {
             "FROM Product p WHERE p.user.uid = :uid ")
     String sellCount(@Param("uid")Long uid);
 
-    @Query("SELECT u FROM Users u WHERE u.uid = :uid")
-    Users findUsersById(Long uid);
+    Users findUserByUid(Long uid);
 
     @Query("SELECT p FROM Product p where p.user.uid = :uid")
     List<Product> getSellProd(Long uid);

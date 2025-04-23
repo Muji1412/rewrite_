@@ -20,4 +20,6 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     Optional<Product> findProductWithUserById(@Param("prodId") Long prodId);
 
     List<Product> prodId(Long prodId);
+
+    List<Product> findProductsByUserUid(Long uid);
 }

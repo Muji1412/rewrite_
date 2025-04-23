@@ -90,6 +90,15 @@ public class ProdController {
         return "prod/prodList";
     }
 
+    @GetMapping("/myProdList")
+    public String myProdList(HttpSession session, Model model){
+        UserSessionDto user = (UserSessionDto)session.getAttribute("user");
+
+        model.addAttribute("products", prodService.getMyProducts(user.getUid()));
+
+        return  "prod/prodList";
+    }
+
     @PostMapping("/productReg")
     public String register(
             @ModelAttribute ProductDTO productDTO,

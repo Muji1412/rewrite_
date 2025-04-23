@@ -118,3 +118,37 @@ h2{
   margin-top: 70px;
   margin-left: 30px;
 }
+
+.media-container {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+}
+
+.main-img {
+  width: 100%;
+  height: 100%;
+  transition: opacity 0.3s ease;
+}
+
+.product-video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 1;
+  border-radius: 10px;
+}
+
+.media-container:hover .main-img {
+  opacity: 0;
+}
+
+.media-container:hover .product-video {
+  opacity: 1;
+}
