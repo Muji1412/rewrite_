@@ -141,6 +141,11 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         return false;
     }
 
+    @Override
+    public User getUserInfo(String id) {
+        return null;
+    }
+
     //회원정보 수정
     @Override
     @Transactional
