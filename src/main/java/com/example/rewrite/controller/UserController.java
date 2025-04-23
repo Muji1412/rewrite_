@@ -48,19 +48,20 @@ public class UserController {
         UserSessionDto user = (UserSessionDto) session.getAttribute("user");
         model.addAttribute("nickname", user.getNickname());
         model.addAttribute("user", userService.getProfile(user.getUid()));
+        model.addAttribute("sellprod", userService.getSellProd(user.getUid()));
         model.addAttribute("sellcount", userService.sellCount(user.getUid()));
         return "user/mypage";
     }
     @GetMapping("/edit")
     public String userEdit(HttpSession session, Model model){
-        UserSessionDto user = (UserSessionDto) session.getAttribute("user");
+        UserSessionDto user = (UserSessionDto)session.getAttribute("user");
         model.addAttribute("user", user);
         return "user/edit_profile";
     }
 
     @PostMapping("/modify")
     public String modify(HttpSession session,
-                         @RequestParam("profileImage") MultipartFile profileImage,
+                         @RequestParam(value = "imgUrl", required = false) String imgUrl,
                          @RequestParam("nickname") String nickname,
                          @RequestParam("password") String password,
                          @RequestParam("eqpassword") String eqpassword,
@@ -77,45 +78,67 @@ public class UserController {
             return "redirect:/user/edit";
         }
 
+        // 이미지 URL이 제공된 경우에만 설정
+        if (imgUrl != null && !imgUrl.isEmpty()) {
+            vo.setImgUrl(imgUrl);
+        }
+
         try {
-            if (!profileImage.isEmpty()) {
-                // 현재 프로젝트의 resources/static 경로 가져오기
-                String projectPath = new File("").getAbsolutePath();
-                String uploadDir = projectPath + "/src/main/resources/static/img/uploads";
-
-                File uploadPath = new File(uploadDir);
-                if (!uploadPath.exists()) {
-                    uploadPath.mkdirs();
-                }
-
-                String fileName = profileImage.getOriginalFilename();
-                String fileExtension = fileName.substring(fileName.lastIndexOf("."));
-                String savedFilename = UUID.randomUUID().toString() + fileExtension;
-
-                // 파일 저장
-                File dest = new File(uploadPath + File.separator + savedFilename);
-                profileImage.transferTo(dest);
-
-                // 브라우저에서 접근할 수 있는 상대 경로
-                String imageUrl = "/img/uploads/" + savedFilename;
-                vo.setImgUrl(imageUrl);
-            }
-
             userService.userModify(vo);
+
+            // 세션 정보도 업데이트
             user.setNickname(nickname);
-            if (vo.getImgUrl() != null) {
-                user.setImgUrl(vo.getImgUrl());
+            if (imgUrl != null && !imgUrl.isEmpty()) {
+                user.setImgUrl(imgUrl);
             }
             session.setAttribute("user", user);
 
             redirectAttributes.addFlashAttribute("message", "회원정보가 수정되었습니다.");
             return "redirect:/user/mypage";
-
         } catch (Exception e) {
-            log.error("파일 업로드 중 오류 발생: {}", e.getMessage(), e);
             redirectAttributes.addFlashAttribute("message", "회원정보 수정 중 오류가 발생했습니다.");
             return "redirect:/user/edit";
         }
+
+//        try {
+//            if (!profileImage.isEmpty()) {
+//                // 현재 프로젝트의 resources/static 경로 가져오기
+//                String projectPath = new File("").getAbsolutePath();
+//                String uploadDir = projectPath + "/src/main/resources/static/img/uploads";
+//
+//                File uploadPath = new File(uploadDir);
+//                if (!uploadPath.exists()) {
+//                    uploadPath.mkdirs();
+//                }
+//
+//                String fileName = profileImage.getOriginalFilename();
+//                String fileExtension = fileName.substring(fileName.lastIndexOf("."));
+//                String savedFilename = UUID.randomUUID().toString() + fileExtension;
+//
+//                // 파일 저장
+//                File dest = new File(uploadPath + File.separator + savedFilename);
+//                profileImage.transferTo(dest);
+//
+//                // 브라우저에서 접근할 수 있는 상대 경로
+//                String imageUrl = "/img/uploads/" + savedFilename;
+//                vo.setImgUrl(imageUrl);
+//            }
+//
+//            userService.userModify(vo);
+//            user.setNickname(nickname);
+//            if (vo.getImgUrl() != null) {
+//                user.setImgUrl(vo.getImgUrl());
+//            }
+//            session.setAttribute("user", user);
+//
+//            redirectAttributes.addFlashAttribute("message", "회원정보가 수정되었습니다.");
+//            return "redirect:/user/mypage";
+//
+//        } catch (Exception e) {
+//            log.error("파일 업로드 중 오류 발생: {}", e.getMessage(), e);
+//            redirectAttributes.addFlashAttribute("message", "회원정보 수정 중 오류가 발생했습니다.");
+//            return "redirect:/user/edit";
+//        }
     }
 
     @PostMapping("/delete")    //회원 탈퇴
