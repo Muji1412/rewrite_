@@ -86,7 +86,7 @@
         <h2>최근 판매 내역</h2>
         <div style="display: flex; gap: 20px;">
           <div th:each="list : ${sellprod}">
-            <a href="addressdetail.html" class="latest-order">
+            <a th:href="'/prod/prodDetail?prodId='+${list.prodId}" class="latest-order">
               <div class="latest-order">
                 <div class="media-container">
                   <img th:src="${list.img1}" alt="" class="main-img">
