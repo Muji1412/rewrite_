@@ -34,7 +34,7 @@
                         <td class="subject-cell">
                             <a th:href="@{/qna/qnaDetail(id=${qna.qnaId})}" th:text="${qna.title}">문의내용</a>
                         </td>
-                        <td th:text="${qna.uid}">작성자</td>
+                        <td th:text="${qna.USERID}">작성자</td>
                         <td th:text="${qna.category}">문의유형</td>
                         <td th:text="${qna.answer != null ? '답변완료' : '답변대기'}">답변여부</td>
                     </tr>

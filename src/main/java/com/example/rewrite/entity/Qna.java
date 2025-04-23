@@ -1,16 +1,15 @@
 package com.example.rewrite.entity; // 패키지 경로는 실제 프로젝트에 맞게 조정하세요.
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*; // 또는 Spring Boot 3+ / Jakarta EE 9+ 사용 시 jakarta.persistence.*
 import java.time.LocalDateTime; // regDate 컬럼에 권장되는 타입 (현재는 String으로 매핑)
 
+@Builder
 @Getter
 @Setter
 @ToString
+@AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name = "QNA") // SQL 테이블 이름과 동일하게 지정
@@ -44,11 +43,14 @@ public class Qna {
     @Column(name = "USERID", nullable = true, length = 255)
     private String USERID;
 
+    @Column(name = "FILEATTACHMENT", nullable = true, length = 200 )
+    private String fileAttachment;
+
     @Column(name = "uid", nullable = true, length = 255) // SQL 컬럼명 'Key2' 와 동일하게 지정
     private Long uid; // Java 필드명은 camelCase 권장 (key2)
 
     // 모든 필드를 받는 생성자 (필요에 따라 추가)
-    public Qna(Long qnaId, String title, String content, String regDate, String answer, String category, Long uid) {
+    public Qna(Long qnaId, String title, String content, String regDate, String answer, String category, String userId, Long uid) {
         this.qnaId = qnaId;
         this.title = title;
         this.content = content;

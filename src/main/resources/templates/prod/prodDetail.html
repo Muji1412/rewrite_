@@ -1,5 +1,12 @@
 <th:block th:replace="~{include/include :: def(~{::#wrap})} ">
   <section id="wrap">
+
+      <script th:if="${message}" th:inline="javascript">
+          /*<![CDATA[*/
+          alert([[${message}]]);
+          /*]]>*/
+      </script>
+
       <div class="product-container" >
           <div class="product-image">
             <div class="image-slider">
@@ -46,7 +53,7 @@
             </div>
               <div class="meta-info">
                   <span>조회수: <span th:text="${product.viewcount}"></span></span>
-                  <a th:if="${session.uid != null && session.uid == product.uid}"
+                  <a th:if="${session.user.uid != null && session.user.uid == product.uid}"
                      th:href="@{/prod/productUpdate(prodId=${product.prodId})}"
                      class="edit-link">수정하기</a>
               </div>
@@ -54,7 +61,10 @@
                 <button class="button1" th:onclick="|location.href='@{/prod/prodList}'|" >목록으로</button>
             </div>
             <div>
-                <button class="button2"><a href="#">장바구니</a></button>
+                <form th:action="@{/cart/add}" method="post">
+                    <input type="hidden" name="prodId" th:value="${product.prodId}" />
+                    <button type="submit" class="button2">장바구니</button>
+                </form>
             </div>
           </form>
           </div>

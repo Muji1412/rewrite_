@@ -12,7 +12,7 @@ public interface ProdService {
     List<ProductDTO> getAllProducts();
 
     // 상품 상세 조회
-    ProductDTO getProductById(int id);
+    ProductDTO getProductById(Long id);
 
     // 상품 등록
     ProductDTO registerProduct(ProductDTO productDTO);
