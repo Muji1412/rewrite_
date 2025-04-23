@@ -139,4 +139,10 @@ public class ProdController {
         return "redirect:/prod/prodDetail?prodId=" + productDTO.getProdId();
     }
 
+    //주문 내역 페이지 이동
+    @GetMapping("/orderList")
+    public String orderList(){
+
+        return "prod/orderList";
+    }
 }
