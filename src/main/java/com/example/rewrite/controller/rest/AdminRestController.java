@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -44,10 +45,19 @@ public class AdminRestController {
                     .body(ApiResponseDto.fail(e.getMessage()));
         }
     }
-    @PostMapping("/deleteUser")
-    public ResponseEntity<Object> deleteUser(@RequestBody UserDTO userDto) {
+    @DeleteMapping("/users/{uid}")
+    public ResponseEntity<Object> deleteUser(@PathVariable String uid) {
 
-        return null;
+        Long uidLong = Long.valueOf(uid);
+        log.info(uid + "번 유저 삭제");
+        try {
+            userService.deleteUser(uidLong);
+            return ResponseEntity.ok(ApiResponseDto.success("삭제 성공"));
+        }catch (Exception e) {
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(ApiResponseDto.fail(e.getMessage()));
+        }
     }
 
 }

@@ -352,6 +352,27 @@
             // window.location.href = `/admin/user/${uid}`; // 예시: 상세 페이지 URL
         }
 
+        function handleDeleteUser(uid) {
+
+            fetch(`/api/admin/users/${uid}`, {
+                method: 'DELETE'
+            })
+                .then(response => {
+                    if (response.ok) {
+                        alert('사용자 삭제 성공')
+                        fetchAndRenderUsers();
+                    }else {
+                        response.json().then(errorData => {
+                            alert('사용자 삭제 실패: ' + errorData.message);
+                        })
+                    }
+                })
+                .catch(error =>{
+                    console.error('사용자 삭제 오류', error);
+                    alert('사용자 삭제 중 오류 발생')
+                });
+        }
+
         // --- 유틸리티 함수 ---
 
         /**
@@ -368,38 +389,6 @@
                 return escape[match];
             });
         }
-
-
-        // --- !!! API 연동 전 임시 더미 데이터 생성 함수 !!! ---
-        function getDummyUsers(searchTerm = '', roleFilter = '') {
-            const allUsers = [
-                { uid: 1, id: 'admin', pw: 'hashed_pw', name: '관리자', nickname: '관리자님', email: 'admin@example.com', birth: '1990-01-01', imgUrl: '...', regDate: '2023-01-15T10:00:00Z', phone: '010-0000-0000', role: 'admin' },
-                { uid: 2, id: 'user1', pw: 'hashed_pw', name: '김사용', nickname: '사용자1', email: 'user1@example.com', birth: '1995-05-20', imgUrl: '...', regDate: '2023-03-20T14:30:00Z', phone: '010-1111-1111', role: 'user' },
-                { uid: 3, id: 'tester', pw: 'hashed_pw', name: '박테스', nickname: '테스터굿', email: 'tester@sample.net', birth: null, imgUrl: '...', regDate: '2023-08-01T09:00:00Z', phone: null, role: 'user' },
-                { uid: 4, id: 'seller_kim', pw: 'hashed_pw', name: '김판매', nickname: '중고판매왕', email: 'seller@example.com', birth: '1988-11-11', imgUrl: '...', regDate: '2024-01-10T11:20:00Z', phone: '010-2222-2222', role: 'user' },
-            ];
-
-            let filteredUsers = allUsers;
-
-            // 역할 필터링
-            if (roleFilter) {
-                filteredUsers = filteredUsers.filter(user => user.role === roleFilter);
-            }
-
-            // 검색어 필터링 (아이디, 닉네임, 이메일 대상)
-            if (searchTerm) {
-                const lowerSearchTerm = searchTerm.toLowerCase();
-                filteredUsers = filteredUsers.filter(user =>
-                    user.id.toLowerCase().includes(lowerSearchTerm) ||
-                    (user.nickname && user.nickname.toLowerCase().includes(lowerSearchTerm)) ||
-                    (user.email && user.email.toLowerCase().includes(lowerSearchTerm))
-                );
-            }
-
-            return filteredUsers;
-        }
-        // --- 더미 데이터 끝 ---
-
 
         // 페이지 로드 시 초기 사용자 목록 표시
         fetchAndRenderUsers();
