@@ -40,42 +40,7 @@ public class ProdController {
     }
 
     @GetMapping("/orderPay")
-    public String orderPay(HttpSession session, Model model) {
-        UserSessionDto user = (UserSessionDto) session.getAttribute("user");
-        if(user == null) {
-            return "redirect:/user/login";
-        }
-        Long uid = user.getUid();
-
-        Address defaultAddress = addressService.getDefaultAddress(uid);
-
-        model.addAttribute("defaultAddress", defaultAddress);
-        if (defaultAddress != null && defaultAddress.getAddress() != null) {
-            String[] parts = defaultAddress.getAddress().split("/");
-
-            if (parts.length == 3) {
-                model.addAttribute("postcode", parts[0]);
-                model.addAttribute("addr", parts[1]);
-                model.addAttribute("detailAddress", parts[2]);
-            } else {
-                model.addAttribute("postcode", "");
-                model.addAttribute("addr", "");
-                model.addAttribute("detailAddress", "");
-            }
-        }
-
-        if(defaultAddress != null && defaultAddress.getPhoneNum() != null) {
-            String phoneNum = defaultAddress.getPhoneNum();
-            String formatPhoneNum = phoneNum;
-
-            if(phoneNum.length() == 11) {
-                formatPhoneNum = phoneNum.replaceFirst("(\\d{3})(\\d{4})(\\d{4})","$1-$2-$3");
-            }
-
-            model.addAttribute("formatPhoneNum", formatPhoneNum);
-        }
-
-
+    public String orderPay() {
         return "prod/orderPay";
     }
 
