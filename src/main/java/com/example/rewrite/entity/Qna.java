@@ -41,11 +41,14 @@ public class Qna {
     @Column(name = "CATEGORY", nullable = true, length = 255)
     private String category;
 
-    @Column(name = "uid", nullable = false, length = 255) // SQL 컬럼명 'Key2' 와 동일하게 지정
-    private String uid; // Java 필드명은 camelCase 권장 (key2)
+    @Column(name = "USERID", nullable = true, length = 255)
+    private String USERID;
+
+    @Column(name = "uid", nullable = true, length = 255) // SQL 컬럼명 'Key2' 와 동일하게 지정
+    private Long uid; // Java 필드명은 camelCase 권장 (key2)
 
     // 모든 필드를 받는 생성자 (필요에 따라 추가)
-    public Qna(Long qnaId, String title, String content, String regDate, String answer, String category, String uid) {
+    public Qna(Long qnaId, String title, String content, String regDate, String answer, String category, Long uid) {
         this.qnaId = qnaId;
         this.title = title;
         this.content = content;

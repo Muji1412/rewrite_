@@ -196,34 +196,51 @@ function initFileUpload() {
     }
 }
 
-// 등록하기 버튼 submit 시 URL을 hidden input에 넣어서 전송
+// 등록하기 버튼 submit 시 REST API 호출로 변경
 document.getElementById('product-form').addEventListener('submit', function(e) {
-    // 이미지 URL hidden input 처리
-    for (let i = 0; i < 4; i++) {
-        let inputName = `img_${i+1}`;
-        let input = document.querySelector(`input[name="${inputName}"]`);
+    e.preventDefault(); // 기본 폼 제출 방지
 
-        if (!input) {
-            input = document.createElement('input');
-            input.type = 'hidden';
-            input.name = inputName;
-            this.appendChild(input);
-        }
-
-        input.value = (i < uploadedImageUrls.length) ? uploadedImageUrls[i] : '';
+    // 이미지 URL 준비
+    const imageUrls = [];
+    for (let i = 0; i < uploadedImageUrls.length && i < 4; i++) {
+        imageUrls.push(uploadedImageUrls[i]);
     }
 
-    let videoInput = document.querySelector('input[name="video_url"]');
-    if (!videoInput) {
-        videoInput = document.createElement('input');
-        videoInput.type = 'hidden';
-        videoInput.name = 'video_url';
-        this.appendChild(videoInput);
-    }
-    videoInput.value = uploadedVideoUrl || '';
+    // 폼 데이터 JSON 객체로 변환
+    const productData = {
+        title: document.querySelector('input[name="title"]').value,
+        categoryMax: document.getElementById('category_max').value,
+        categoryMin: document.getElementById('category_min').value,
+        price: document.querySelector('input[name="price"]').value,
+        description: document.querySelector('textarea[name="description"]').value,
+        img1: imageUrls[0] || "",
+        img2: imageUrls[1] || "",
+        img3: imageUrls[2] || "",
+        img4: imageUrls[3] || "",
+        videoUrl: uploadedVideoUrl || ""
+    };
 
-    console.log('폼 제출 전 값들:', {
-        images: uploadedImageUrls,
-        video: uploadedVideoUrl
-    });
+    // API 호출
+    fetch('/api/products', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(productData)
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('서버 응답 오류: ' + response.status);
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log('상품 등록 성공:', data);
+            // 성공 시 상품 목록 페이지로 이동
+            window.location.href = '/prod/prodList';
+        })
+        .catch(error => {
+            console.error('상품 등록 실패:', error);
+            alert('상품 등록에 실패했습니다. 다시 시도해주세요.');
+        });
 });

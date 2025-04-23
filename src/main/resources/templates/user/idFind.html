@@ -1,119 +1,61 @@
+<!-- 파일: templates/user/idFind.html -->
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+<!--
+    1. th:replace: 이 파일 전체를 'include/include' 파일의 'def' 프래그먼트로 교체합니다.
+    2. 파라미터 전달: ~{::.idfind-wrapper} 를 사용하여 아래 정의된 section 전체를 item 파라미터로 전달합니다.
+-->
+\
+      th:replace="~{include/include :: def(~{::.idfind-wrapper})}">
 
-    <link rel="stylesheet" href="/css/user/idFind.css">
-    <link rel="stylesheet" href="/css/common.css">
-    <script src="../js/idFind.js"></script>
-</head>
-<body>
-    <header class="header">
-        <div class="header_top">
-            <ul class="header_semi_menu">
-                <li><a href="#">고객센터</a></li>
-                <li><a href="#">알림</a></li>
-                <li><a href="#">로그인</a></li>
-            </ul>
-        </div>
-        <div class="header_bottom">
-            <div class="logo_box">
-                <img src="../img/logo.png" alt="logo">
-            </div>
-            <div class="drop_menu">
-                <ul class="e_drop">
-                    <li>
-                        <a href="#" class="default_m">CLOTHING</a>
-                        <a href="#" class="hover_m">의류</a>
-                    </li>
-                    <li>
-                        <a href="#" class="default_m">GAMES</a>
-                        <a href="#" class="hover_m">게임</a>
-                    </li>
-                    <li>
-                        <a href="#" class="default_m">APPLIANCES</a>
-                        <a href="#" class="hover_m">가전제품</a>
-                    </li>
-                    <li>
-                        <a href="#" class="default_m">ELECTRONICS</a>
-                        <a href="#" class="hover_m">전자기기</a>
-                    </li>
-                </ul>
-            </div>
-            <div class="sub_icon">
-                <img src="img/mypage_icon.png" alt="my_page">
-                <img src="img/mycart_icon.png" alt="my_cart">
-            </div>
-        </div>
-    </header>
+<!--
+    이 idfind-wrapper 클래스를 가진 section 전체가 레이아웃의 item 파라미터로 전달됩니다.
+    따라서 페이지별 스타일과 스크립트는 이 section 내부에 포함되어야 합니다.
+-->
+<section class="idfind-wrapper"> <!-- 전체 콘텐츠를 감싸는 요소 -->
 
-    <section class="section">
+    <!-- 페이지별 스타일 시트 링크 (콘텐츠 내부에 위치) -->
+    <link rel="stylesheet" th:href="@{/css/user/idFind.css}">
 
+    <!-- 실제 아이디 찾기 페이지 콘텐츠 -->
+    <div class="section"> <!-- 기존 클래스명 유지 또는 필요시 변경 -->
         <div class="box">
             <div class="title_box">
                 <h3>아이디 찾기</h3>
             </div>
-            
-        <form action="#">
-            <div class="name_box box2">
-                <p>이름</p>
-                <input type="text" name = "name" placeholder="이름을 입력해주세요">
-            </div>
 
-            <div class="phone_box box2">
-                <p>전화번호</p>
-                <input type="text" name = "phone" placeholder="010-1234-5678">
-            </div>
+            <!-- form 에 id를 부여하거나 action을 실제 처리 경로로 수정하는 것이 좋습니다. -->
+            <form action="#" id="idFindForm">
+                <div class="name_box box2">
+                    <p>이름</p>
+                    <input type="text" name="name" placeholder="이름을 입력해주세요" required> <!-- required 추가 고려 -->
+                </div>
 
-            <div class="brith_box box2">
-                <p>이메일</p>
-                <input type="text" name = "email" placeholder="이메일을 입력해주세요">
-            </div>
+                <div class="phone_box box2">
+                    <p>전화번호</p>
+                    <input type="text" name="phone" placeholder="010-1234-5678" required> <!-- required 추가 고려 -->
+                </div>
 
+                <!-- 클래스명이 brith_box 인데 내용은 이메일이므로 email_box 로 변경 고려 -->
+                <div class="email_box box2"> <!-- 클래스명 변경 -->
+                    <p>이메일</p>
+                    <input type="email" name="email" placeholder="이메일을 입력해주세요" required> <!-- type="email", required 추가 고려 -->
+                </div>
 
-            
-            <button>찾기</button>
-        </form>
-
+                <!-- 버튼 타입을 명시하는 것이 좋습니다 (submit 또는 button) -->
+                <button type="submit">찾기</button>
+            </form>
         </div>
-        
-    </section>
-    <footer class="footer">
-        <div class="footer_wrap">
-            <div class="footer_top">
-                <ul class="f_flex f_top_ul">
-                    <li><a href="#" class="f_single">개인정보처리방침</a></li>
-                    <li><a href="#" class="f_notice">이용안내</a></li>
-                </ul>
-            </div>
-            <div class="footer_mid">
-                <ul class="f_flex">
-                    <li>상호명 : (주)REWRITE</li>
-                    <li>대표자 : 따악코</li>
-                    <li>주소 : 서울시 강남구 테헤란로7길 에스코빌딩</li>
-                    <li>전화번호 : 1234-5678</li>
-                    <li>팩스 : 02-9876-5432</li>
-                    <li>이메일 : rewrite@rewrite.com</li>
-                </ul>
-            </div>
-            <div class="footer_mid_sec">
-                <ul class="f_flex f_mid_sub">
-                    <li>사업자등록번호 : 202-50410</li>
-                    <li>통신판매업신고 : 제25-0410호</li>
-                </ul>
-            </div>
-            <div class="footer_mid_thd">
-                <ul>
-                    <li></li>
-                </ul>
-            </div>
-            <div class="footer_bottom">
-                <p class="f_flex">Copyright © 2025 Jongsu Macne. All rights reserved. Created by JongSu</p>
-            </div>
-        </div>
-    </footer>
+    </div>
+
+    <!-- 페이지별 스크립트 (콘텐츠 내부에 위치) -->
+    <!-- 경로 수정: ../js -> /js, th:src 사용 -->
+    <script th:src="@{/js/idFind.js}"></script>
+    <!-- 만약 idFind.js 파일에 form 제출 관련 로직이 있다면,
+         위 form의 id ('idFindForm') 를 사용하여 이벤트 리스너를 연결해야 합니다. -->
+
+</section> <!-- /.idfind-wrapper -->
+
+</html> <!-- 이 태그는 th:replace 때문에 실제로는 렌더링되지 않음 -->
 <script>
     // 페이지가 완전히 로드된 후 실행
     document.addEventListener('DOMContentLoaded', function() {
@@ -228,8 +170,4 @@
             }
         }
     });
-
 </script>
-    
-</body>
-</html>     

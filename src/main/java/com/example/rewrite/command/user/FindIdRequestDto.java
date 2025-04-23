@@ -6,6 +6,7 @@ import lombok.Setter;
 @Setter
 public class FindIdRequestDto {
 
+    private String id;
     private String email;
     private String name;
     private String phone;
