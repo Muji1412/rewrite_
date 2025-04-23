@@ -1,7 +1,9 @@
 package com.example.rewrite.NoticeTest;
 
 import com.example.rewrite.entity.Notice;
+import com.example.rewrite.entity.Users;
 import com.example.rewrite.repository.Notice.NoticeRepository;
+import com.example.rewrite.repository.users.UsersRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -14,6 +16,8 @@ public class NoticeTest {
 
     @Autowired
     private NoticeRepository noticeRepository;
+    @Autowired
+    private UsersRepository usersRepository;
 
     @Test
     @Transactional
@@ -44,6 +48,14 @@ public class NoticeTest {
         List<Notice> noticeList = noticeRepository.findAll();
         for (Notice notice : noticeList) {
             System.out.println(notice);
+        }
+    }
+
+    @Test
+    public void getUserTest() {
+        List<Users> list = usersRepository.searchUsers(null, null);
+        for (Users users : list) {
+            System.out.println(users);
         }
     }
 

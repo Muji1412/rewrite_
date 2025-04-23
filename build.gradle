@@ -57,6 +57,7 @@ dependencies {
 
     // 이 의존성 제거
     // implementation 'org.springframework.cloud:spring-cloud-gcp'
+
 }
 
 dependencyManagement {

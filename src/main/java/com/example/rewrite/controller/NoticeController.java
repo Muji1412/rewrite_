@@ -8,11 +8,16 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import javax.servlet.http.HttpSession;
 
 @Controller
 @RequestMapping("/notice")
@@ -46,8 +51,8 @@ public class NoticeController {
     }
 
     @GetMapping("/noticeDetail")
-    public String noticeDetail(Model model, @RequestParam("noticeId") long noticeId, Pageable pageable) {
-        // dto 화면에 넘겨주기
+    public String noticeDetail(HttpSession session, Model model, @RequestParam("noticeId") long noticeId, Pageable pageable) {
+
         NoticeDTO dto = NoticeDTO.fromEntity(noticeRepository.getNoticeByNoticeId(noticeId));
         model.addAttribute("dto", dto);
 
