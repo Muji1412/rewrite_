@@ -65,4 +65,21 @@ public class ProdController {
         prodService.registerProduct(productDTO);
         return "redirect:/prod/prodList";
     }
+
+    // 상품 수정 페이지 이동
+    @GetMapping("/productUpdate")
+    public String productUpdate(@RequestParam int prodId, Model model) {
+        ProductDTO product = prodService.getProductById(prodId);
+        model.addAttribute("product", product);
+        return "prod/productReg";  // 등록 페이지를 재사용
+    }
+
+    // 상품 수정 처리
+    @PostMapping("/productUpdate")
+    public String updateProduct(@ModelAttribute ProductDTO productDTO) {
+        // 서비스 레이어를 통해 상품 수정
+        prodService.updateProduct(productDTO);
+        return "redirect:/prod/prodDetail?prodId=" + productDTO.getProdId();
+    }
+
 }
