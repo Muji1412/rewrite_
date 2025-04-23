@@ -22,4 +22,5 @@ public interface UserService {
     boolean checkUserByIdAndEmailAndPhoneAndPassword(FindIdRequestDto requestDto);
     void sendUserPwdToEmail(FindIdRequestDto requestDto);
     boolean checkUserByNameAndPhoneAndEmail(FindIdRequestDto requestDto);
+    User getUserInfo(String id);
 }

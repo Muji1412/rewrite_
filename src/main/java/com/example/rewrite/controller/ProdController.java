@@ -3,7 +3,6 @@ package com.example.rewrite.controller;
 import com.example.rewrite.command.ProductDTO;
 import com.example.rewrite.command.user.UserSessionDto;
 import com.example.rewrite.entity.Cart;
-import com.example.rewrite.entity.Product;
 import com.example.rewrite.repository.product.ProductRepository;
 import com.example.rewrite.service.cart.CartService;
 import com.example.rewrite.service.prod.ProdService;
@@ -13,7 +12,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Controller
@@ -32,9 +30,9 @@ public class ProdController {
         this.productRepository = productRepository;
     }
 
-    @GetMapping("/checkout")
-    public String checkout() {
-        return "prod/checkout";
+    @GetMapping("/orderPay")
+    public String orderPay() {
+        return "prod/orderPay";
     }
     @GetMapping("/cart")
     public String cart(Model model, HttpSession session) {
