@@ -140,7 +140,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public Users getUserInfo(Long uid) {
-        return usersRepository.findUsersById(uid);
+        return usersRepository.findUserByUid(uid);
     }
 
     //회원정보 수정
@@ -170,11 +170,14 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     //마이페이지 프로필 조회
     @Override
     public Users getProfile(Long uid) {
-        return usersRepository.findUsersById(uid);
+        return usersRepository.findUserByUid(uid);
     }
 
+    //마이페이지 판매내역 조회
     @Override
     public List<Product> getSellProd(Long uid) {
         return usersRepository.getSellProd(uid);
     }
+
+
 }
