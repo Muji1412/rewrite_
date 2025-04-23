@@ -3,8 +3,12 @@ package com.example.rewrite.service.user;
 import com.example.rewrite.command.UserVO;
 import com.example.rewrite.command.user.FindIdRequestDto;
 import com.example.rewrite.command.user.SignupRequestDto;
+import com.example.rewrite.entity.Product;
 import com.example.rewrite.entity.Users;
 import org.springframework.security.core.userdetails.User;
+
+import java.util.List;
+import java.util.Optional;
 
 
 public interface UserService {
@@ -20,4 +24,5 @@ public interface UserService {
     Users getUserInfo(Long uid);
     String sellCount(Long uid);
     Users getProfile(Long uid);
+    List<Product> getSellProd(Long uid);
 }

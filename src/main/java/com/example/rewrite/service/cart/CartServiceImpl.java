@@ -38,8 +38,24 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
+    @Transactional
     public void addCart(Long uid, Long prodId) {
+        // 사용자 조회
+        Users user = usersRepository.findById(uid)
+                .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
 
+        // 상품 조회
+        Product product = productRepository.findById(prodId)
+                .orElseThrow(() -> new RuntimeException("상품을 찾을 수 없습니다."));
+
+        // Cart 객체 생성
+        Cart cart = new Cart();
+        cart.setUser(user);
+        cart.setProduct(product);
+        // addedAt은 @CreationTimestamp 어노테이션에 의해 자동 설정
+
+        // Cart 저장
+        cartRepository.save(cart);
     }
 
     @Override

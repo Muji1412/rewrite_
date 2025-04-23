@@ -22,7 +22,7 @@
 .inquiry-table thead th {background-color: #f8f8f8; /* 헤더 배경색 */font-weight: bold;color: #555;border-bottom-width: 1px; /* 헤더 아래 선 두께 */border-bottom-color: #ccc;}
 
 /* 특정 컬럼 정렬 및 너비 (예시) */
-.inquiry-table .col-id { width: 10%; }
+.inquiry-table .col-id { width: 13%; }
 .inquiry-table .col-subject { width: 40%; text-align: center; }
 .inquiry-table .col-writer { width: 15%; }
 .inquiry-table .col-type { width: 15%; }
