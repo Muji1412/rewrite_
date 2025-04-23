@@ -170,21 +170,34 @@ document.addEventListener('DOMContentLoaded', function() {
     // 5. 주문하기 버튼 클릭 시
     if (orderButton) {
         orderButton.addEventListener('click', function() {
-            const checkedItems = document.querySelectorAll('.item-checkbox:checked');
+            // 1. 장바구니에 상품이 있는지 확인
+            const cartItems = document.querySelectorAll('.cart-item');
 
-            if (checkedItems.length === 0) {
-                alert('주문할 상품을 선택해주세요.');
-                return;
+            // 장바구니가 비어있는 경우
+            if (cartItems.length === 0) {
+                alert('장바구니가 비어있습니다. 상품을 추가해주세요.');
+                return; // 페이지 이동 중단
             }
 
-            // 선택된 상품의 cartId 목록 생성
+            // 2. 선택된 항목 확인
+            const checkedItems = document.querySelectorAll('.item-checkbox:checked');
+
+            // 선택된 항목이 없는 경우
+            if (checkedItems.length === 0) {
+                alert('주문할 상품을 선택해주세요.');
+                return; // 페이지 이동 중단
+            }
+
+            // 3. 모든 조건 충족 - 선택된 항목의 ID 수집
             const selectedCartIds = Array.from(checkedItems).map(checkbox => {
                 return checkbox.closest('.cart-item').dataset.cartId;
             });
 
-            // 주문 페이지로 이동 (선택된 상품 정보 전달)
+            // 4. 쿼리 문자열 생성
             const queryString = selectedCartIds.map(id => `cartId=${id}`).join('&');
-            window.location.href = '/prod/order?${queryString}';
+
+            // 5. 주문 페이지로 이동
+           location.href = `/prod/orderPay`;
         });
     }
 

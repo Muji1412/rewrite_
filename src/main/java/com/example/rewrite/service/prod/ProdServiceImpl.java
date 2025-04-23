@@ -29,10 +29,21 @@ public class ProdServiceImpl implements ProdService {
                 .collect(Collectors.toList());
     }
 
+    // 내 상품 목록 조회
+    @Override
+    public List<ProductDTO> getMyProducts(Long uid) {
+
+        List<Product> myProducts = productRepository.findProductsByUserUid(uid);
+
+        return myProducts.stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
+    }
+
     // 상품 상세 조회
     @Override
     @Transactional
-    public ProductDTO getProductById(int id) {
+    public ProductDTO getProductById(Long id) {
         // 조회수 증가
         productRepository.incrementViewCount(id);
 
@@ -68,7 +79,7 @@ public class ProdServiceImpl implements ProdService {
     // 엔티티를 DTO로 변환
     private ProductDTO convertToDto(Product product) {
         ProductDTO.ProductDTOBuilder build = ProductDTO.builder()
-                .prodId(product.getProdId())
+                .prodId(Long.valueOf(product.getProdId()))
                 .title(product.getTitle())
                 .categoryMax(product.getCategoryMax())
                 .categoryMin(product.getCategoryMin())
@@ -80,7 +91,7 @@ public class ProdServiceImpl implements ProdService {
                 .img4(product.getImg4())
                 .videoUrl(product.getVideoUrl())
                 .regDate(product.getRegDate())
-                .viewcount(product.getViewCount() != null ? product.getViewCount() : 0);
+                .viewcount(product.getViewCount() != null ? product.getViewCount() : 0L);
 
         // 연관된 사용자 정보가 있다면 추가
         if (product.getUser() != null) {

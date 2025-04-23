@@ -7,10 +7,7 @@
       <h1 style="font-size: 30px; margin: 30px 0 10px 10px;">[[${nickname}]]님 안녕하세요</h1>
       <div class="profile-section">
         <div class="profile-left">
-          <div class="profile-img">
-            <img src="https://storage.googleapis.com/rewrite_project/profile_img/9b8a3325-7c56-49a1-a016-0bffeddc2e06.webp " alt="" style="width: 100%;">
-          </div>
-
+            <img class="profile-img" th:src="${user.imgUrl}" alt="">
         </div>
         <div class="profile-info">
           <div class="level">LV.5 고목나무</div>
@@ -78,7 +75,7 @@
               <div class="address">서초동 끌올 3시간전전</div>
             </div>
           </a>
-          <a href="" class="next-btn">
+          <a href="/prod/orderList" class="next-btn">
             <img src="/img/user/Vector.png" alt="" style="width: 50px; height: 50px;">
           </a>
         </div>
@@ -88,47 +85,55 @@
       <div style="margin: 100px 0 100px 0;">
         <h2>최근 판매 내역</h2>
         <div style="display: flex; gap: 20px;">
-          <a href="addressdetail.html" class="latest-order">
-            <div class="latest-order">
-              <img src="/img/58dc48bc0431c3afc99be751bce99ac4c89237f380bc34b0d30b8adfbb92cc89_0.webp" alt=""
-                class="main-img">
-              <div class="title">스타벅스 블루투스 랜턴 캠핑조명</div>
-              <h4>20,000원</h4>
-              <div class="address">서초동 끌올 3시간전전</div>
-            </div>
-          </a>
-          <a href="addressdetail.html" class="latest-order">
-            <div class="latest-order">
-              <img src="/img/58dc48bc0431c3afc99be751bce99ac4c89237f380bc34b0d30b8adfbb92cc89_0.webp" alt=""
-                class="main-img">
-              <div class="title">스타벅스 블루투스 랜턴 캠핑조명</div>
-              <h4>20,000원</h4>
-              <div class="address">서초동 끌올 3시간전전</div>
-            </div>
-          </a>
-          <a href="addressdetail.html" class="latest-order">
-            <div class="latest-order">
-              <img src="/img/58dc48bc0431c3afc99be751bce99ac4c89237f380bc34b0d30b8adfbb92cc89_0.webp" alt=""
-                class="main-img">
-              <div class="title">스타벅스 블루투스 랜턴 캠핑조명</div>
-              <h4>20,000원</h4>
-              <div class="address">서초동 끌올 3시간전전</div>
-            </div>
-          </a>
-          <a href="addressdetail.html" class="latest-order">
-            <div class="latest-order">
-              <img src="/img/58dc48bc0431c3afc99be751bce99ac4c89237f380bc34b0d30b8adfbb92cc89_0.webp" alt=""
-                class="main-img">
-              <div class="title">스타벅스 블루투스 랜턴 캠핑조명</div>
-              <h4>20,000원</h4>
-              <div class="address">서초동 끌올 3시간전전</div>
-            </div>
-          </a>
-          <a href="" class="next-btn">
-            <img src="/img/Vector.png" alt="" style="width: 50px; height: 50px;">
+          <div th:each="list : ${sellprod}">
+            <a href="addressdetail.html" class="latest-order">
+              <div class="latest-order">
+                <div class="media-container">
+                  <img th:src="${list.img1}" alt="" class="main-img">
+                  <!-- 비디오 요소 추가 (기본적으로 숨김) -->
+                  <video class="product-video" th:if="${list.videoUrl != null}"
+                         th:data-src="${list.videoUrl}" muted preload="none"></video>
+                </div>
+                <div class="title">[[${list.title}]]</div>
+                <h4>[[${list.price}]]원</h4>
+                <div class="address">서초동 끌올 3시간전전</div>
+              </div>
+            </a>
+          </div>
+          <a href="/prod/myProdList" class="next-btn">
+            <img src="/img/user/Vector.png" alt="" style="width: 50px; height: 50px;">
           </a>
         </div>
       </div>
+
+
+
     </section>
 
 </th:block>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // 모든 미디어 컨테이너에 호버 이벤트 설정
+    const containers = document.querySelectorAll('.media-container');
+
+    containers.forEach(container => {
+      const video = container.querySelector('.product-video');
+
+      if(video && video.dataset.src) {
+        // 호버 시 비디오 로드 및 재생
+        container.addEventListener('mouseenter', function() {
+          if(!video.getAttribute('src')) {
+            video.setAttribute('src', video.dataset.src);
+          }
+          video.play();
+        });
+
+        // 호버 해제 시 비디오 정지
+        container.addEventListener('mouseleave', function() {
+          video.pause();
+          video.currentTime = 0;
+        });
+      }
+    });
+  });
+</script>

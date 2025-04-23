@@ -1,12 +1,6 @@
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>주문/결제</title>
-    <link rel="stylesheet" href="/css/prod/checkout.css" th:href="@{/css/prod/checkout.css}">
-</head>
-<body>
+<link rel="stylesheet" href="/css/prod/checkout.css">
+<th:block th:replace="~{/include/include :: def(~{::#wrap})}">
+<section id="wrap">
 <div class="checkout-container">
     <!-- 추가된 헤더 섹션 -->
     <div class="checkout-header">  <!-- 제목과 단계 표시줄을 묶는 div -->
@@ -27,21 +21,21 @@
         <div class="info-table">
             <div class="info-row">
                 <div class="info-label">받는분</div>
-                <div class="info-value">안종수</div>
+                <div class="info-value">[[${defaultAddress.createdAt}]]</div>
             </div>
             <div class="info-row">
                 <div class="info-label">연락처</div>
-                <div class="info-value">010-1234-5678</div>
+                <div class="info-value">[[${formatPhoneNum}]]</div>
             </div>
             <div class="info-row">
                 <div class="info-label">주소</div>
                 <div class="info-value">
-                    <span>서울특별시 강남구 역삼동 에스코빌딩 5층</span>
+                    <span>[[${addr}]][[${detailAddress}]] ([[${postcode}]])</span>
                 </div>
             </div>
         </div>
     </section>
-
+    <a href=""></a>
     <!-- 배송 요청사항 -->
     <section class="info-section">
         <h2>배송 요청사항</h2>
@@ -70,38 +64,16 @@
             <tbody>
             <!-- 상품 1 -->
             <tr>
-                <!-- 1st TD: Image only -->
                 <td class="product-image-cell">
                     <img src="/img/prod/kkamarilla1.png" alt="상품 이미지" class="product-thumbnail">
                 </td>
-                <!-- 2nd TD: Name only -->
+
                 <td class="product-name-cell">
                     <span class="product-name">까마릴라</span>
                 </td>
-                <!-- 3rd TD: Price -->
+
                 <td class="product-price">3,000,000원</td>
             </tr>
-            <!-- 상품 2 -->
-            <tr>
-                <td class="product-image-cell">
-                    <img src="/img/prod/kkamarilla2.png" alt="상품 이미지" class="product-thumbnail">
-                </td>
-                <td class="product-name-cell">
-                    <span class="product-name">까마릴라</span>
-                </td>
-                <td class="product-price">3,000,000원</td>
-            </tr>
-            <!-- 상품 3 -->
-            <tr>
-                <td class="product-image-cell">
-                    <img src="/img/prod/kkamarilla1.png" alt="상품 이미지" class="product-thumbnail">
-                </td>
-                <td class="product-name-cell">
-                    <span class="product-name">까마릴라</span>
-                </td>
-                <td class="product-price">3,000,000원</td>
-            </tr>
-            <!-- Add more product rows following this 3-cell structure -->
             </tbody>
         </table>
     </section>
@@ -146,6 +118,6 @@
         </aside>
     </div>
 </div>
-
+</section>
 </body>
-</html>
+</th:block>

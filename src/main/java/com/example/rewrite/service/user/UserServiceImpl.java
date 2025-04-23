@@ -1,19 +1,16 @@
 package com.example.rewrite.service.user;
 
 import com.example.rewrite.command.UserVO;
-import com.example.rewrite.command.user.ApiResponseDto;
 import com.example.rewrite.command.user.FindIdRequestDto;
 import com.example.rewrite.command.user.SignupRequestDto;
 import com.example.rewrite.command.user.UserDTO;
+import com.example.rewrite.entity.Product;
 import com.example.rewrite.entity.Users;
 import com.example.rewrite.repository.users.UsersRepository;
 import com.example.rewrite.service.mail.MailService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
@@ -135,6 +132,11 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         return false;
     }
 
+    @Override
+    public Users getUserInfo(Long uid) {
+        return usersRepository.findUsersById(uid);
+    }
+
     //회원정보 수정
     @Override
     @Transactional
@@ -162,7 +164,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     //마이페이지 프로필 조회
     @Override
     public Users getProfile(Long uid) {
-        return usersRepository.findUsersById(uid);
+        return usersRepository.findUserByUid(uid);
     }
 
     @Override
@@ -189,4 +191,10 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     public void changeRole(Long uid, String role) {
         Users user = usersRepository.findUsersById(uid);
     }
+    //마이페이지 판매내역 조회
+    @Override
+    public List<Product> getSellProd(Long uid) {
+        return usersRepository.getSellProd(uid);
+    }
+
 }

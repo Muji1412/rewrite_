@@ -1,6 +1,7 @@
 package com.example.rewrite.repository.users;
 
 import com.example.rewrite.command.UserVO;
+import com.example.rewrite.entity.Product;
 import com.example.rewrite.entity.Users;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -56,9 +57,6 @@ public interface UsersRepository extends JpaRepository<Users, Long> {
             "FROM Product p WHERE p.user.uid = :uid ")
     String sellCount(@Param("uid")Long uid);
 
-    @Query("SELECT u FROM Users u WHERE u.uid = :uid")
-    Users findUsersById(Long uid);
-
     @Query("SELECT u FROM Users u WHERE " +
             "(:searchTerm IS NULL OR " +
             "LOWER(u.id) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
@@ -66,4 +64,9 @@ public interface UsersRepository extends JpaRepository<Users, Long> {
             "LOWER(u.email) LIKE LOWER(CONCAT('%', :searchTerm, '%'))) " +
             "AND (:role IS NULL OR u.role = :role)")
     List<Users> searchUsers(@Param("searchTerm") String searchTerm, @Param("role") String role);
+
+    Users findUserByUid(Long uid);
+
+    @Query("SELECT p FROM Product p where p.user.uid = :uid")
+    List<Product> getSellProd(Long uid);
 }

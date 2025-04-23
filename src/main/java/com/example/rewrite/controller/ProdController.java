@@ -2,18 +2,21 @@ package com.example.rewrite.controller;
 
 import com.example.rewrite.command.ProductDTO;
 import com.example.rewrite.command.user.UserSessionDto;
+import com.example.rewrite.entity.Address;
 import com.example.rewrite.entity.Cart;
-import com.example.rewrite.entity.Product;
+import com.example.rewrite.entity.Users;
 import com.example.rewrite.repository.product.ProductRepository;
+import com.example.rewrite.service.address.AddressService;
 import com.example.rewrite.service.cart.CartService;
 import com.example.rewrite.service.prod.ProdService;
+import com.example.rewrite.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpSession;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Controller
@@ -27,15 +30,53 @@ public class ProdController {
     private ProdService prodService;
 
     private final ProductRepository productRepository;
+    @Autowired
+    private UserService userService;
+    @Autowired
+    private AddressService addressService;
 
     public ProdController(ProductRepository productRepository) {
         this.productRepository = productRepository;
     }
 
-    @GetMapping("/checkout")
-    public String checkout() {
-        return "prod/checkout";
+    @GetMapping("/orderPay")
+    public String orderPay(HttpSession session, Model model) {
+        UserSessionDto user = (UserSessionDto) session.getAttribute("user");
+        if(user == null) {
+            return "redirect:/user/login";
+        }
+        Long uid = user.getUid();
+
+        Address defaultAddress = addressService.getDefaultAddress(uid);
+
+        model.addAttribute("defaultAddress", defaultAddress);
+        if (defaultAddress != null && defaultAddress.getAddress() != null) {
+            String[] parts = defaultAddress.getAddress().split("/");
+
+            if (parts.length == 3) {
+                model.addAttribute("postcode", parts[0]);
+                model.addAttribute("addr", parts[1]);
+                model.addAttribute("detailAddress", parts[2]);
+            } else {
+                model.addAttribute("postcode", "");
+                model.addAttribute("addr", "");
+                model.addAttribute("detailAddress", "");
+            }
+        }
+
+        if(defaultAddress != null && defaultAddress.getPhoneNum() != null) {
+            String phoneNum = defaultAddress.getPhoneNum();
+            String formatPhoneNum = phoneNum;
+
+            if(phoneNum.length() == 11) {
+                formatPhoneNum = phoneNum.replaceFirst("(\\d{3})(\\d{4})(\\d{4})","$1-$2-$3");
+            }
+
+            model.addAttribute("formatPhoneNum", formatPhoneNum);
+        }
+        return "prod/orderPay";
     }
+
     @GetMapping("/cart")
     public String cart(Model model, HttpSession session) {
         UserSessionDto user = (UserSessionDto)session.getAttribute("user");
@@ -74,7 +115,7 @@ public class ProdController {
     }
 
     @GetMapping("/prodDetail")
-    public String prodDetail(@RequestParam int prodId, Model model){
+    public String prodDetail(@RequestParam Long prodId, Model model){
         // 서비스를 통해 상품 상세 정보를 가져옴
         ProductDTO product = prodService.getProductById(prodId);
         // 모델에 상품 정보 추가
@@ -91,18 +132,33 @@ public class ProdController {
         return "prod/prodList";
     }
 
+    @GetMapping("/myProdList")
+    public String myProdList(HttpSession session, Model model){
+        UserSessionDto user = (UserSessionDto)session.getAttribute("user");
+
+        model.addAttribute("products", prodService.getMyProducts(user.getUid()));
+
+        return  "prod/prodList";
+    }
+
     @PostMapping("/productReg")
     public String register(
-            @ModelAttribute ProductDTO productDTO) {
+            @ModelAttribute ProductDTO productDTO,
+            RedirectAttributes redirectAttributes) {
 
         // 서비스 레이어를 통해 상품 등록
         prodService.registerProduct(productDTO);
+
+        // 성공 메시지 추가
+        redirectAttributes.addFlashAttribute("success", "상품이 성공적으로 등록되었습니다.");
+        System.out.println("Flash 속성 설정됨: success = 상품이 성공적으로 등록되었습니다.");
+
         return "redirect:/prod/prodList";
     }
 
     // 상품 수정 페이지 이동
     @GetMapping("/productUpdate")
-    public String productUpdate(@RequestParam int prodId, Model model) {
+    public String productUpdate(@RequestParam Long prodId, Model model) {
         ProductDTO product = prodService.getProductById(prodId);
         model.addAttribute("product", product);
         return "prod/productReg";  // 등록 페이지를 재사용
