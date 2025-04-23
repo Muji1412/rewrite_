@@ -13,5 +13,6 @@ public interface AddressService {
     public void deleteAddress(Long addressId);
     public Address updateAddress(Long addressId);
     public void modifyAddress(Address address);
+    Address getDefaultAddress(Long uid);
 
 }

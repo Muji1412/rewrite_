@@ -48,4 +48,16 @@ public class AddressServiceImpl implements AddressService{
     public void modifyAddress(Address address) {
         addressRepository.modifyAddress(address);
     }
+
+    @Override
+    public Address getDefaultAddress(Long uid) {
+        List<Address> addressList = addressRepository.getAddress(uid);
+
+        for(Address address : addressList) {
+            if("C".equals(address.getIsDefault())) {
+                return address;
+            }
+        }
+        return null;
+    }
 }
