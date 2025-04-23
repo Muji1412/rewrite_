@@ -3,8 +3,12 @@
 <th:block th:replace="~{/include/include :: def(~{::#wrap})}">
 
     <section id="wrap">
-        <form id="product-form" name="productForm" action="/prod/productReg" method="post" enctype="multipart/form-data">
-            <input type="text" placeholder="상품명 입력" id="prod-name" class="prod-name" name = "title" required>
+
+        <form id="product-form" name="productForm" th:action="${product != null && product.prodId != 0 ? '/prod/productUpdate' : '/prod/productReg'}" method="post" enctype="multipart/form-data">
+            <!-- 수정 모드일 때 상품 ID를 hidden으로 전달 -->
+            <input type="hidden" name="prodId" th:if="${product != null}" th:value="${product != null ? product.prodId : 0}">
+
+            <input type="text" placeholder="상품명 입력" id="prod-name" class="prod-name" name = "title"  th:value="${product != null ? product.title : ''}" required>
 
             <!-- 카테고리 테이블 -->
             <div class="category-wrapper">
@@ -21,15 +25,15 @@
                 </div>
             </div>
 
-            <input type="hidden" name="category_max" id="category_max">
-            <input type="hidden" name="category_min" id="category_min">
+            <input type="hidden" name="category_max" id="category_max" th:value="${product != null ? product.categoryMax : ''}">
+            <input type="hidden" name="category_min" id="category_min" th:value="${product != null ? product.categoryMin : ''}">
 
-            <input type="text" placeholder="판매가 입력" id="prod-price" class="prod-price" name="price" required>
+            <input type="text" placeholder="판매가 입력" id="prod-price" class="prod-price" name="price" th:value="${product != null ? product.price : ''}" required>
 
             <textarea rows="5" class="tarea"  placeholder="-상품 설명
 -사용 기간
 -실제 촬영한 사진을 올려주세요.
--본인이 촬영한 사진이 아닐 시 이용제재 처리 될 수 있습니다." id="description" name="description"></textarea>
+-본인이 촬영한 사진이 아닐 시 이용제재 처리 될 수 있습니다." id="description" name="description"  th:text="${product != null ? product.description : ''}"></textarea>
 
             <div class="image-upload-container">
                 <div class="image-upload-box">
@@ -46,13 +50,13 @@
                 <input type="file" name="images" id="file-input" accept="image/*" multiple style="display:none;">
                 <input type="file" name="video" id="video-input" accept="video/*" style="display:none;">
             </div>
-            <input type="hidden" name="img_1">
-            <input type="hidden" name="img_2">
-            <input type="hidden" name="img_3">
-            <input type="hidden" name="img_4">
-            <input type="hidden" name="video_url">
+            <input type="hidden" name="img_1" th:value="${product != null ? product.img1 : ''}">
+            <input type="hidden" name="img_2" th:value="${product != null ? product.img2 : ''}">
+            <input type="hidden" name="img_3" th:value="${product != null ? product.img3 : ''}">
+            <input type="hidden" name="img_4" th:value="${product != null ? product.img4 : ''}">
+            <input type="hidden" name="video_url" th:value="${product != null ? product.videoUrl : ''}">
 
-            <button type="submit" class="register-btn" >등록하기</button>
+            <button type="submit" class="register-btn" th:text="${product != null && product.prodId != 0 ? '수정하기' : '등록하기'}">등록하기</button>
         </form>
     </section>
 

@@ -15,6 +15,70 @@ let uploadedImageUrls = []; // 이미지 URL 배열
 let uploadedVideoUrl = null; // 동영상 URL
 
 document.addEventListener('DOMContentLoaded', function() {
+    // 수정 모드인지 확인 (URL에서 prodId 파라미터 확인)
+    const urlParams = new URLSearchParams(window.location.search);
+    const prodId = urlParams.get('prodId');
+    let isUpdateMode = prodId ? true : false;
+
+    // 수정 모드일 경우 기존 데이터 불러오기
+    if (isUpdateMode) {
+        fetch(`/api/products/${prodId}`)
+            .then(response => {
+                if (!response.ok) throw new Error('상품 정보를 불러올 수 없습니다.');
+                return response.json();
+            })
+            .then(product => {
+                // 폼 필드에 기존 데이터 채우기
+                document.querySelector('input[name="title"]').value = product.title;
+                document.querySelector('input[name="price"]').value = product.price;
+                document.querySelector('textarea[name="description"]').value = product.description;
+
+                // 카테고리 선택 상태 복원
+                if (product.categoryMax) {
+                    document.getElementById('category_max').value = product.categoryMax;
+                    // 대분류 버튼 선택 상태 표시
+                    document.querySelectorAll('.category-box .category-item').forEach(btn => {
+                        if (btn.innerText === product.categoryMax) {
+                            btn.classList.add('selected');
+                            showSubCategory(product.categoryMax);
+
+                            // 하위 카테고리 선택 (타이밍 문제로 setTimeout 사용)
+                            if (product.categoryMin) {
+                                document.getElementById('category_min').value = product.categoryMin;
+                                setTimeout(() => {
+                                    const subButtons = document.querySelectorAll('#sub-category .category-item');
+                                    subButtons.forEach(btn => {
+                                        if (btn.innerText === product.categoryMin) {
+                                            btn.classList.add('selected');
+                                        }
+                                    });
+                                }, 300);
+                            }
+                        }
+                    });
+                }
+
+                // 기존 이미지 URL 로드
+                if (product.img1) uploadedImageUrls.push(product.img1);
+                if (product.img2) uploadedImageUrls.push(product.img2);
+                if (product.img3) uploadedImageUrls.push(product.img3);
+                if (product.img4) uploadedImageUrls.push(product.img4);
+
+                // 기존 비디오 URL 로드
+                if (product.videoUrl) uploadedVideoUrl = product.videoUrl;
+
+                // 미리보기 렌더링
+                renderPreview();
+
+                // 수정 모드임을 표시
+                document.querySelector('.register-btn').textContent = '수정하기';
+            })
+            .catch(error => {
+                console.error('상품 정보 로드 실패:', error);
+                alert('상품 정보를 불러오는데 실패했습니다.');
+            });
+    }
+
     // 대분류 버튼
     const mainCategoryBtns = document.querySelectorAll('.category-box .category-item');
     mainCategoryBtns.forEach(btn => {
@@ -62,12 +126,13 @@ function showSubCategory(mainCategory) {
 function initFileUpload() {
     const uploadBox = document.getElementById('file-upload-box');
     const fileInput = document.getElementById('file-input');
+    const videoInput = document.getElementById('video-input');
     const previewContainer = document.getElementById('preview-container');
     const fileCount = document.getElementById('file-count');
 
     // 클릭 시 파일 선택창 열기
     uploadBox.addEventListener('click', function(e) {
-        if (e.target === fileInput) return;
+        if (e.target === fileInput || e.target === videoInput) return;
         fileInput.click();
     });
 
@@ -141,64 +206,72 @@ function initFileUpload() {
                 alert('업로드 실패: ' + error.message);
             });
     }
+}
 
-    // 미리보기 렌더링
-    function renderPreview() {
-        // 파일 개수 카운트 업데이트
-        const totalCount = uploadedImageUrls.length + (uploadedVideoUrl ? 1 : 0);
-        fileCount.innerText = totalCount + "/5";
-        previewContainer.innerHTML = '';
+// 미리보기 렌더링 함수
+function renderPreview() {
+    const previewContainer = document.getElementById('preview-container');
+    const fileCount = document.getElementById('file-count');
 
-        // 이미지 썸네일
-        uploadedImageUrls.forEach((url, idx) => {
-            const box = document.createElement('div');
-            box.className = 'image-upload-box';
-            const img = document.createElement('img');
-            img.src = url;
-            img.alt = '이미지 미리보기';
-            box.appendChild(img);
+    // 파일 개수 카운트 업데이트
+    const totalCount = uploadedImageUrls.length + (uploadedVideoUrl ? 1 : 0);
+    fileCount.innerText = totalCount + "/5";
+    previewContainer.innerHTML = '';
 
-            // 삭제 버튼
-            const delBtn = document.createElement('button');
-            delBtn.innerText = 'X';
-            delBtn.className = 'delete-btn';
-            delBtn.addEventListener('click', () => {
-                uploadedImageUrls.splice(idx, 1);
-                renderPreview();
-            });
-            box.appendChild(delBtn);
+    // 이미지 썸네일
+    uploadedImageUrls.forEach((url, idx) => {
+        const box = document.createElement('div');
+        box.className = 'image-upload-box';
+        const img = document.createElement('img');
+        img.src = url;
+        img.alt = '이미지 미리보기';
+        box.appendChild(img);
 
-            previewContainer.appendChild(box);
+        // 삭제 버튼
+        const delBtn = document.createElement('button');
+        delBtn.innerText = 'X';
+        delBtn.className = 'delete-btn';
+        delBtn.addEventListener('click', () => {
+            uploadedImageUrls.splice(idx, 1);
+            renderPreview();
         });
+        box.appendChild(delBtn);
 
-        // 동영상 썸네일
-        if (uploadedVideoUrl) {
-            const box = document.createElement('div');
-            box.className = 'image-upload-box';
-            const video = document.createElement('video');
-            video.src = uploadedVideoUrl;
-            video.controls = true;
-            video.width = 60;
-            video.height = 60;
-            box.appendChild(video);
+        previewContainer.appendChild(box);
+    });
 
-            const delBtn = document.createElement('button');
-            delBtn.innerText = 'X';
-            delBtn.className = 'delete-btn';
-            delBtn.addEventListener('click', () => {
-                uploadedVideoUrl = null;
-                renderPreview();
-            });
-            box.appendChild(delBtn);
+    // 동영상 썸네일
+    if (uploadedVideoUrl) {
+        const box = document.createElement('div');
+        box.className = 'image-upload-box';
+        const video = document.createElement('video');
+        video.src = uploadedVideoUrl;
+        video.controls = true;
+        video.width = 60;
+        video.height = 60;
+        box.appendChild(video);
 
-            previewContainer.appendChild(box);
-        }
+        const delBtn = document.createElement('button');
+        delBtn.innerText = 'X';
+        delBtn.className = 'delete-btn';
+        delBtn.addEventListener('click', () => {
+            uploadedVideoUrl = null;
+            renderPreview();
+        });
+        box.appendChild(delBtn);
+
+        previewContainer.appendChild(box);
     }
 }
 
-// 등록하기 버튼 submit 시 REST API 호출로 변경
+// 등록하기/수정하기 버튼 submit 시 REST API 호출
 document.getElementById('product-form').addEventListener('submit', function(e) {
     e.preventDefault(); // 기본 폼 제출 방지
+
+    // URL에서 prodId 확인
+    const urlParams = new URLSearchParams(window.location.search);
+    const prodId = urlParams.get('prodId');
+    const isUpdateMode = prodId ? true : false;
 
     // 이미지 URL 준비
     const imageUrls = [];
@@ -220,9 +293,14 @@ document.getElementById('product-form').addEventListener('submit', function(e) {
         videoUrl: uploadedVideoUrl || ""
     };
 
-    // API 호출
-    fetch('/api/products', {
-        method: 'POST',
+    // 수정 모드일 경우 prodId 추가
+    if (isUpdateMode) {
+        productData.prodId = parseInt(prodId);
+    }
+
+    // API 호출 (등록 또는 수정)
+    fetch(isUpdateMode ? `/api/products/${prodId}` : '/api/products', {
+        method: isUpdateMode ? 'PUT' : 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
@@ -235,12 +313,14 @@ document.getElementById('product-form').addEventListener('submit', function(e) {
             return response.json();
         })
         .then(data => {
-            console.log('상품 등록 성공:', data);
-            // 성공 시 상품 목록 페이지로 이동
-            window.location.href = '/prod/prodList';
+            console.log(isUpdateMode ? '상품 수정 성공:' : '상품 등록 성공:', data);
+            // 성공 시 상품 상세 또는 목록 페이지로 이동
+            window.location.href = isUpdateMode
+                ? `/prod/prodDetail?prodId=${prodId}`
+                : '/prod/prodList';
         })
         .catch(error => {
-            console.error('상품 등록 실패:', error);
-            alert('상품 등록에 실패했습니다. 다시 시도해주세요.');
+            console.error(isUpdateMode ? '상품 수정 실패:' : '상품 등록 실패:', error);
+            alert(isUpdateMode ? '상품 수정에 실패했습니다.' : '상품 등록에 실패했습니다. 다시 시도해주세요.');
         });
 });

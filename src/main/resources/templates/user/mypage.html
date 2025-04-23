@@ -1,13 +1,14 @@
-  <link rel="stylesheet" href="/css/user/mypage.css">
-<th:block th:replace="~{/include/include :: def(~{::#wrap})}">
+<link rel="stylesheet" href="/css/user/mypage.css">
+<th:block th:replace="~{/include/side :: def(~{::#wrap})}">
+
 
     <section id="wrap">
       <!-- 상단단 -->
-      <h1 style="font-size: 30px; margin: 30px 0 10px 10px;">홍길동님 안녕하세요</h1>
+      <h1 style="font-size: 30px; margin: 30px 0 10px 10px;">[[${nickname}]]님 안녕하세요</h1>
       <div class="profile-section">
         <div class="profile-left">
           <div class="profile-img">
-            <img src="/img/user/user_profile_img.png" alt="" style="width: 100%;">
+            <img src="https://storage.googleapis.com/rewrite_project/profile_img/9b8a3325-7c56-49a1-a016-0bffeddc2e06.webp " alt="" style="width: 100%;">
           </div>
 
         </div>
@@ -29,7 +30,7 @@
         </div>
         <div class="stat-item">
           <div class="label">판매수</div>
-          <div class="value">20</div>
+          <div class="value">[[${sellcount}]]</div>
         </div>
         <div class="stat-item">
           <div class="label">리뷰</div>

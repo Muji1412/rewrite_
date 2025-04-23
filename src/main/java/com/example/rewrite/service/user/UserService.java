@@ -23,4 +23,6 @@ public interface UserService {
     void sendUserPwdToEmail(FindIdRequestDto requestDto);
     boolean checkUserByNameAndPhoneAndEmail(FindIdRequestDto requestDto);
     User getUserInfo(String id);
+    String sellCount(Long uid);
+    Users getProfile(Long uid);
 }

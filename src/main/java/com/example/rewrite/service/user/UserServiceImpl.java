@@ -163,4 +163,16 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         String genId = "deleted_" + UUID.randomUUID().toString().substring(0, 8);
         usersRepository.userDelete(uid, genId);
     }
+
+    //마이페이지 판매수
+    @Override
+    public String sellCount(Long uid) {
+        return usersRepository.sellCount(uid);
+    }
+
+    //마이페이지 프로필 조회
+    @Override
+    public Users getProfile(Long uid) {
+        return usersRepository.findUsersById(uid);
+    }
 }
