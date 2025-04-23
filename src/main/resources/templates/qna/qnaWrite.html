@@ -10,7 +10,7 @@
     <!-- 로고는 필요 시 여기에 추가 -->
     <!-- <img src="/img/rewrite_logo.png" alt="REWRITE 로고" class="logo-image"> -->
 
-    <form action="/inquiry/submit" method="post" class="inquiry-form" enctype="multipart/form-data"> <!-- form 태그 및 클래스 변경, 파일 첨부 시 enctype 추가 -->
+    <form action="inquiry/submit" method="post" class="inquiry-form" enctype="multipart/form-data"> <!-- form 태그 및 클래스 변경, 파일 첨부 시 enctype 추가 -->
         <h2 class="page-title">문의하기</h2>
 
         <div class="form-group"> <!-- 클래스명 변경 (input-group 대신) -->
@@ -65,4 +65,4 @@
 </body>
 
 </th:block>
-<script src="../..//js/QnaWrite.js" th:src="@{/js/QnaWrite.js}"></script>
+<script src="../../js/QnaWrite.js" th:src="@{/js/QnaWrite.js}"></script>
