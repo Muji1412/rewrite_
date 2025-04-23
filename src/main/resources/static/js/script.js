@@ -13,4 +13,6 @@ $(document).ready(function () {
         if(cnt>max) cnt=0;
         $(txt[cnt]).animate({"top":0});
         }
+
+
 });
