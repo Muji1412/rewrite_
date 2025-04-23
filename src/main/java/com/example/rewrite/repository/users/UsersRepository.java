@@ -3,7 +3,6 @@ package com.example.rewrite.repository.users;
 import com.example.rewrite.command.UserVO;
 import com.example.rewrite.entity.Product;
 import com.example.rewrite.entity.Users;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -18,7 +17,6 @@ import java.util.Optional;
 public interface UsersRepository extends JpaRepository<Users, Long> {
 
     // 회원가입 관련 메서드
-    Optional<Users> findByUid(Long uid);
     Optional<Users> findById(String id);
     boolean existsById(String id);
     boolean existsByEmail(String email);
@@ -26,7 +24,6 @@ public interface UsersRepository extends JpaRepository<Users, Long> {
     Optional<Users> findByEmail(String email);
     Optional<Users> findByNameAndPhoneAndEmail(String name, String phone, String email);
     Optional<Users> findByIdAndNameAndPhoneAndEmail(String id, String name, String phone, String email);
-
 
 
 
@@ -56,14 +53,6 @@ public interface UsersRepository extends JpaRepository<Users, Long> {
     @Query("SELECT COUNT(p)" +
             "FROM Product p WHERE p.user.uid = :uid ")
     String sellCount(@Param("uid")Long uid);
-
-    @Query("SELECT u FROM Users u WHERE " +
-            "(:searchTerm IS NULL OR " +
-            "LOWER(u.id) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
-            "LOWER(u.nickname) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
-            "LOWER(u.email) LIKE LOWER(CONCAT('%', :searchTerm, '%'))) " +
-            "AND (:role IS NULL OR u.role = :role)")
-    List<Users> searchUsers(@Param("searchTerm") String searchTerm, @Param("role") String role);
 
     Users findUserByUid(Long uid);
 
