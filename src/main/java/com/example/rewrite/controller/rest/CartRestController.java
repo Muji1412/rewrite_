@@ -4,11 +4,15 @@ import com.example.rewrite.command.user.UserSessionDto;
 import com.example.rewrite.service.cart.CartService;
 import org.hibernate.id.GUIDGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.net.URI;
 import java.util.Map;
 
 @RestController
