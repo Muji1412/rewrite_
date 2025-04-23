@@ -5,28 +5,28 @@
         <div class="profile-container">
             <h1>회원정보수정</h1>
             <div class="img">
-                <img class="profileImg" src="/img/profileImg.png" alt="회원정보수정이미지" />
+                <img class="profileImg" th:src="${user.imgUrl != null ? user.imgUrl : '/img/profileImg.png'}" alt="회원정보수정이미지" />
                 <a href="javascript:void(0);" id="cameraIcon"><img class="profileImg" src="/img/camera.png" alt="회원정보수정이미지" /></a>
             </div>
             <p><a href="/address/detail">주소지 관리</a></p>
-            <!-- 숨겨진 파일 선택 input -->
-<!--            <input type="file" id="imgInput" accept="image/*" style="display: none;" />-->
 
-            <form action="/user/modify" method="post" enctype="multipart/form-data">
-                <input type="file" id="imgInput" name="profileImage" accept="image/*" style="display: none;" />
+            <form action="/user/modify" method="post">
+                <input type="file" id="file" accept="image/*" style="display: none;" />
+                <!-- 이미지 URL을 저장할 hidden 필드 추가 -->
+                <input type="hidden" id="imgUrl" name="imgUrl" />
                 <input type="text" name="nickname" th:value="${user.nickname}" placeholder="닉네임" /><br />
-                <input type="text" name="password"  placeholder="비밀번호 변경" required/><br />
-                <input type="text" name="eqpassword" placeholder="비밀번호 재입력" required /><br/>
+                <input type="password" name="password" placeholder="비밀번호 변경" required/><br />
+                <input type="password" name="eqpassword" placeholder="비밀번호 재입력" required /><br/>
                 <div class="actions">
                     <p><a href="#" class="withdraw">회원탈퇴</a></p>
                 </div>
                 <button type="submit">수정하기</button>
             </form>
         </div>
-        <div id="flash-message" th:if="${message}" th:text="${message}" style="display: none;"></div>
+        <div id="flash-message" th:if="${message}" th:text="${message}" style="display: none;"/>
     </section>
 </th:block>
-<script src="/js/upload.js"></script>
+
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         const flashMessage = document.getElementById("flash-message");
@@ -37,21 +37,49 @@
 
     // 카메라 아이콘 클릭 시 파일 선택 창 열기
     const cameraIcon = document.getElementById("cameraIcon");
-    const imgInput = document.getElementById("imgInput");
+    const fileInput = document.getElementById("file");
 
     cameraIcon.addEventListener("click", function() {
-        imgInput.click(); // 숨겨진 파일 입력 요소 클릭
+        fileInput.click(); // 숨겨진 파일 입력 요소 클릭
     });
 
-    // 파일이 선택되었을 때 프로필 이미지 미리보기
-    imgInput.addEventListener("change", function() {
+    // 파일이 선택되었을 때 프로필 이미지 미리보기 및 자동 업로드
+    fileInput.addEventListener("change", function() {
         if (this.files && this.files[0]) {
+            const file = this.files[0];
+
+            // 미리보기 표시
             const reader = new FileReader();
             reader.onload = function(e) {
                 const profileImg = document.querySelector(".profileImg:first-child");
                 profileImg.src = e.target.result;
             };
-            reader.readAsDataURL(this.files[0]);
+            reader.readAsDataURL(file);
+
+            // 파일 자동 업로드
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('folderPath', 'profile_img');
+
+            fetch('/api/files', {
+                method: 'POST',
+                body: formData
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('서버 오류: ' + response.status);
+                    }
+                    return response.text();
+                })
+                .then(url => {
+                    // 업로드된 이미지 URL을 hidden 필드에 저장
+                    document.getElementById('imgUrl').value = url;
+                    console.log('이미지가 업로드되었습니다:', url);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('업로드 실패: ' + error.message);
+                });
         }
     });
 

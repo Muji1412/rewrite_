@@ -4,6 +4,7 @@ import com.example.rewrite.command.UserVO;
 import com.example.rewrite.command.user.FindIdRequestDto;
 import com.example.rewrite.command.user.LoginRequestDto;
 import com.example.rewrite.command.user.SignupRequestDto;
+import com.example.rewrite.entity.Product;
 import com.example.rewrite.entity.Users;
 import com.example.rewrite.repository.users.UsersRepository;
 import com.example.rewrite.service.mail.MailService;
@@ -136,5 +137,10 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public Users getProfile(Long uid) {
         return usersRepository.findUsersById(uid);
+    }
+
+    @Override
+    public List<Product> getSellProd(Long uid) {
+        return usersRepository.getSellProd(uid);
     }
 }
