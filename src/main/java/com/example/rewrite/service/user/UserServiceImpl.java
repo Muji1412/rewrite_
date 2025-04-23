@@ -1,7 +1,6 @@
 package com.example.rewrite.service.user;
 
 import com.example.rewrite.command.UserVO;
-import com.example.rewrite.command.user.ApiResponseDto;
 import com.example.rewrite.command.user.FindIdRequestDto;
 import com.example.rewrite.command.user.SignupRequestDto;
 import com.example.rewrite.entity.Product;
@@ -10,10 +9,7 @@ import com.example.rewrite.repository.users.UsersRepository;
 import com.example.rewrite.service.mail.MailService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
@@ -143,8 +139,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public User getUserInfo(String id) {
-        return null;
+    public Users getUserInfo(Long uid) {
+        return usersRepository.findUsersById(uid);
     }
 
     //회원정보 수정
