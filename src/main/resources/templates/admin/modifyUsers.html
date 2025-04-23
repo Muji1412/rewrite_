@@ -170,7 +170,7 @@
     <div class="search-filter-area">
         <input type="search" id="searchInput" placeholder="아이디, 닉네임, 이메일 검색...">
         <select id="roleFilter">
-            <option value="">역할 전체</option>
+            <option value="none">역할 전체</option>
             <option value="user">user</option>
             <option value="admin">admin</option>
             <!-- 다른 역할이 있다면 추가 -->
@@ -260,22 +260,15 @@
             const searchTerm = searchInput.value.trim();
             const selectedRole = roleFilter.value;
 
-            // --- !!! 중요: 실제 API 엔드포인트로 교체 필요 !!! ---
-            // const apiUrl = `/api/admin/users?search=${encodeURIComponent(searchTerm)}&role=${selectedRole}`;
-            const apiUrl = `/api/admin/users?search=${searchTerm}&role=${selectedRole}`; // 간단 예시 URL
+            const apiUrl = `/api/admin/users?search=${searchTerm}&role=${selectedRole}`;
 
 
             try {
-                // 백엔드 API 호출 (가상)
-                // const response = await fetch(apiUrl);
-                // if (!response.ok) {
-                //     throw new Error(`HTTP error! status: ${response.status}`);
-                // }
-                // const users = await response.json();
-
-                // --- API 연동 전, 임시 더미 데이터 사용 ---
-                const users = getDummyUsers(searchTerm, selectedRole);
-                // --- 더미 데이터 끝 ---
+                const response = await fetch(apiUrl);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const users = await response.json();
 
                 renderUserTable(users);
 
@@ -329,19 +322,21 @@
             const newRole = prompt(`사용자 UID ${uid}의 새 역할을 입력하세요 (예: admin, user):`);
             if (newRole && (newRole === 'admin' || newRole === 'user')) { // 간단한 유효성 검사
                 alert(`(가상) UID ${uid} 사용자의 역할을 ${newRole}(으)로 변경합니다.\n실제로는 API 호출이 필요합니다.`);
-                // --- !!! 중요: 실제 역할 변경 API 호출 필요 !!! ---
-                // fetch(`/api/admin/users/${uid}/role`, {
-                //     method: 'PATCH', // 또는 PUT
-                //     headers: { 'Content-Type': 'application/json' },
-                //     body: JSON.stringify({ role: newRole })
-                // }).then(response => {
-                //     if (response.ok) {
-                //         alert('역할이 변경되었습니다.');
-                //         fetchAndRenderUsers(); // 테이블 새로고침
-                //     } else {
-                //         alert('역할 변경 실패');
-                //     }
-                // }).catch(error => console.error('역할 변경 API 오류:', error));
+                const newRoleData = {}
+                newRoleData.uid = uid;
+                newROleData.role = newRole;
+                fetch(`/api/admin/setUserRole`, {
+                    method: 'POST', // 또는 PUT
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(newRoleData)
+                }).then(response => {
+                    if (response.ok) {
+                        alert('역할이 변경되었습니다.');
+                        fetchAndRenderUsers(); // 테이블 새로고침
+                    } else {
+                        alert('역할 변경 실패');
+                    }
+                }).catch(error => console.error('역할 변경 API 오류:', error));
             } else if (newRole !== null) { // 취소가 아닌 경우
                 alert('잘못된 역할 값입니다. "user" 또는 "admin"을 입력하세요.');
             }

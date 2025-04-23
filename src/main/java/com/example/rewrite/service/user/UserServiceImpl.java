@@ -4,6 +4,7 @@ import com.example.rewrite.command.UserVO;
 import com.example.rewrite.command.user.ApiResponseDto;
 import com.example.rewrite.command.user.FindIdRequestDto;
 import com.example.rewrite.command.user.SignupRequestDto;
+import com.example.rewrite.command.user.UserDTO;
 import com.example.rewrite.entity.Product;
 import com.example.rewrite.entity.Users;
 import com.example.rewrite.repository.users.UsersRepository;
@@ -24,10 +25,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Slf4j
 @Service("UserService")
@@ -181,6 +179,31 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public List<Product> getSellProd(Long uid) {
         return usersRepository.getSellProd(uid);
+    }
+
+    @Override
+    public List<UserDTO> findUsers(String search, String role) {
+        List<Users> usersList = usersRepository.searchUsers(search, role);
+
+        System.out.println("유저디티오 디버깅");
+
+        List<UserDTO> userDTOList = new ArrayList<>();
+        for (Users users : usersList) {
+            System.out.println(users);
+            UserDTO user = UserDTO.fromEntity(users);
+            userDTOList.add(user);
+        }
+        for (UserDTO userDTO : userDTOList) {
+
+            System.out.println(userDTO.toString());
+        }
+
+        return userDTOList;
+    }
+
+    @Override
+    public void changeRole(Long uid, String role) {
+        Users user = usersRepository.findUserByUid(uid);
     }
 
 
