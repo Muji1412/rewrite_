@@ -50,7 +50,7 @@ public class Qna {
     private Long uid; // Java 필드명은 camelCase 권장 (key2)
 
     // 모든 필드를 받는 생성자 (필요에 따라 추가)
-    public Qna(Long qnaId, String title, String content, String regDate, String answer, String category, String userId, Long uid) {
+    public Qna(Long qnaId, String title, String content, String regDate, String answer, String category, String userId, Long uid, String fileAttachment) {
         this.qnaId = qnaId;
         this.title = title;
         this.content = content;
@@ -58,6 +58,7 @@ public class Qna {
         this.answer = answer;
         this.category = category;
         this.uid = uid;
+        this.fileAttachment = fileAttachment;
     }
 
     // Lombok @NoArgsConstructor 가 기본 생성자를 만들어줍니다.

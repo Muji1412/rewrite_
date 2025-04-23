@@ -100,6 +100,7 @@ public class QnaController {
                 .content(qna.getContent())
 //                .USERID(session.getId())
                 .USERID(userId != null ? userId : "guest") // session.getId() 대신 userId 사용
+                .fileAttachment(qna.getFileAttachment())
                 .build();
 
         log.info("newQna : {}", newQna);
