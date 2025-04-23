@@ -73,6 +73,8 @@ public class ProdController {
 
             model.addAttribute("formatPhoneNum", formatPhoneNum);
         }
+
+
         return "prod/orderPay";
     }
 
