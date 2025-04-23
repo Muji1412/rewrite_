@@ -1,5 +1,6 @@
 package com.example.rewrite.controller;
 
+import com.example.rewrite.command.user.UserSessionDto;
 import com.example.rewrite.entity.Notice;
 import com.example.rewrite.entity.Qna;
 import com.example.rewrite.entity.Users;
@@ -16,6 +17,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpSession;
@@ -68,8 +70,8 @@ public class QnaController {
     @GetMapping("/qnaWrite")
     public String writeInquiry(HttpSession session, RedirectAttributes redirectAttributes, Model model) {
         // 로그인 체크 (선택적)
-        String userId = (String) session.getAttribute("userId");
-        if (userId == null) {
+        UserSessionDto user = (UserSessionDto) session.getAttribute("user");
+        if (user == null) {
             redirectAttributes.addFlashAttribute("message", "로그인이 필요한 서비스입니다.");
             // return "redirect:/login";
             return "qna/qnaWrite";
@@ -81,22 +83,29 @@ public class QnaController {
         return "qna/qnaWrite";
     }
 
-    @PostMapping("/qnaWrite")
+    @PostMapping("/qnaSubmit")
     public String saveInquiry(@ModelAttribute Qna qna, HttpSession session,
                               RedirectAttributes redirectAttributes) {
         // 로그인 체크
-        String userId = (String) session.getAttribute("userId");
-        if (userId == null) {
-            redirectAttributes.addFlashAttribute("message", "로그인이 필요한 서비스입니다.");
-            return "redirect:/login";
-        }
+        UserSessionDto user = (UserSessionDto) session.getAttribute("user");
+        String userId = user.getId();
+        System.out.println("유저아이디" + userId);
+//        if (userId == null) {
+//            redirectAttributes.addFlashAttribute("message", "로그인이 필요한 서비스입니다.");
+//            return "redirect:/";
+//        }
+        Qna newQna = Qna.builder()
+                .category(qna.getCategory())
+                .title(qna.getTitle())
+                .content(qna.getContent())
+//                .USERID(session.getId())
+                .USERID(userId != null ? userId : "guest") // session.getId() 대신 userId 사용
+                .build();
 
-        // 사용자 ID 설정
-//        qna.setuserId);
-        // 등록일 설정
-        qna.setRegDate(String.valueOf(LocalDateTime.now()));
+        log.info("newQna : {}", newQna);
+
         // 저장
-        qnaRepository.save(qna);
+        qnaRepository.save(newQna);
         redirectAttributes.addFlashAttribute("message", "문의가 등록되었습니다.");
         return "redirect:/qna/qnaList";
     }
@@ -175,24 +184,26 @@ public class QnaController {
 //    }
 
     // 문의 제출 처리 메서드
-    @PostMapping("/inquiry/submit")
-    public String processInquiry(@RequestParam("inquiryType") String category,
-                                 @RequestParam("inquirySubject") String title,
-                                 @RequestParam("inquiryContent") String content,
-                                 HttpSession session,
-                                 RedirectAttributes redirectAttributes) {
-        // 세션에서 사용자 ID 가져오기
-        String userId = (String) session.getAttribute("userId");
-        // Qna 객체 생성
-        Qna qna = new Qna();
-        qna.setCategory(category);
-        qna.setTitle(title);
-        qna.setContent(content);
-        qna.setUSERID(userId != null ? userId : "guest"); // 로그인 안 된 경우 기본값
-        qna.setRegDate(String.valueOf(LocalDateTime.now()));
-        // 저장
-        qnaRepository.save(qna);
-        redirectAttributes.addFlashAttribute("message", "문의가 성공적으로 등록되었습니다.");
-        return "redirect:/qna/qnaList";
-    }
+//    @PostMapping("/inquiry/submit")
+//    public String processInquiry(@RequestParam("inquiryType") String category,
+//                                 @RequestParam("inquirySubject") String title,
+//                                 @RequestParam("inquiryContent") String content,
+//                                 @RequestParam("fileAttachment") MultipartFile fileAttachment,
+//                                 HttpSession session,
+//                                 RedirectAttributes redirectAttributes) {
+//        // 세션에서 사용자 ID 가져오기
+//        String userId = (String) session.getAttribute("userId");
+//        // Qna 객체 생성
+//        Qna qna = new Qna();
+//        qna.setCategory(category);
+//        qna.setTitle(title);
+//        qna.setContent(content);
+//        qna.setFileAttachment(String.valueOf(fileAttachment));
+//        qna.setUSERID(userId != null ? userId : "guest"); // 로그인 안 된 경우 기본값
+//        qna.setRegDate(String.valueOf(LocalDateTime.now()));
+//        // 저장
+//        qnaRepository.save(qna);
+//        redirectAttributes.addFlashAttribute("message", "문의가 성공적으로 등록되었습니다.");
+//        return "redirect:/qna/qnaList";
+//    }
 }

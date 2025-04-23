@@ -1,41 +1,73 @@
 package com.example.rewrite.controller;
 
 import com.example.rewrite.command.ProductDTO;
+import com.example.rewrite.command.user.UserSessionDto;
+import com.example.rewrite.entity.Cart;
 import com.example.rewrite.repository.product.ProductRepository;
+import com.example.rewrite.service.cart.CartService;
 import com.example.rewrite.service.prod.ProdService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpSession;
 import java.util.List;
 
 @Controller
 @RequestMapping("/prod")
 public class ProdController {
 
-    private final ProductRepository productRepository;
-    private final ProdService prodService;
+    @Autowired
+    private CartService cartService;
 
-    public ProdController(ProductRepository productRepository, ProdService prodService) {
+    @Autowired
+    private ProdService prodService;
+
+    private final ProductRepository productRepository;
+
+    public ProdController(ProductRepository productRepository) {
         this.productRepository = productRepository;
-        this.prodService = prodService;
     }
 
-    @GetMapping("/checkout")
-    public String checkout() {
-        return "prod/checkout";
+    @GetMapping("/orderPay")
+    public String orderPay() {
+        return "prod/orderPay";
     }
     @GetMapping("/cart")
-    public String cart() {
+    public String cart(Model model, HttpSession session) {
+        UserSessionDto user = (UserSessionDto)session.getAttribute("user");
+        if(user == null) {
+            return "redirect:/user/login";
+        }
+        Long uid = user.getUid();
+        System.out.println(uid);
+        List<Cart> cartList = cartService.getCarts(uid);
+        int totalPrice = cartService.calculateTotalPrice(cartList);
+
+        model.addAttribute("cartList", cartList);
+        for (Cart cart : cartList) {
+            System.out.println("cart tostring");
+            System.out.println(cart.toString());
+            System.out.println("cart getUser tostring");
+            System.out.println(cart.getUser().toString());
+            System.out.println("cart getProduct tostring");
+            System.out.println(cart.getProduct().toString());
+
+        }
+        model.addAttribute("totalPrice", totalPrice);
+
         return "prod/cart";
     }
+
     @GetMapping("/orderDetail")
     public String orderDetail() {
         return "prod/orderDetail";
     }
 
+
     @GetMapping("/productReg")
-    public String productReg() {
+    public String reg(){
         return "prod/productReg";
     }
 
@@ -65,4 +97,21 @@ public class ProdController {
         prodService.registerProduct(productDTO);
         return "redirect:/prod/prodList";
     }
+
+    // 상품 수정 페이지 이동
+    @GetMapping("/productUpdate")
+    public String productUpdate(@RequestParam int prodId, Model model) {
+        ProductDTO product = prodService.getProductById(prodId);
+        model.addAttribute("product", product);
+        return "prod/productReg";  // 등록 페이지를 재사용
+    }
+
+    // 상품 수정 처리
+    @PostMapping("/productUpdate")
+    public String updateProduct(@ModelAttribute ProductDTO productDTO) {
+        // 서비스 레이어를 통해 상품 수정
+        prodService.updateProduct(productDTO);
+        return "redirect:/prod/prodDetail?prodId=" + productDTO.getProdId();
+    }
+
 }

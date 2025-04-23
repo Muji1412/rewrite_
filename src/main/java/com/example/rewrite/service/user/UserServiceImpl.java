@@ -3,7 +3,6 @@ package com.example.rewrite.service.user;
 import com.example.rewrite.command.UserVO;
 import com.example.rewrite.command.user.ApiResponseDto;
 import com.example.rewrite.command.user.FindIdRequestDto;
-import com.example.rewrite.command.user.LoginRequestDto;
 import com.example.rewrite.command.user.SignupRequestDto;
 import com.example.rewrite.entity.Users;
 import com.example.rewrite.repository.users.UsersRepository;
@@ -37,6 +36,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Autowired
     private UserMapper userMapper;
+    //나는바보입니다
 
     private final UsersRepository usersRepository;
     private final PasswordEncoder passwordEncoder;
@@ -136,6 +136,15 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         usersRepository.save(foundUser);
     }
 
+    @Override
+    public boolean checkUserByNameAndPhoneAndEmail(FindIdRequestDto requestDto) {
+        return false;
+    }
+
+    @Override
+    public User getUserInfo(String id) {
+        return null;
+    }
 
     //회원정보 수정
     @Override
@@ -153,5 +162,17 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     public void userDelete(Long uid) {
         String genId = "deleted_" + UUID.randomUUID().toString().substring(0, 8);
         usersRepository.userDelete(uid, genId);
+    }
+
+    //마이페이지 판매수
+    @Override
+    public String sellCount(Long uid) {
+        return usersRepository.sellCount(uid);
+    }
+
+    //마이페이지 프로필 조회
+    @Override
+    public Users getProfile(Long uid) {
+        return usersRepository.findUsersById(uid);
     }
 }

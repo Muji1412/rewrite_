@@ -34,6 +34,15 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize
                         // 1. 문자열 경로를 AntPathRequestMatcher 객체로 감싸줍니다.
                         .requestMatchers(
+                                new AntPathRequestMatcher("/notice/noticeWrite"), // 특정 페이지
+                                new AntPathRequestMatcher("/admin/**")           // /admin/ 으로 시작하는 모든 하위 경로
+                        ).hasRole("ADMIN") // "ADMIN" 역할을 가진 사용자만 허용 (ROLE_ 접두사는 자동으로 처리됨)
+
+                        .requestMatchers(
+                                new AntPathRequestMatcher("/api/admin/**"),
+                                new AntPathRequestMatcher("/admin/**")
+                        ).hasRole("ADMIN")
+                        .requestMatchers(
                                 new AntPathRequestMatcher("/api/auth/**") // <--- 이 부분이 핵심!
                         ).permitAll()
 
