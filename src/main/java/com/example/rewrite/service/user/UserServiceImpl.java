@@ -209,5 +209,12 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         usersRepository.save(user);
     }
 
+    @Override
+    @Transactional
+    public void deleteUser(Long uid) {
+        Users user = usersRepository.findUserByUid(uid);
+        usersRepository.delete(user);
+    }
+
 
 }
