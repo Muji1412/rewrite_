@@ -3,7 +3,14 @@
 <th:block th:replace="~{include/include :: def(~{::#wrap})} ">
 
 
+
     <section id="wrap" class="section">
+
+        <script th:if="${success}" th:inline="javascript">
+            /*<![CDATA[*/
+            alert([[${success}]]);
+            /*]]>*/
+        </script>
 
         <div class="box">
 
@@ -40,10 +47,10 @@
                         <p>등록된 상품이 없습니다.</p>
                     </div>
                 </div>
-            </form>
-        </div>
 
         </div>
+
+
 
         <button class="top" onclick="scrollToTop()">TOP</button>
 
