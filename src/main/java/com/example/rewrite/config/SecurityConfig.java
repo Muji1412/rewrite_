@@ -42,6 +42,7 @@ public class SecurityConfig {
                                 new AntPathRequestMatcher("/api/admin/**"),
                                 new AntPathRequestMatcher("/admin/**")
                         ).hasRole("ADMIN")
+
                         .requestMatchers(
                                 new AntPathRequestMatcher("/api/auth/**") // <--- 이 부분이 핵심!
                         ).permitAll()

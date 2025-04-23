@@ -3,6 +3,7 @@ package com.example.rewrite.service.user;
 import com.example.rewrite.command.UserVO;
 import com.example.rewrite.command.user.FindIdRequestDto;
 import com.example.rewrite.command.user.SignupRequestDto;
+import com.example.rewrite.command.user.UserDTO;
 import com.example.rewrite.entity.Product;
 import com.example.rewrite.entity.Users;
 import com.example.rewrite.repository.users.UsersRepository;
@@ -20,20 +21,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Slf4j
 @Service("UserService")
 @RequiredArgsConstructor
 @Transactional(readOnly = true) // 기본적으로 읽기 전용 트랜잭션, 쓰기 작업 메소드에 @Transactional 추가
 public class UserServiceImpl implements UserService, UserDetailsService {
-
-    @Autowired
-    private UserMapper userMapper;
-    //나는바보입니다
 
     private final UsersRepository usersRepository;
     private final PasswordEncoder passwordEncoder;
@@ -173,11 +167,34 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         return usersRepository.findUserByUid(uid);
     }
 
+    @Override
+    public List<UserDTO> findUsers(String search, String role) {
+        List<Users> usersList = usersRepository.searchUsers(search, role);
+
+        System.out.println("유저디티오 디버깅");
+
+        List<UserDTO> userDTOList = new ArrayList<>();
+        for (Users users : usersList) {
+            System.out.println(users);
+            UserDTO user = UserDTO.fromEntity(users);
+            userDTOList.add(user);
+        }
+        for (UserDTO userDTO : userDTOList) {
+
+            System.out.println(userDTO.toString());
+        }
+
+        return userDTOList;
+    }
+
+    @Override
+    public void changeRole(Long uid, String role) {
+        Users user = usersRepository.findUsersById(uid);
+    }
     //마이페이지 판매내역 조회
     @Override
     public List<Product> getSellProd(Long uid) {
         return usersRepository.getSellProd(uid);
     }
-
 
 }

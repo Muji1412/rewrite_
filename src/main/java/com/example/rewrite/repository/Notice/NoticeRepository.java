@@ -9,4 +9,6 @@ import org.springframework.stereotype.Repository;
 public interface NoticeRepository extends JpaRepository<Notice, Long>, NoticeCustomRepository {
 
     Notice getNoticeByNoticeId(long noticeId);
+    void deleteNoticeByNoticeId(long noticeId);
+
 }

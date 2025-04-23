@@ -1,6 +1,9 @@
 package com.example.rewrite.NoticeTest;
 
 import com.example.rewrite.entity.Notice;
+import com.example.rewrite.entity.Users;
+import com.example.rewrite.repository.Notice.NoticeRepository;
+import com.example.rewrite.repository.users.UsersRepository;
 import com.example.rewrite.entity.Product;
 import com.example.rewrite.repository.Notice.NoticeRepository;
 import com.example.rewrite.repository.product.ProductRepository;
@@ -17,6 +20,7 @@ public class NoticeTest {
     @Autowired
     private NoticeRepository noticeRepository;
     @Autowired
+    private UsersRepository usersRepository;
     private ProductRepository productRepository;
 
     @Test
@@ -55,6 +59,14 @@ public class NoticeTest {
         List<Product> list = productRepository.findProductsByUserUid(11L);
         for (Product product : list) {
             System.out.println(product);
+        }
+    }
+
+    @Test
+    public void getUserTest() {
+        List<Users> list = usersRepository.searchUsers(null, null);
+        for (Users users : list) {
+            System.out.println(users);
         }
     }
 
