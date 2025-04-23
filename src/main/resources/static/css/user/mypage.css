@@ -12,8 +12,15 @@ body {
   }
   section{
     margin: 0 auto;
-    width: 1000px;
+    margin-top: 77px;
+    width: 1250px;
+    min-height: 950px;
+    position: relative;
   }
+
+  .section_right{float: right}
+  .section_right h1{font-size: 30px; margin: 0 0 10px 10px;}
+
   .profile-section {
     width: 1000px;
     display: flex;
