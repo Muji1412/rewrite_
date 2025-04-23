@@ -6,6 +6,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ChangeRoleDto {
-    private String uid;
+    private Long uid;
     private String role;
 }

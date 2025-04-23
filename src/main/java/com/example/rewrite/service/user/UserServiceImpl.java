@@ -202,8 +202,11 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
+    @Transactional
     public void changeRole(Long uid, String role) {
         Users user = usersRepository.findUserByUid(uid);
+        user.setRole(role);
+        usersRepository.save(user);
     }
 
 
