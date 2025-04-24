@@ -23,6 +23,7 @@ public interface ProdService {
     // 상품 수정
     ProductDTO updateProduct(ProductDTO productDTO);
 
-
+    List<ProductDTO> searchProductByUid(Long uid);
+    void deleteProduct(Long id);
 
 }
