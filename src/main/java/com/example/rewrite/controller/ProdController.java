@@ -9,7 +9,11 @@ import com.example.rewrite.repository.product.ProductRepository;
 import com.example.rewrite.service.address.AddressService;
 import com.example.rewrite.service.cart.CartService;
 import com.example.rewrite.service.prod.ProdService;
+
+import com.example.rewrite.service.wishlist.WishlistService;
+
 import com.example.rewrite.service.user.UserService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -31,19 +35,64 @@ public class ProdController {
 
     private final ProductRepository productRepository;
     @Autowired
+
+    private WishlistService wishlistService;
+
     private UserService userService;
     @Autowired
     private AddressService addressService;
+
 
     public ProdController(ProductRepository productRepository) {
         this.productRepository = productRepository;
     }
 
     @GetMapping("/orderPay")
-    public String orderPay() {
+    public String orderPay(HttpSession session, Model model) {
+        UserSessionDto user = (UserSessionDto) session.getAttribute("user");
+        if(user == null) {
+            return "redirect:/user/login";
+        }
+        Long uid = user.getUid();
+        System.out.println("uid: " + uid);  // 문자열 + 변수
+        Address defaultAddress = addressService.getDefaultAddress(uid);
+        if (defaultAddress == null) {
+            System.out.println("defaultAddress is null");
+        } else {
+            System.out.println("디폴트어드레스 null 아님");
+            System.out.println("defaultAddress: " + defaultAddress);
+        }
+        model.addAttribute("defaultAddress", defaultAddress);
+
+        if (defaultAddress != null && defaultAddress.getAddress() != null) {
+            String[] parts = defaultAddress.getAddress().split("/");
+
+            if (parts.length == 3) {
+                model.addAttribute("postcode", parts[0]);
+                model.addAttribute("addr", parts[1]);
+                model.addAttribute("detailAddress", parts[2]);
+            } else {
+                model.addAttribute("postcode", "");
+                model.addAttribute("addr", "");
+                model.addAttribute("detailAddress", "");
+            }
+        }
+        System.out.println("기본 주소: " + defaultAddress);
+        if(defaultAddress != null && defaultAddress.getPhoneNum() != null) {
+            String phoneNum = defaultAddress.getPhoneNum();
+            String formatPhoneNum = phoneNum;
+
+            if(phoneNum.length() == 11) {
+                formatPhoneNum = phoneNum.replaceFirst("(\\d{3})(\\d{4})(\\d{4})","$1-$2-$3");
+            }
+
+            model.addAttribute("formatPhoneNum", formatPhoneNum);
+        }
+
+
+
         return "prod/orderPay";
     }
-
     @GetMapping("/cart")
     public String cart(Model model, HttpSession session) {
         UserSessionDto user = (UserSessionDto)session.getAttribute("user");
@@ -82,16 +131,26 @@ public class ProdController {
     }
 
     @GetMapping("/prodDetail")
-    public String prodDetail(@RequestParam Long prodId, Model model){
-        // 서비스를 통해 상품 상세 정보를 가져옴
+    public String prodDetail(@RequestParam Long prodId, Model model, HttpSession session) {
+        // 상품 상세 정보 조회
         ProductDTO product = prodService.getProductById(prodId);
-        // 모델에 상품 정보 추가
         model.addAttribute("product", product);
+
+        // 로그인한 경우 찜 상태 확인
+        UserSessionDto user = (UserSessionDto) session.getAttribute("user");
+        if (user != null) {
+            boolean isWishlisted = wishlistService.isWishlisted(user.getUid(), prodId);
+            model.addAttribute("isWishlisted", isWishlisted);
+        }
+
         return "prod/prodDetail";
     }
 
     @GetMapping("/prodList")
     public String prodList(Model model) {
+
+
+
         // 서비스를 통해 모든 상품 목록을 가져옴
         List<ProductDTO> products = prodService.getAllProducts();
         // 모델에 상품 목록 추가

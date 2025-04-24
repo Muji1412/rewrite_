@@ -74,9 +74,4 @@ public class Product {
     @Column(name = "IMG_4", length = 200)
     private String img4;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.LAZY)
-    @ToString.Exclude // 순환 참조 방지
-    private List<Product> products = new ArrayList<>();
-
-
 }

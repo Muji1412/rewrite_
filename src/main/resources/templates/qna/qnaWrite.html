@@ -10,12 +10,12 @@
     <!-- 로고는 필요 시 여기에 추가 -->
     <!-- <img src="/img/rewrite_logo.png" alt="REWRITE 로고" class="logo-image"> -->
 
-    <form action="/qna/qnaSubmit" method="post" class="inquiry-form" > <!-- form 태그 및 클래스 변경, 파일 첨부 시 enctype 추가 -->
+    <form id="inquiryForm" class="inquiry-form">
         <h2 class="page-title">문의하기</h2>
 
-        <div class="form-group"> <!-- 클래스명 변경 (input-group 대신) -->
+        <div class="form-group">
             <label for="inquiryType">문의 유형</label>
-            <div class="input-wrapper select-wrapper"> <!-- 입력 요소 감싸기 -->
+            <div class="input-wrapper select-wrapper">
                 <select id="inquiryType" name="category" required>
                     <option value="" disabled selected>선택해주세요</option>
                     <option value="배송">배송 문의</option>
@@ -33,7 +33,7 @@
             </div>
         </div>
 
-        <div class="form-group form-group-textarea"> <!-- Textarea 그룹 클래스 추가 -->
+        <div class="form-group form-group-textarea">
             <label for="inquiryContent">문의 내용</label>
             <div class="input-wrapper">
                 <textarea id="inquiryContent" name="content" rows="8" placeholder="내용을 입력해 주세요." required></textarea>
@@ -43,20 +43,23 @@
         <div class="form-group">
             <label for="fileAttachment">파일 첨부</label>
             <div class="input-wrapper file-input-wrapper">
-                <!-- 실제 파일 입력은 숨김 -->
-                <input type="file" id="fileAttachment" name="fileAttachment" class="file-input-hidden" multiple>
-                <!-- 파일 선택 버튼 역할 -->
+                <input type="file" id="fileAttachment" name="fileAttachment" class="file-input-hidden">
                 <label for="fileAttachment" class="file-select-button">+파일첨부</label>
-                <!-- 선택된 파일 목록 표시 영역 (선택적) -->
                 <span id="file-list" class="file-list-display"></span>
-                <!-- 클립 아이콘 -->
                 <label for="fileAttachment" class="file-clip-icon">
                     <i class="fas fa-paperclip"></i>
                 </label>
             </div>
         </div>
 
-        <button type="submit" class="submit-button">문의 접수</button>
+        <button type="button" id="submitBtn" class="submit-button">문의 접수</button>
+    </form>
+
+    <!-- 결과 표시 영역 (선택 사항) -->
+    <div id="result" style="display: none;" class="result-container">
+        <h3>문의가 접수되었습니다.</h3>
+        <div id="responseMessage"></div>
+    </div>
     </form>
 </div>
 </section>
@@ -66,3 +69,79 @@
 
 </th:block>
 <script src="../../js/QnaWrite.js" th:src="@{/js/QnaWrite.js}"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // 파일 목록 표시 기능
+        const fileInput = document.getElementById('fileAttachment');
+        const fileListDisplay = document.getElementById('file-list');
+
+        fileInput.addEventListener('change', function() {
+            let fileNames = [];
+            for (let i = 0; i < this.files.length; i++) {
+                fileNames.push(this.files[i].name);
+            }
+            fileListDisplay.textContent = fileNames.join(', ');
+        });
+
+        // 폼 제출 처리
+        const form = document.getElementById('inquiryForm');
+        const submitBtn = document.getElementById('submitBtn');
+
+        submitBtn.addEventListener('click', submitInquiry);
+
+        function submitInquiry() {
+            // 입력 유효성 검사
+            const category = document.getElementById('inquiryType').value;
+            const title = document.getElementById('inquirySubject').value;
+            const content = document.getElementById('inquiryContent').value;
+
+            if (!category || !title || !content) {
+                alert('모든 필수 항목을 입력해주세요.');
+                return;
+            }
+
+            // FormData 객체 생성 및 데이터 추가
+            const formData = new FormData();
+            formData.append('category', category);
+            formData.append('title', title);
+            formData.append('content', content);
+
+            // 파일 추가
+            const file = fileInput.files[0];
+            if (file) {
+                formData.append('file', file); // 'files' 대신 'file'로 이름 변경
+            }
+
+            // REST API로 데이터 전송
+            fetch('/api/qna', {
+                method: 'POST',
+                body: formData
+                // 멀티파트 폼데이터를 보낼 때는 Content-Type 헤더를 설정하지 않음
+                // 브라우저가 자동으로 boundary 설정
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('서버 오류: ' + response.status);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    // 성공 처리
+                    alert('문의글 업로드 성공했습니다')
+                        window.location.href = '/'
+                    //  window.location.href = '/user/qnalist' 로 보내서, 자기가 작성한 문의글 볼 수 있게 나중에 설정
+                    // 폼 초기화
+                    form.reset();
+                    fileListDisplay.textContent = '';
+
+                    // 선택적: 성공 후 페이지 이동
+                    // setTimeout(() => { window.location.href = '/qna/list'; }, 2000);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('문의 접수 실패: ' + error.message);
+                });
+        }
+    });
+
+</script>

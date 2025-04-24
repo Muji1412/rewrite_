@@ -77,6 +77,8 @@
     white-space: pre-wrap; /* HTML 내의 줄바꿈 및 공백 유지 (엔터키, <br>) */
 }
 
+.sub-content{min-height: 40px;}
+
 /* --- 버튼 컨테이너 및 버튼 스타일 --- */
 .button-container {
     text-align: center; /* 버튼 중앙 정렬 */
