@@ -216,5 +216,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         usersRepository.delete(user);
     }
 
+    @Override
+    public String getPassword(Long uid) {
 
+        return usersRepository.findUserByUid(uid).getPw();
+    }
 }

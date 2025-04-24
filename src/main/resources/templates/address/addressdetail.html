@@ -1,8 +1,10 @@
 <link rel="stylesheet" href="/css/address/addressdetail.css">
+<link rel="stylesheet" href="/css/sideBar.css" th:href="@{/css/sideBar.css}">
 <th:block th:replace="~{/include/include :: def(~{::#wrap})}">
 
     <section id="wrap">
-        <div style="margin:20px 0 20px 0 ;">
+        <th:block th:replace="~{/include/side :: def(~{::#wrap})}"/>
+        <div class="test" style="margin:20px 0 20px 0 ; min-height: 491px;">
             <h2>주소지</h2>
             <div class="address-list">
 
@@ -42,7 +44,7 @@
 
         //아무 주소지도 없을경우
         if ($('.address-list').children().length === 0) {
-            $('.address-list').append('<div class="no-address">등록된 주소지가 없습니다.</div>');
+            $('.address-list').append('<div class="no-address" style="margin: 30px 200px;">등록된 주소지가 없습니다.</div>');
         }
 
         $('.btn-edit').click(function() { //주소지 수정

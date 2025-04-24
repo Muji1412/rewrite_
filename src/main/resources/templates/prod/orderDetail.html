@@ -1,15 +1,12 @@
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>주문 상세 정보</title>
-    <link rel="stylesheet" href="/css/prod/orderDetail.css" th:href="@{/css/prod/orderDetail.css}">
-</head>
-<body>
+<link rel="stylesheet" href="/css/prod/orderDetail.css" th:href="@{/css/prod/orderDetail.css}">
+<link rel="stylesheet" href="/css/sideBar.css" th:href="@{/css/sideBar.css}">
+<th:block th:replace="~{include/include :: def(~{::#wrap})} ">
 
+
+
+<section id="wrap" class="sec_test">
+    <th:block th:replace="~{/include/side :: def(~{::#wrap})}"/>
 <div class="container">
-
     <div class="section">
         <h2>상세정보</h2>
         <div class="order-info-block">
@@ -18,7 +15,7 @@
         </div>
     </div>
 
-    <div class="section">
+    <div class="section_con">
         <h2>배송상품</h2>
         <table class="product-table">
             <thead>
@@ -101,6 +98,6 @@
     </div>
 
 </div>
+</section>
 
-</body>
-</html>
+</th:block>
