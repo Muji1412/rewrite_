@@ -2,8 +2,11 @@ package com.example.rewrite.service.prod;
 
 import com.example.rewrite.command.ProductDTO;
 import com.example.rewrite.entity.Product;
+import com.example.rewrite.entity.Users;
 import com.example.rewrite.repository.product.ProductRepository;
+import com.example.rewrite.repository.users.UsersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,6 +21,8 @@ public class ProdServiceImpl implements ProdService {
     private final ProductRepository productRepository;
 
     @Autowired
+    private UsersRepository userRepository;
+    @Autowired
     public ProdServiceImpl(ProductRepository productRepository) {
         this.productRepository = productRepository;
     }
@@ -25,7 +30,8 @@ public class ProdServiceImpl implements ProdService {
     // 상품 목록 조회
     @Override
     public List<ProductDTO> getAllProducts() {
-        return productRepository.findAll().stream()
+        Sort sort = Sort.by(Sort.Direction.DESC, "regDate");
+        return productRepository.findAll(sort).stream()
                 .map(this::convertToDto)
                 .collect(Collectors.toList());
     }
@@ -59,6 +65,10 @@ public class ProdServiceImpl implements ProdService {
     @Override
     @Transactional
     public ProductDTO registerProduct(ProductDTO productDTO) {
+        // 사용자 엔티티 조회
+        Users user = userRepository.findById(productDTO.getUid())
+                .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
+
         Product product = Product.builder()
                 .title(productDTO.getTitle())
                 .categoryMax(productDTO.getCategoryMax())
@@ -71,6 +81,7 @@ public class ProdServiceImpl implements ProdService {
                 .img4(productDTO.getImg4())
                 .videoUrl(productDTO.getVideoUrl())
                 .regDate(LocalDateTime.now())
+                .user(user)  // 사용자 정보 설정
                 .build();
 
         Product savedProduct = productRepository.save(product);
@@ -152,6 +163,9 @@ public class ProdServiceImpl implements ProdService {
     @Override
     public void deleteProduct(Long id) {
         // 단순히 하나의 jpa만 부르는 경우에는 트랜잭셔널 붙힐필요 없음
+      
+    @Transactional
+    public void deleteProduct(Long id) {
         productRepository.deleteById(id);
     }
 

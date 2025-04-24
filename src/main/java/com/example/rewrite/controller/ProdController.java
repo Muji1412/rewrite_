@@ -204,4 +204,30 @@ public class ProdController {
 
         return "prod/orderList";
     }
+
+    // 상품 삭제 처리
+    @GetMapping("/productDelete")
+    public String deleteProduct(@RequestParam Long prodId, HttpSession session, RedirectAttributes redirectAttributes) {
+        // 로그인 확인
+        UserSessionDto user = (UserSessionDto) session.getAttribute("user");
+        if (user == null) {
+            return "redirect:/user/login";
+        }
+
+        // 상품 조회
+        ProductDTO product = prodService.getProductById(prodId);
+
+        // 작성자 확인
+        if (!user.getUid().equals(product.getUid())) {
+            redirectAttributes.addFlashAttribute("error", "상품 삭제 권한이 없습니다.");
+            return "redirect:/prod/prodDetail?prodId=" + prodId;
+        }
+
+        // 상품 삭제
+        prodService.deleteProduct(prodId);
+
+        redirectAttributes.addFlashAttribute("success", "상품이 성공적으로 삭제되었습니다.");
+        return "redirect:/prod/prodList";
+    }
+
 }

@@ -1,13 +1,16 @@
 <link rel="stylesheet" href="/css/prod/orderList.css">
-<th:block th:replace="~{/include/side :: def(~{::#wrap})}">
+<!--    <link rel="stylesheet" href="/css/prod/orderList.css" th:href="@{/css/prod/orderList.css}">-->
+    <link rel="stylesheet" href="/css/sideBar.css" th:href="@{/css/sideBar.css}">
 
+    <th:block th:replace="~{/include/include :: def(~{::#wrap})}">
     <section id="wrap" class="section">
+        <th:block th:replace="~{/include/side :: def(~{::#wrap})}"/>
         <div id="sidebar"></div>
         <div class="box">
             <div class="card">
                 <div class="left">
                     <div class="img_box">
-                        <img src="../img/하루만기다리면(소리지름).jpeg" alt="제품사진">
+                        <img src="/img/item1.png" alt="제품사진">
                     </div>
                     
                     <div class="left_box">
@@ -29,7 +32,7 @@
                 <div class="right">
 
                     <div class="icon_box">
-                        <a href="#"><img src="../img/Right.png" alt="상세보기"></a>
+                        <a href="/prod/orderDetail"><img src="/img/user/Vector.png" alt="상세보기"></a>
                     </div>
 
                     <div class="right_box">

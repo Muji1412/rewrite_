@@ -32,4 +32,5 @@ public interface UserService {
     List<UserDTO> findUsers(String search, String role);
     void changeRole(Long uid, String role);
     void deleteUser(Long uid);
+    String getPassword(Long uid);
 }

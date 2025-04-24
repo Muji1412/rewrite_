@@ -24,6 +24,8 @@ public interface ProdService {
     ProductDTO updateProduct(ProductDTO productDTO);
 
     List<ProductDTO> searchProductByUid(Long uid);
+
+    // 상품 삭제
     void deleteProduct(Long id);
 
 }
