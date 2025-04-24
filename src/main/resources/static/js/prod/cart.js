@@ -89,41 +89,57 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // --- 이벤트 리스너 연결 ---
 
-    // 1. '전체 선택' 체크박스 변경 시
     if (selectAllCheckbox) {
-        selectAllCheckbox.addEventListener('change', function() {
+        selectAllCheckbox.addEventListener('change', function () {
             const isChecked = this.checked;
             itemCheckboxes.forEach(checkbox => {
                 checkbox.checked = isChecked;
+
+                // 체크 상태 서버로 전송
+                const cartItem = checkbox.closest('.cart-item');
+                const cartId = cartItem.dataset.cartId;
+
+                fetch(`/api/cart/${cartId}/check`, {
+                    method: 'PATCH',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ isChecked: isChecked })
+                });
             });
             updateTotalPrice();
         });
     }
 
-    // 2. 개별 상품 체크박스 변경 시
+    // --- 2. 개별 체크박스 변경 시 ---
     itemCheckboxes.forEach(checkbox => {
-        checkbox.addEventListener('change', function() {
+        checkbox.addEventListener('change', function () {
             updateSelectAllStatus();
             updateTotalPrice();
+
+            const cartItem = this.closest('.cart-item');
+            const cartId = cartItem.dataset.cartId;
+            const isChecked = this.checked;
+
+            fetch(`/api/cart/${cartId}/check`, {
+                method: 'PATCH',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ isChecked: isChecked })
+            });
         });
     });
 
-    // 3. '삭제' 버튼 클릭 시 - 모든 상품 삭제 (수정된 부분)
+    // --- 3. 전체 삭제 버튼 ---
     if (deleteButton) {
-        deleteButton.addEventListener('click', function() {
+        deleteButton.addEventListener('click', function () {
             const cartItems = document.querySelectorAll('.cart-item');
-
             if (cartItems.length === 0) {
                 alert('장바구니가 이미 비어있습니다.');
                 return;
             }
 
             if (confirm('장바구니의 모든 상품을 삭제하시겠습니까?')) {
-                const deletePromises = [];
-
-                cartItems.forEach(cartItem => {
+                const deletePromises = Array.from(cartItems).map(cartItem => {
                     const cartId = cartItem.dataset.cartId;
-                    deletePromises.push(deleteCartItem(cartId));
+                    return deleteCartItem(cartId);
                 });
 
                 Promise.all(deletePromises)
@@ -139,12 +155,11 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // 4. 개별 삭제 버튼 클릭 시 - 해당 상품만 삭제
+    // --- 4. 개별 삭제 버튼 ---
     if (cartItemsContainer) {
-        cartItemsContainer.addEventListener('click', function(event) {
+        cartItemsContainer.addEventListener('click', function (event) {
             if (event.target.classList.contains('item-delete-button')) {
-                event.preventDefault(); // 기본 동작 방지
-
+                event.preventDefault();
                 const cartId = event.target.dataset.cartId;
 
                 if (!cartId) {
@@ -167,45 +182,31 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // 5. 주문하기 버튼 클릭 시
+    // --- 5. 주문하기 버튼 ---
     if (orderButton) {
-        orderButton.addEventListener('click', function() {
-            // 1. 장바구니에 상품이 있는지 확인
+        orderButton.addEventListener('click', function () {
             const cartItems = document.querySelectorAll('.cart-item');
-
-            // 장바구니가 비어있는 경우
             if (cartItems.length === 0) {
                 alert('장바구니가 비어있습니다. 상품을 추가해주세요.');
-                return; // 페이지 이동 중단
+                return;
             }
 
-            // 2. 선택된 항목 확인
             const checkedItems = document.querySelectorAll('.item-checkbox:checked');
-
-            // 선택된 항목이 없는 경우
             if (checkedItems.length === 0) {
                 alert('주문할 상품을 선택해주세요.');
-                return; // 페이지 이동 중단
+                return;
             }
 
-            // 3. 모든 조건 충족 - 선택된 항목의 ID 수집
             const selectedCartIds = Array.from(checkedItems).map(checkbox => {
                 return checkbox.closest('.cart-item').dataset.cartId;
             });
 
-            // 4. 쿼리 문자열 생성
             const queryString = selectedCartIds.map(id => `cartId=${id}`).join('&');
-
-            // 5. 주문 페이지로 이동
-           location.href = `/prod/orderPay`;
+            location.href = `/prod/orderPay?${queryString}`;
         });
     }
 
     // --- 초기 상태 설정 ---
-
-    // 초기 총 가격 계산
     updateTotalPrice();
-
-    // 장바구니 비어있는지 확인
     checkEmptyCart();
 });

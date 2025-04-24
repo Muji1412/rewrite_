@@ -33,11 +33,13 @@ public class ProdController {
     @Autowired
     private ProdService prodService;
 
-    private final ProductRepository productRepository;
     @Autowired
+    private final ProductRepository productRepository;
 
+    @Autowired
     private WishlistService wishlistService;
 
+    @Autowired
     private UserService userService;
     @Autowired
     private AddressService addressService;
@@ -57,10 +59,7 @@ public class ProdController {
         System.out.println("uid: " + uid);  // 문자열 + 변수
         Address defaultAddress = addressService.getDefaultAddress(uid);
         if (defaultAddress == null) {
-            System.out.println("defaultAddress is null");
-        } else {
-            System.out.println("디폴트어드레스 null 아님");
-            System.out.println("defaultAddress: " + defaultAddress);
+            return "redirect:/address/detail";
         }
         model.addAttribute("defaultAddress", defaultAddress);
 
@@ -89,7 +88,9 @@ public class ProdController {
             model.addAttribute("formatPhoneNum", formatPhoneNum);
         }
 
-
+        List<Cart> checkedCarts = cartService.getCheckedCarts(uid);
+        model.addAttribute("cartList", checkedCarts);
+        System.out.println("checkedCarts: " + checkedCarts.toString());
 
         return "prod/orderPay";
     }
@@ -147,21 +148,21 @@ public class ProdController {
     }
 
     @GetMapping("/prodList")
-    public String prodList(Model model) {
-
-
-
-        // 서비스를 통해 모든 상품 목록을 가져옴
-        List<ProductDTO> products = prodService.getAllProducts();
-        // 모델에 상품 목록 추가
+    public String listProducts(Model model,
+                               @RequestParam(defaultValue = "latest") String sortBy) {
+        List<ProductDTO> products = prodService.getAllProducts(sortBy);
         model.addAttribute("products", products);
+        model.addAttribute("currentSort", sortBy);
         return "prod/prodList";
     }
 
     @GetMapping("/myProdList")
     public String myProdList(HttpSession session, Model model){
         UserSessionDto user = (UserSessionDto)session.getAttribute("user");
-
+        if(user == null) {
+            return "redirect:/user/login";
+        }
+        model.addAttribute("user", userService.getProfile(user.getUid()));
         model.addAttribute("products", prodService.getMyProducts(user.getUid()));
 
         return  "prod/prodList";
@@ -204,4 +205,30 @@ public class ProdController {
 
         return "prod/orderList";
     }
+
+    // 상품 삭제 처리
+    @GetMapping("/productDelete")
+    public String deleteProduct(@RequestParam Long prodId, HttpSession session, RedirectAttributes redirectAttributes) {
+        // 로그인 확인
+        UserSessionDto user = (UserSessionDto) session.getAttribute("user");
+        if (user == null) {
+            return "redirect:/user/login";
+        }
+
+        // 상품 조회
+        ProductDTO product = prodService.getProductById(prodId);
+
+        // 작성자 확인
+        if (!user.getUid().equals(product.getUid())) {
+            redirectAttributes.addFlashAttribute("error", "상품 삭제 권한이 없습니다.");
+            return "redirect:/prod/prodDetail?prodId=" + prodId;
+        }
+
+        // 상품 삭제
+        prodService.deleteProduct(prodId);
+
+        redirectAttributes.addFlashAttribute("success", "상품이 성공적으로 삭제되었습니다.");
+        return "redirect:/prod/prodList";
+    }
+
 }

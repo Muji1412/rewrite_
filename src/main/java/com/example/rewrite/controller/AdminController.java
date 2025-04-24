@@ -36,10 +36,9 @@ public class AdminController {
         @Autowired
         private QnaRepository qnaRepository;
 
-        @GetMapping("/modifyUsers") public String modifyUsers() {
-            return "admin/modifyUsers";
-        }
+        @GetMapping("/modifyUsers") public String modifyUsers() {return "admin/modifyUsers";}
         @GetMapping("/noticeWrite") public String noticeWrite(Model model) {return "admin/noticeWrite";}
+        @GetMapping("/modifyProducts") public String modifyProducts() {return "admin/modifyProducts";}
 
 
         @PostMapping("/write")
@@ -58,7 +57,7 @@ public class AdminController {
             }
             return "redirect:/notice/noticeList";
         }
-
+  
     @GetMapping("/qnaList")
     public String inquiryList(HttpSession session, RedirectAttributes redirectAttributes,
                               @PageableDefault(size = 10, sort = "qnaId", direction = Sort.Direction.DESC) Pageable pageable,

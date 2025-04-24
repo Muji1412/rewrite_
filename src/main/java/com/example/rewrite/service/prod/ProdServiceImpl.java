@@ -2,12 +2,16 @@ package com.example.rewrite.service.prod;
 
 import com.example.rewrite.command.ProductDTO;
 import com.example.rewrite.entity.Product;
+import com.example.rewrite.entity.Users;
 import com.example.rewrite.repository.product.ProductRepository;
+import com.example.rewrite.repository.users.UsersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -17,17 +21,40 @@ public class ProdServiceImpl implements ProdService {
     private final ProductRepository productRepository;
 
     @Autowired
+    private UsersRepository userRepository;
+    @Autowired
     public ProdServiceImpl(ProductRepository productRepository) {
         this.productRepository = productRepository;
     }
 
-    // 상품 목록 조회
     @Override
-    public List<ProductDTO> getAllProducts() {
-        return productRepository.findAll().stream()
+    public List<ProductDTO> getAllProducts(String sortBy) {
+        Sort sort;
+
+        // 정렬 기준에 따라 Sort 객체 생성
+        switch(sortBy) {
+            case "latest":
+                sort = Sort.by(Sort.Direction.DESC, "regDate"); // 최신순
+                break;
+            case "views":
+                sort = Sort.by(Sort.Direction.DESC, "viewCount"); // 조회수순
+                break;
+            case "priceAsc":
+                sort = Sort.by(Sort.Direction.ASC, "price"); // 가격 낮은순
+                break;
+            case "priceDesc":
+                sort = Sort.by(Sort.Direction.DESC, "price"); // 가격 높은순
+                break;
+            default:
+                sort = Sort.by(Sort.Direction.DESC, "regDate"); // 기본값은 최신순
+        }
+
+        return productRepository.findAll(sort).stream()
                 .map(this::convertToDto)
                 .collect(Collectors.toList());
     }
+
+
 
     // 내 상품 목록 조회
     @Override
@@ -58,6 +85,10 @@ public class ProdServiceImpl implements ProdService {
     @Override
     @Transactional
     public ProductDTO registerProduct(ProductDTO productDTO) {
+        // 사용자 엔티티 조회
+        Users user = userRepository.findById(productDTO.getUid())
+                .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
+
         Product product = Product.builder()
                 .title(productDTO.getTitle())
                 .categoryMax(productDTO.getCategoryMax())
@@ -70,6 +101,7 @@ public class ProdServiceImpl implements ProdService {
                 .img4(productDTO.getImg4())
                 .videoUrl(productDTO.getVideoUrl())
                 .regDate(LocalDateTime.now())
+                .user(user)  // 사용자 정보 설정
                 .build();
 
         Product savedProduct = productRepository.save(product);
@@ -125,5 +157,30 @@ public class ProdServiceImpl implements ProdService {
         return convertToDto(updatedProduct);
     }
 
-
+    @Override
+    public List<ProductDTO> searchProductByUid(Long uid) {
+        
+        //uid 없는경우에는 전체 상품 땡겨옴
+        if (uid == null) {
+            List<Product> products = productRepository.findAll();
+            List<ProductDTO> list = new ArrayList<>();
+            for (Product product : products) {
+                ProductDTO dto = ProductDTO.fromEntity(product);
+                list.add(dto);
+            }
+            return list;
+        } else {
+            List<Product> products = productRepository.findProductsByUserUid(uid);
+            List<ProductDTO> list = new ArrayList<>();
+            for (Product product : products) {
+                ProductDTO dto = ProductDTO.fromEntity(product);
+                list.add(dto);
+            }
+            return list;
+        }
+    }
+    @Override
+    public void deleteProduct(Long id) {
+        productRepository.deleteById(id);
+    }
 }

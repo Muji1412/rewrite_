@@ -9,7 +9,7 @@ import java.util.List;
 public interface ProdService {
 
     // 상품 목록 조회
-    List<ProductDTO> getAllProducts();
+    List<ProductDTO> getAllProducts(String sortBy);
 
     // 내 상품 목록 조회
     List<ProductDTO> getMyProducts(Long uid);
@@ -23,6 +23,9 @@ public interface ProdService {
     // 상품 수정
     ProductDTO updateProduct(ProductDTO productDTO);
 
+    List<ProductDTO> searchProductByUid(Long uid);
 
+    // 상품 삭제
+    void deleteProduct(Long id);
 
 }

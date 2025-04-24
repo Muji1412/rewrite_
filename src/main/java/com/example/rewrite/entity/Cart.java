@@ -1,39 +1,34 @@
 package com.example.rewrite.entity;
 
 import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
-
 import javax.persistence.*;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
+@ToString
 @Getter
 @Setter
 @NoArgsConstructor
-@Entity
-@Table(name = "cart")
 @AllArgsConstructor
-@ToString
 @Builder
+@Entity
+@Table(
+        name = "cart",
+        uniqueConstraints = @UniqueConstraint(columnNames = {"uid", "prod_id"})
+)
 public class Cart {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long cartId;
+    @Column(name = "cart_id")
+    private Long cartId; // 단일 PK
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "uid")
+    @JoinColumn(name = "uid", nullable = false)
     private Users user;
 
-    @ManyToOne
-    @JoinColumn(name = "prod_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "prod_id", nullable = false)
     private Product product;
 
-    @Column(name = "added_at")
-    @CreationTimestamp
-    private LocalDateTime addedAt;
-
-    @Column(name="is_checked")
-    private Boolean isChecked;
-
+    @Column(name = "is_checked",  columnDefinition = "boolean default false")
+    private Boolean isChecked = false;
 }

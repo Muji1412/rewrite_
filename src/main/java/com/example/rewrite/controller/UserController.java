@@ -46,6 +46,9 @@ public class UserController {
     @GetMapping("/mypage")
     public String myPage(HttpSession session ,Model model) {
         UserSessionDto user = (UserSessionDto) session.getAttribute("user");
+        if(user == null) {
+            return "redirect:/user/login";
+        }
         model.addAttribute("nickname", user.getNickname());
         model.addAttribute("user", userService.getProfile(user.getUid()));
         model.addAttribute("sellprod", userService.getSellProd(user.getUid()));
@@ -55,6 +58,9 @@ public class UserController {
     @GetMapping("/edit")
     public String userEdit(HttpSession session, Model model){
         UserSessionDto user = (UserSessionDto)session.getAttribute("user");
+        if(user == null) {
+            return "redirect:/user/login";
+        }
         model.addAttribute("user", user);
         return "user/edit_profile";
     }
@@ -62,12 +68,21 @@ public class UserController {
     @PostMapping("/modify")
     public String modify(HttpSession session,
                          @RequestParam(value = "imgUrl", required = false) String imgUrl,
+//                         @RequestParam("pw") String pw,
                          @RequestParam("nickname") String nickname,
                          @RequestParam("password") String password,
                          @RequestParam("eqpassword") String eqpassword,
                          RedirectAttributes redirectAttributes) {
 
         UserSessionDto user = (UserSessionDto) session.getAttribute("user");
+        if(user == null) {
+            return "redirect:/user/login";
+        }
+
+//        if(!pw.equals(userService.getPassword(user.getUid()))){
+//            redirectAttributes.addFlashAttribute("message", "현재 비밀번호가 일치하지 않습니다.");
+//            return "redirect:/user/edit";
+//        }
         UserVO vo = new UserVO();
         vo.setNickname(nickname);
         vo.setPw(eqpassword);
@@ -82,6 +97,7 @@ public class UserController {
         if (imgUrl != null && !imgUrl.isEmpty()) {
             vo.setImgUrl(imgUrl);
         }
+
 
         try {
             userService.userModify(vo);
@@ -100,51 +116,15 @@ public class UserController {
             return "redirect:/user/edit";
         }
 
-//        try {
-//            if (!profileImage.isEmpty()) {
-//                // 현재 프로젝트의 resources/static 경로 가져오기
-//                String projectPath = new File("").getAbsolutePath();
-//                String uploadDir = projectPath + "/src/main/resources/static/img/uploads";
-//
-//                File uploadPath = new File(uploadDir);
-//                if (!uploadPath.exists()) {
-//                    uploadPath.mkdirs();
-//                }
-//
-//                String fileName = profileImage.getOriginalFilename();
-//                String fileExtension = fileName.substring(fileName.lastIndexOf("."));
-//                String savedFilename = UUID.randomUUID().toString() + fileExtension;
-//
-//                // 파일 저장
-//                File dest = new File(uploadPath + File.separator + savedFilename);
-//                profileImage.transferTo(dest);
-//
-//                // 브라우저에서 접근할 수 있는 상대 경로
-//                String imageUrl = "/img/uploads/" + savedFilename;
-//                vo.setImgUrl(imageUrl);
-//            }
-//
-//            userService.userModify(vo);
-//            user.setNickname(nickname);
-//            if (vo.getImgUrl() != null) {
-//                user.setImgUrl(vo.getImgUrl());
-//            }
-//            session.setAttribute("user", user);
-//
-//            redirectAttributes.addFlashAttribute("message", "회원정보가 수정되었습니다.");
-//            return "redirect:/user/mypage";
-//
-//        } catch (Exception e) {
-//            log.error("파일 업로드 중 오류 발생: {}", e.getMessage(), e);
-//            redirectAttributes.addFlashAttribute("message", "회원정보 수정 중 오류가 발생했습니다.");
-//            return "redirect:/user/edit";
-//        }
     }
 
     @PostMapping("/delete")    //회원 탈퇴
     public String delete(HttpSession session){
-        // 여유 남을때 session이 null인 경우도 체크하면 좋음
+
         UserSessionDto user = (UserSessionDto) session.getAttribute("user");
+        if(user == null) {
+            return "redirect:/user/login";
+        }
         userService.userDelete(user.getUid()); 
         return "redirect:/logout"; //스프링 시큐리티 로그아웃 
     }
