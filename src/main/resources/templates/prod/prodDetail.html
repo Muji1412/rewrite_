@@ -53,7 +53,7 @@
             </div>
               <div class="meta-info">
                   <span>조회수: <span th:text="${product.viewcount}"></span></span>
-                  <a th:if="${session.user.uid != null && session.user.uid == product.uid}"
+                  <a th:if="${session.user?.uid != null && session.user?.uid == product.uid}"
                      th:href="@{/prod/productUpdate(prodId=${product.prodId})}"
                      class="edit-link">수정하기</a>
               </div>

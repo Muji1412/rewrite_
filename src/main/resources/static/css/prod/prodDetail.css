@@ -83,14 +83,16 @@ section {
     align-items: center;
     justify-content: center;
   }
-  #sliderContent img,
-  #sliderContent video {
-    width: 400px;
-    height: 400px;
-    object-fit: cover;
-    border-radius: 10px;
-    display: block;
-  }
+
+#sliderContent img,
+#sliderContent video {
+  width: 400px;
+  height: 400px;
+  object-fit: contain;  /* cover에서 contain으로 변경 */
+  border-radius: 10px;
+  display: block;
+  background-color: #f9f9f9;  /* 선택적: 이미지 뒤 배경색 추가 */
+}
   .slider-btn {
     position: absolute;
     top: 50%;
