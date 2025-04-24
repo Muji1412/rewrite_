@@ -30,5 +30,6 @@ public class Cart {
     private Product product;
 
     @Column(name = "is_checked",  columnDefinition = "boolean default false")
-    private Boolean isChecked = false;
+    private Boolean isChecked = false; //checked
+
 }
