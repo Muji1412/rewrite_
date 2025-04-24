@@ -18,6 +18,17 @@
                 <h2>상품 리스트</h2>
             </div>
 
+            <div class="sort-buttons">
+                <a class="btn" th:classappend="${currentSort == 'latest' ? 'btn-primary' : 'btn-outline-primary'}"
+                   th:href="@{/prod/prodList(sortBy=latest)}">최신순</a>
+                <a class="btn" th:classappend="${currentSort == 'views' ? 'btn-primary' : 'btn-outline-primary'}"
+                   th:href="@{/prod/prodList(sortBy=views)}">조회수순</a>
+                <a class="btn" th:classappend="${currentSort == 'priceAsc' ? 'btn-primary' : 'btn-outline-primary'}"
+                   th:href="@{/prod/prodList(sortBy=priceAsc)}">가격낮은순</a>
+                <a class="btn" th:classappend="${currentSort == 'priceDesc' ? 'btn-primary' : 'btn-outline-primary'}"
+                   th:href="@{/prod/prodList(sortBy=priceDesc)}">가격높은순</a>
+            </div>
+
                 <div class="card-container">
                     <!-- 상품 목록 반복 -->
                     <div class="card" th:each="product : ${products}" th:data-prod-id="${product.prodId}">
