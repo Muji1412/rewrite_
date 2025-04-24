@@ -4,6 +4,7 @@ import com.example.rewrite.command.UserVO;
 import com.example.rewrite.command.user.FindIdRequestDto;
 import com.example.rewrite.command.user.LoginRequestDto;
 import com.example.rewrite.command.user.SignupRequestDto;
+import com.example.rewrite.command.user.UserDTO;
 import com.example.rewrite.entity.Product;
 import com.example.rewrite.entity.Users;
 import org.apache.ibatis.annotations.Mapper;
@@ -24,8 +25,11 @@ public interface UserService {
     boolean checkUserByIdAndEmailAndPhoneAndPassword(FindIdRequestDto requestDto);
     void sendUserPwdToEmail(FindIdRequestDto requestDto);
     boolean checkUserByNameAndPhoneAndEmail(FindIdRequestDto requestDto);
-    User getUserInfo(String id);
+    Users getUserInfo(Long uid);
     String sellCount(Long uid);
     Users getProfile(Long uid);
     List<Product> getSellProd(Long uid);
+    List<UserDTO> findUsers(String search, String role);
+    void changeRole(Long uid, String role);
+    void deleteUser(Long uid);
 }

@@ -116,3 +116,43 @@
     height: auto; /* 이미지의 가로세로 비율을 유지하면서 높이를 자동으로 조절 */
     display: block; /* (선택사항) 이미지 아래에 불필요한 공백이 생기는 것을 방지 */
 }
+
+
+/* 예시 CSS */
+.button-container {
+    text-align: right; /* 버튼들을 오른쪽으로 정렬 */
+    margin-top: 20px;
+}
+
+.list-button, .delete-button {
+    display: inline-block;
+    padding: 8px 15px;
+    border: 1px solid #ccc;
+    background-color: #f8f8f8;
+    color: #333;
+    text-decoration: none;
+    border-radius: 4px;
+    margin-left: 10px; /* 버튼 사이 간격 */
+    cursor: pointer; /* 버튼처럼 보이도록 커서 변경 */
+    font-size: 14px; /* 폰트 크기 */
+}
+
+.delete-button {
+    background-color: #dc3545; /* 삭제 버튼은 빨간색 배경 */
+    color: white;
+    border-color: #dc3545;
+}
+
+.delete-button:hover {
+    background-color: #c82333;
+    border-color: #bd2130;
+}
+
+.list-button:hover {
+    background-color: #e2e2e2;
+}
+
+/* form 안의 button 스타일 초기화 (필요하다면) */
+form button.delete-button {
+    /* a 태그와 동일한 스타일을 갖도록 하거나, 버튼 고유 스타일 지정 */
+}

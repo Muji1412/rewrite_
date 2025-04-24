@@ -1,7 +1,13 @@
 package com.example.rewrite.NoticeTest;
 
 import com.example.rewrite.entity.Notice;
+import com.example.rewrite.entity.Product;
+import com.example.rewrite.entity.Users;
 import com.example.rewrite.repository.Notice.NoticeRepository;
+import com.example.rewrite.repository.cart.CartRepository;
+import com.example.rewrite.repository.product.ProductRepository;
+import com.example.rewrite.repository.users.UsersRepository;
+import com.example.rewrite.service.cart.CartService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -14,6 +20,12 @@ public class NoticeTest {
 
     @Autowired
     private NoticeRepository noticeRepository;
+    @Autowired
+    private ProductRepository productRepository;
+    @Autowired
+    private CartRepository cartRepository;
+    @Autowired
+    private UsersRepository usersRepository;
 
     @Test
     @Transactional
@@ -46,5 +58,21 @@ public class NoticeTest {
             System.out.println(notice);
         }
     }
+    @Test
+    public void getListTest2() {
+        List<Product> list = productRepository.findProductsByUserUid(11L);
+        for (Product product : list) {
+            System.out.println(product);
+        }
+    }
+    @Test
+    @Transactional
+    public void deleteTest() {
+        Users user = usersRepository.findUserByUid(1L);
+        cartRepository.deleteByUserUid(1L);
+        productRepository.deleteByUserUid(1L);
+        usersRepository.delete(user);
+    }
+
 
 }

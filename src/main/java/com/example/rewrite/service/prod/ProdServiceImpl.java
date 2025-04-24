@@ -29,6 +29,17 @@ public class ProdServiceImpl implements ProdService {
                 .collect(Collectors.toList());
     }
 
+    // 내 상품 목록 조회
+    @Override
+    public List<ProductDTO> getMyProducts(Long uid) {
+
+        List<Product> myProducts = productRepository.findProductsByUserUid(uid);
+
+        return myProducts.stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
+    }
+
     // 상품 상세 조회
     @Override
     @Transactional

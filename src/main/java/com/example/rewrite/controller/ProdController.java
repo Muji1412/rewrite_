@@ -2,11 +2,18 @@ package com.example.rewrite.controller;
 
 import com.example.rewrite.command.ProductDTO;
 import com.example.rewrite.command.user.UserSessionDto;
+import com.example.rewrite.entity.Address;
 import com.example.rewrite.entity.Cart;
+import com.example.rewrite.entity.Users;
 import com.example.rewrite.repository.product.ProductRepository;
+import com.example.rewrite.service.address.AddressService;
 import com.example.rewrite.service.cart.CartService;
 import com.example.rewrite.service.prod.ProdService;
+
 import com.example.rewrite.service.wishlist.WishlistService;
+
+import com.example.rewrite.service.user.UserService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -28,14 +35,62 @@ public class ProdController {
 
     private final ProductRepository productRepository;
     @Autowired
+
     private WishlistService wishlistService;
+
+    private UserService userService;
+    @Autowired
+    private AddressService addressService;
+
 
     public ProdController(ProductRepository productRepository) {
         this.productRepository = productRepository;
     }
 
     @GetMapping("/orderPay")
-    public String orderPay() {
+    public String orderPay(HttpSession session, Model model) {
+        UserSessionDto user = (UserSessionDto) session.getAttribute("user");
+        if(user == null) {
+            return "redirect:/user/login";
+        }
+        Long uid = user.getUid();
+        System.out.println("uid: " + uid);  // 문자열 + 변수
+        Address defaultAddress = addressService.getDefaultAddress(uid);
+        if (defaultAddress == null) {
+            System.out.println("defaultAddress is null");
+        } else {
+            System.out.println("디폴트어드레스 null 아님");
+            System.out.println("defaultAddress: " + defaultAddress);
+        }
+        model.addAttribute("defaultAddress", defaultAddress);
+
+        if (defaultAddress != null && defaultAddress.getAddress() != null) {
+            String[] parts = defaultAddress.getAddress().split("/");
+
+            if (parts.length == 3) {
+                model.addAttribute("postcode", parts[0]);
+                model.addAttribute("addr", parts[1]);
+                model.addAttribute("detailAddress", parts[2]);
+            } else {
+                model.addAttribute("postcode", "");
+                model.addAttribute("addr", "");
+                model.addAttribute("detailAddress", "");
+            }
+        }
+        System.out.println("기본 주소: " + defaultAddress);
+        if(defaultAddress != null && defaultAddress.getPhoneNum() != null) {
+            String phoneNum = defaultAddress.getPhoneNum();
+            String formatPhoneNum = phoneNum;
+
+            if(phoneNum.length() == 11) {
+                formatPhoneNum = phoneNum.replaceFirst("(\\d{3})(\\d{4})(\\d{4})","$1-$2-$3");
+            }
+
+            model.addAttribute("formatPhoneNum", formatPhoneNum);
+        }
+
+
+
         return "prod/orderPay";
     }
     @GetMapping("/cart")
@@ -103,6 +158,15 @@ public class ProdController {
         return "prod/prodList";
     }
 
+    @GetMapping("/myProdList")
+    public String myProdList(HttpSession session, Model model){
+        UserSessionDto user = (UserSessionDto)session.getAttribute("user");
+
+        model.addAttribute("products", prodService.getMyProducts(user.getUid()));
+
+        return  "prod/prodList";
+    }
+
     @PostMapping("/productReg")
     public String register(
             @ModelAttribute ProductDTO productDTO,
@@ -134,6 +198,10 @@ public class ProdController {
         return "redirect:/prod/prodDetail?prodId=" + productDTO.getProdId();
     }
 
+    //주문 내역 페이지 이동
+    @GetMapping("/orderList")
+    public String orderList(){
 
-
+        return "prod/orderList";
+    }
 }

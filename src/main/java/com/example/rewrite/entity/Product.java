@@ -4,6 +4,8 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -71,6 +73,5 @@ public class Product {
 
     @Column(name = "IMG_4", length = 200)
     private String img4;
-
 
 }

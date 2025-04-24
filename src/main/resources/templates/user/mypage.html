@@ -1,10 +1,14 @@
-<link rel="stylesheet" href="/css/user/mypage.css">
-<th:block th:replace="~{/include/side :: def(~{::#wrap})}">
+<link rel="stylesheet" href="/css/user/mypage.css" th:href="@{/css/user/mypage.css}">
+<link rel="stylesheet" href="/css/sideBar.css" th:href="@{/css/sideBar.css}">
+
+<th:block th:replace="~{/include/include :: def(~{::#wrap})}">
 
 
     <section id="wrap">
+      <th:block th:replace="~{/include/side :: def(~{::#wrap})}"/>
       <!-- 상단단 -->
-      <h1 style="font-size: 30px; margin: 30px 0 10px 10px;">[[${nickname}]]님 안녕하세요</h1>
+      <div class="section_right">
+      <h1>[[${nickname}]]님 안녕하세요</h1>
       <div class="profile-section">
         <div class="profile-left">
             <img class="profile-img" th:src="${user.imgUrl}" alt="">
@@ -85,22 +89,31 @@
       <div style="margin: 100px 0 100px 0;">
         <h2>최근 판매 내역</h2>
         <div style="display: flex; gap: 20px;">
-          <div th:each = "list : ${sellprod}">
-            <a href="addressdetail.html" class="latest-order">
+          <div th:each="list : ${sellprod}">
+            <a th:href="'/prod/prodDetail?prodId='+${list.prodId}" class="latest-order">
               <div class="latest-order">
-                <img th:src="${list.img1}" alt="" class="main-img">
+                <div class="media-container">
+                  <img th:src="${list.img1}" alt="" class="main-img">
+                  <!-- 비디오 요소 추가 (기본적으로 숨김) -->
+                  <video class="product-video" th:if="${list.videoUrl != null}"
+                         th:data-src="${list.videoUrl}" muted preload="none"></video>
+                </div>
                 <div class="title">[[${list.title}]]</div>
                 <h4>[[${list.price}]]원</h4>
                 <div class="address">서초동 끌올 3시간전전</div>
               </div>
             </a>
           </div>
-          <a href="/prod/prodList" class="next-btn">
+          <a href="/prod/myProdList" class="next-btn">
             <img src="/img/user/Vector.png" alt="" style="width: 50px; height: 50px;">
           </a>
         </div>
       </div>
 
+      </div>
+
     </section>
 
 </th:block>
+
+<script src="../js/sideBar.js" th:src="@{/js/sideBar.js}"></script>

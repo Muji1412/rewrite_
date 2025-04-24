@@ -1,5 +1,6 @@
 package com.example.rewrite.repository.cart;
 
+import com.example.rewrite.command.ProductDTO;
 import com.example.rewrite.command.user.UserSessionDto;
 import com.example.rewrite.entity.Cart;
 import com.example.rewrite.entity.Product;
@@ -14,5 +15,8 @@ public interface CartRepository extends JpaRepository<Cart, Long> {
     List<Cart> findByUser_Uid(Long uid);
 
     void deleteByCartIdAndUser_Uid(Long cartId, Long uid);
+    void deleteByUserUid(Long uid);
+    List<Cart> findCartsByProduct(Product product);
+
 
 }
