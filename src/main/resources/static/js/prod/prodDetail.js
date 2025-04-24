@@ -1,11 +1,56 @@
 $(document).ready(function(){
-    // 하트 토글 (기존 코드 유지)
+    // 하트 아이콘 요소
     const heart = document.getElementById('heart');
     let liked = false;
 
+    // 상품 ID 가져오기 - HTML에 추가 필요
+    const productId = $('.price_heart').data('product-id');
+    // 또는 URL에서 추출 (예: /product/123 형식이라면)
+    // const productId = window.location.pathname.split('/').pop();
+
+    console.log('상품 ID:', productId);
+
+    // 페이지 로드 시 찜 상태 확인
+    $.ajax({
+        url: '/wishlist/check',
+        type: 'GET',
+        data: { prodId: productId },
+        dataType: 'json',
+        success: function(response) {
+            console.log('찜 상태 확인 응답:', response);
+            liked = response.isWishlisted;
+            updateHeartUI(liked);
+        },
+        error: function(err) {
+            console.error('찜 상태 확인 오류:', err);
+            updateHeartUI(false);
+        }
+    });
+
+    // 하트 클릭 이벤트 (하나로 통합)
     heart.addEventListener('click', function() {
-        liked = !liked;
-        if (liked) {
+        console.log('하트 클릭됨, 상품 ID:', productId);
+        // 서버 통신
+        $.ajax({
+            url: '/wishlist/toggle',
+            type: 'POST',
+            data: { prodId: productId },
+            dataType: 'json',
+            success: function(response) {
+                console.log('찜 상태 변경 응답:', response);
+                liked = response.isWishlisted;
+                updateHeartUI(liked);
+            },
+            error: function(err) {
+                console.error('찜하기 오류:', err);
+            }
+        });
+    });
+
+    // 하트 UI 업데이트 함수
+    function updateHeartUI(isLiked) {
+        console.log('하트 UI 업데이트:', isLiked);
+        if (isLiked) {
             heart.classList.remove('fa-heart-o');
             heart.classList.add('fa-heart');
             heart.style.color = 'red';
@@ -14,7 +59,7 @@ $(document).ready(function(){
             heart.classList.add('fa-heart-o');
             heart.style.color = 'black';
         }
-    });
+    }
 
     // 이미지+동영상 슬라이더 (수정된 코드)
     const mediaData = document.getElementById('mediaData');

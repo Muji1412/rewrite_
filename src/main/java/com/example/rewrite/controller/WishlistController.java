@@ -50,23 +50,43 @@ public class WishlistController {
     @PostMapping("/toggle")
     @ResponseBody
     public ResponseEntity<?> toggleWishlist(@RequestParam Long prodId, HttpSession session) {
-        // 로그인 확인
+        try {
+            // 로그 추가
+            System.out.println("위시리스트 토글 요청 - 상품 ID: " + prodId);
+
+            UserSessionDto user = (UserSessionDto) session.getAttribute("user");
+            if (user == null) {
+                System.out.println("사용자 세션 없음");
+                return ResponseEntity.status(401).body("로그인이 필요합니다");
+            }
+
+            System.out.println("사용자 ID: " + user.getUid() + ", 상품 ID: " + prodId);
+
+            // 서비스 메소드 호출
+            boolean isWishlisted = wishlistService.toggleWishlist(user.getUid(), prodId);
+
+            System.out.println("위시리스트 토글 결과: " + isWishlisted);
+
+            Map<String, Object> response = new HashMap<>();
+            response.put("isWishlisted", isWishlisted);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            e.printStackTrace(); // 서버 로그에 오류 출력
+            return ResponseEntity.status(500).body("오류: " + e.getMessage());
+        }
+    }
+
+    @GetMapping("/check")
+    @ResponseBody
+    public ResponseEntity<?> checkWishlist(@RequestParam Long prodId, HttpSession session) {
         UserSessionDto user = (UserSessionDto) session.getAttribute("user");
         if (user == null) {
             return ResponseEntity.status(401).build();
         }
 
-        // 찜하기 상태 토글 (추가 또는 제거)
-        boolean isAdded = wishlistService.toggleWishlist(user.getUid(), prodId);
-
-        // 상품의 현재 찜 개수 조회
-        int wishlistCount = wishlistService.getWishlistCount(prodId);
-
-        // 응답 데이터 구성
+        boolean isWishlisted = wishlistService.isWishlisted(user.getUid(), prodId);
         Map<String, Object> response = new HashMap<>();
-        response.put("isWishlisted", isAdded);
-        response.put("wishlistCount", wishlistCount);
-
+        response.put("isWishlisted", isWishlisted);
         return ResponseEntity.ok(response);
     }
 }
