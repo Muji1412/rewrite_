@@ -32,7 +32,7 @@
                     <tr th:each="qna : ${qnaPage.content}">
                         <td th:text="${qna.qnaId}">문의번호</td>
                         <td class="subject-cell">
-                            <a th:href="@{/qna/qnaDetail(id=${qna.qnaId})}" th:text="${qna.title}">문의내용</a>
+                            <a th:href="@{/admin/qnaDetail(id=${qna.qnaId})}" th:text="${qna.title}">문의내용</a>
                         </td>
                         <td th:text="${qna.USERID}">작성자</td>
                         <td th:text="${qna.category}">문의유형</td>
@@ -43,10 +43,10 @@
                 </table>
             </div>
 
-            <div class="action-container">
-                <!-- 실제 문의 작성 페이지 링크로 수정하세요 -->
-                <a href="#" class="write-button" th:href="@{/qna/qnaWrite}">문의하기</a>
-            </div>
+<!--            <div class="action-container">-->
+<!--                &lt;!&ndash; 실제 문의 작성 페이지 링크로 수정하세요 &ndash;&gt;-->
+<!--                <a href="#" class="write-button" th:href="@{/qna/qnaWrite}">문의하기</a>-->
+<!--            </div>-->
 
             <!-- 페이지네이션 (정적 예시) -->
             <nav class="pagination-container" aria-label="Page navigation">
@@ -77,7 +77,7 @@
                 <!--                    </li>-->
                 <!--                </ul>-->
                 <div class="pagination">
-                    <a th:href="${qnaPage.first} ? '#' : @{/qna/qnaList(page=${qnaPage.number - 1})}"
+                    <a th:href="${qnaPage.first} ? '#' : @{/admin/qnaList(page=${qnaPage.number - 1})}"
                        class="page-link" th:classappend="${qnaPage.first} ? 'disabled'"> ← Prev </a>
 
                     <th:block th:each="pageNumber : ${#numbers.sequence(startIdx, endIdx)}">
@@ -86,11 +86,11 @@
                               th:text="${pageNumber}"></span>
                         <!-- 나머지는 클릭 되게 -->
                         <a th:unless="${pageNumber == qnaPage.number + 1}"
-                           th:href="@{/qna/qnaList(page=${pageNumber - 1})}"
+                           th:href="@{/admin/qnaList(page=${pageNumber - 1})}"
                            class="page-link" th:text="${pageNumber}"></a>
                     </th:block>
 
-                    <a th:href="${qnaPage != null && qnaPage.last} ? '#' : @{/qna/qnaList(page=${qnaPage != null ? qnaPage.number + 1 : 0})}"
+                    <a th:href="${qnaPage != null && qnaPage.last} ? '#' : @{/admin/qnaList(page=${qnaPage != null ? qnaPage.number + 1 : 0})}"
                        class="page-link" th:classappend="${qnaPage != null && qnaPage.last} ? 'disabled'">
                         Next →
                     </a>
@@ -112,7 +112,7 @@
             items.forEach(function(item) {
                 str += "<tr>";
                 str += "<td>" + item.qnaId + "</td>";
-                str += "<td class='subject-cell'><a href='/qna/qnaDetail?id=" + item.qnaId + "'>" + item.title + "</a></td>";
+                str += "<td class='subject-cell'><a href='/admin/qnaDetail?id=" + item.qnaId + "'>" + item.title + "</a></td>";
                 str += "<td>" + item.uid + "</td>";
                 str += "<td>" + item.category + "</td>";
                 str += "<td>" + (item.answer_stat ? "답변완료" : "답변대기") + "</td>";
