@@ -89,7 +89,26 @@ public class ProdController {
         }
 
         List<Cart> checkedCarts = cartService.getCheckedCarts(uid);
+
+        int totalPrice = 0;
+        for (Cart cart : checkedCarts) {
+            totalPrice += Integer.parseInt(cart.getProduct().getPrice());
+        }
+
+        String formattedTotalPrice = String.format("%,d", totalPrice) + "원";
+        model.addAttribute("formattedTotalPrice", formattedTotalPrice);  // 주문금액
+
+        int shippingFee = 0;
+        model.addAttribute("shippingFee", shippingFee);
+
+        // 최종 결제금액 예시
+        int finalPrice = totalPrice;  // 예시로 총금액을 주문금액과 같게 설정
+        String totalShippingFee = String.format("%,d", finalPrice) + "원";
+        model.addAttribute("formattedFinalPrice", totalShippingFee);  // 총 결제금액
+
+
         model.addAttribute("cartList", checkedCarts);
+
         System.out.println("checkedCarts: " + checkedCarts.toString());
 
         return "prod/orderPay";
@@ -103,6 +122,7 @@ public class ProdController {
         Long uid = user.getUid();
         System.out.println(uid);
         List<Cart> cartList = cartService.getCarts(uid);
+
         int totalPrice = cartService.calculateTotalPrice(cartList);
 
         model.addAttribute("cartList", cartList);
