@@ -103,15 +103,15 @@
             <div class="summary-details">
                 <div class="summary-row">
                     <span>주문금액</span>
-                    <span>3,000,000원</span>
+                    <span>[[${formattedTotalPrice}]]</span>
                 </div>
                 <div class="summary-row">
                     <span>+배송비</span>
-                    <span>0원</span>
+                    <span>[[${shippingFee}]]원</span>
                 </div>
                 <div class="summary-total">
                     <span>총 결제금액</span>
-                    <span class="total-amount">3,000,000원</span>
+                    <span class="total-amount">[[${totalShippingFee}]]</span>
                 </div>
             </div>
             <button class="checkout-button">결제하기</button>
