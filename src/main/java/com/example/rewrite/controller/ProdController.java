@@ -33,11 +33,13 @@ public class ProdController {
     @Autowired
     private ProdService prodService;
 
-    private final ProductRepository productRepository;
     @Autowired
+    private final ProductRepository productRepository;
 
+    @Autowired
     private WishlistService wishlistService;
 
+    @Autowired
     private UserService userService;
     @Autowired
     private AddressService addressService;
@@ -166,21 +168,21 @@ public class ProdController {
     }
 
     @GetMapping("/prodList")
-    public String prodList(Model model) {
-
-
-
-        // 서비스를 통해 모든 상품 목록을 가져옴
-        List<ProductDTO> products = prodService.getAllProducts();
-        // 모델에 상품 목록 추가
+    public String listProducts(Model model,
+                               @RequestParam(defaultValue = "latest") String sortBy) {
+        List<ProductDTO> products = prodService.getAllProducts(sortBy);
         model.addAttribute("products", products);
+        model.addAttribute("currentSort", sortBy);
         return "prod/prodList";
     }
 
     @GetMapping("/myProdList")
     public String myProdList(HttpSession session, Model model){
         UserSessionDto user = (UserSessionDto)session.getAttribute("user");
-
+        if(user == null) {
+            return "redirect:/user/login";
+        }
+        model.addAttribute("user", userService.getProfile(user.getUid()));
         model.addAttribute("products", prodService.getMyProducts(user.getUid()));
 
         return  "prod/prodList";

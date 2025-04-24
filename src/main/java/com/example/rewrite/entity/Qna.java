@@ -1,6 +1,8 @@
 package com.example.rewrite.entity; // 패키지 경로는 실제 프로젝트에 맞게 조정하세요.
 
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
 
 import javax.persistence.*; // 또는 Spring Boot 3+ / Jakarta EE 9+ 사용 시 jakarta.persistence.*
 import java.time.LocalDateTime; // regDate 컬럼에 권장되는 타입 (현재는 String으로 매핑)
@@ -13,6 +15,7 @@ import java.time.LocalDateTime; // regDate 컬럼에 권장되는 타입 (현재
 @NoArgsConstructor
 @Entity
 @Table(name = "QNA") // SQL 테이블 이름과 동일하게 지정
+@DynamicInsert
 public class Qna {
 
     @Id // QNA_ID를 기본 키로 가정합니다. SQL에 PRIMARY KEY 제약조건이 명시되지 않았습니다.
@@ -34,8 +37,11 @@ public class Qna {
     // 예: @Column(name = "REG_DATE") private LocalDateTime regDate;
     private String regDate; // SQL 타입 VARCHAR -> Java String (현재 SQL 정의 기준)
 
-    @Column(name = "ANSWER", nullable = true, length = 255)
+    @Column(name = "ANSWER", nullable = false, length = 255)
     private String answer;
+
+    @Column(name = "ANSWER_STAT", nullable = false, length = 255)
+    private String answer_stat;
 
     @Column(name = "CATEGORY", nullable = true, length = 255)
     private String category;
@@ -56,6 +62,7 @@ public class Qna {
         this.content = content;
         this.regDate = regDate;
         this.answer = answer;
+        this.answer_stat = answer_stat;
         this.category = category;
         this.uid = uid;
         this.fileAttachment = fileAttachment;

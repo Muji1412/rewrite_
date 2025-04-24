@@ -27,14 +27,34 @@ public class ProdServiceImpl implements ProdService {
         this.productRepository = productRepository;
     }
 
-    // 상품 목록 조회
     @Override
-    public List<ProductDTO> getAllProducts() {
-        Sort sort = Sort.by(Sort.Direction.DESC, "regDate");
+    public List<ProductDTO> getAllProducts(String sortBy) {
+        Sort sort;
+
+        // 정렬 기준에 따라 Sort 객체 생성
+        switch(sortBy) {
+            case "latest":
+                sort = Sort.by(Sort.Direction.DESC, "regDate"); // 최신순
+                break;
+            case "views":
+                sort = Sort.by(Sort.Direction.DESC, "viewCount"); // 조회수순
+                break;
+            case "priceAsc":
+                sort = Sort.by(Sort.Direction.ASC, "price"); // 가격 낮은순
+                break;
+            case "priceDesc":
+                sort = Sort.by(Sort.Direction.DESC, "price"); // 가격 높은순
+                break;
+            default:
+                sort = Sort.by(Sort.Direction.DESC, "regDate"); // 기본값은 최신순
+        }
+
         return productRepository.findAll(sort).stream()
                 .map(this::convertToDto)
                 .collect(Collectors.toList());
     }
+
+
 
     // 내 상품 목록 조회
     @Override
@@ -118,7 +138,7 @@ public class ProdServiceImpl implements ProdService {
     @Override
     @Transactional
     public ProductDTO updateProduct(ProductDTO productDTO) {
-        Product product = productRepository.findById(productDTO.getProdId())
+        Product product = productRepository.findById(Long.valueOf(productDTO.getProdId()))
                 .orElseThrow(() -> new RuntimeException("상품을 찾을 수 없습니다."));
 
         // 변경 가능한 필드 업데이트

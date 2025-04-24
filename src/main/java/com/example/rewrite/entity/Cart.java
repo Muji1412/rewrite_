@@ -26,7 +26,7 @@ public class Cart {
     private Users user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "prod_id", nullable = false)
+    @JoinColumn(name = "prod_id", referencedColumnName = "prod_id", nullable = false)
     private Product product;
 
     @Column(name = "is_checked",  columnDefinition = "boolean default false")

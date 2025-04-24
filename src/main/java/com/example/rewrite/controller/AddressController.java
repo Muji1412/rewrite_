@@ -30,8 +30,11 @@ public class AddressController {
     @GetMapping("/detail") //주소지 페이지
     public String addressDetail(HttpSession session, Model model) {
 
-        UserSessionDto dto = (UserSessionDto)session.getAttribute("user");
-        List<Address> list = addressService.getAddress(dto.getUid());
+        UserSessionDto user = (UserSessionDto)session.getAttribute("user");
+        if(user == null) {
+            return "redirect:/user/login";
+        }
+        List<Address> list = addressService.getAddress(user.getUid());
         List<Map<String, Object>> address = new ArrayList<>(); //주소지 분리
 
         for(Address List : list){
@@ -76,10 +79,12 @@ public class AddressController {
                                @RequestParam("phone3")String phone3
     ){
 
-        UserSessionDto dto = (UserSessionDto)session.getAttribute("user");
+        UserSessionDto user = (UserSessionDto)session.getAttribute("user");
+        if(user == null) {
+            return "redirect:/user/login";
+        }
 
-
-        address.setUid(dto.getUid()); //세션으로 변경 예정
+        address.setUid(user.getUid()); //세션으로 변경 예정
 
         address.setIsDefault("N"); //기본값 설정
         address.setDelChk("N"); //기본값 설정
@@ -134,8 +139,11 @@ public class AddressController {
 
     @PostMapping("/default") //기본주소지 선택
     public String checkDefault(HttpSession session, @RequestParam("addressId")Long addressId){ //세션으로변경 예정
-        UserSessionDto uid = (UserSessionDto)session.getAttribute("user");
-        addressService.checkDefault(addressId, uid.getUid());
+        UserSessionDto user = (UserSessionDto)session.getAttribute("user");
+        if(user == null) {
+            return "redirect:/user/login";
+        }
+        addressService.checkDefault(addressId, user.getUid());
         return "redirect:/address/detail";
     }
 

@@ -25,8 +25,9 @@ public class ProductApiController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ProductDTO>> getAllProducts() {
-        List<ProductDTO> products = productService.getAllProducts();
+    public ResponseEntity<List<ProductDTO>> getAllProducts(
+            @RequestParam(defaultValue = "latest") String sortBy) {
+        List<ProductDTO> products = productService.getAllProducts(sortBy);
         return ResponseEntity.ok(products);
     }
 

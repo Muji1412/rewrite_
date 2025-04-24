@@ -32,13 +32,25 @@
 
 /* 페이지 타이틀 */
 .page-title {
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: #333;
+    width: 700px;
     margin-bottom: 20px;
     padding-bottom: 10px;
     border-bottom: 2px solid #000; /* 타이틀 아래 검정색 선 */
-    text-align: left;
+    display: flex;
+    justify-content: space-between;
+}
+
+.title_left{
+    width: 200px;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #333;
+}
+
+.title_right{
+    width: 100px;
+    border: none;
+    background: #faa;
 }
 
 
