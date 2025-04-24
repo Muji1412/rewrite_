@@ -48,7 +48,7 @@
 /* --- 파일 첨부 영역 스타일 --- */
 .file-input-wrapper {display: flex;align-items: center;border: 1px solid #ddd;border-radius: 4px;padding: 5px 10px; /* 내부 여백 약간 줄임 */}
 
-.file-input-hidden {display: none; /* 실제 input 숨김 */}
+/*.file-input-hidden {display: none; !* 실제 input 숨김 *!}*/
 
 .file-select-button {display: inline-block;padding: 5px 10px;font-size: 0.85rem;color: #555;border: 1px solid #ccc;background-color: #f8f8f8;border-radius: 3px;cursor: pointer;margin-right: 10px; /* 버튼과 파일 목록 사이 여백 */white-space: nowrap; /* 줄바꿈 방지 */}
 .file-select-button:hover {background-color: #eee;}

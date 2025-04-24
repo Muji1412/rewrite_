@@ -35,19 +35,39 @@ public class QnaController {
     private UsersRepository usersRepository;
 
     // 문의 목록 페이지
+//
+
     @GetMapping("/qnaList")
     public String inquiryList(HttpSession session, RedirectAttributes redirectAttributes,
                               @PageableDefault(size = 10, sort = "qnaId", direction = Sort.Direction.DESC) Pageable pageable,
                               Model model) {
-        // 페이지에이블로 데이터 조회
-        Page<Qna> qnaPage = qnaRepository.findAll(pageable);
 
-        if (qnaPage == null) {
-            redirectAttributes.addFlashAttribute("message", "조회할 데이터가 없습니다.");
-            return "redirect:/qna/qnaList";  // 빈 페이지로 리다이렉트
+        // 세션에서 사용자 정보 가져오기
+        UserSessionDto user = (UserSessionDto) session.getAttribute("user");
+
+        // 사용자가 로그인하지 않은 경우
+        if (user == null) {
+            redirectAttributes.addFlashAttribute("message", "로그인이 필요한 서비스입니다.");
+            return "redirect:/user/login";
         }
 
-        model.addAttribute("qnaPage", qnaPage);
+        Page<Qna> qnaPage;
+
+        // 관리자인 경우 모든 QnA 항목을 볼 수 있음
+        if ("admin".equals(user.getRole())) {
+            qnaPage = qnaRepository.findAll(pageable);
+        } else {
+            // 일반 사용자인 경우 자신의 QnA 항목만 볼 수 있음
+            qnaPage = qnaRepository.findByUSERID(user.getId(), pageable);
+        }
+
+        if (qnaPage == null || qnaPage.isEmpty()) {
+            model.addAttribute("message", "조회할 데이터가 없습니다.");
+            // 빈 페이지 반환 (리다이렉트하지 않고 빈 목록 표시)
+            model.addAttribute("qnaPage", qnaPage);
+        } else {
+            model.addAttribute("qnaPage", qnaPage);
+        }
 
         // 페이지 블록 계산 - 10개씩
         int pageBlockSize = 10;
