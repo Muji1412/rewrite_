@@ -32,4 +32,8 @@ public class Cart {
     @Column(name = "added_at")
     @CreationTimestamp
     private LocalDateTime addedAt;
+
+    @Column(name="is_checked")
+    private Boolean isChecked;
+
 }
