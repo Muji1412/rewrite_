@@ -33,11 +33,13 @@ public class ProdController {
     @Autowired
     private ProdService prodService;
 
-    private final ProductRepository productRepository;
     @Autowired
+    private final ProductRepository productRepository;
 
+    @Autowired
     private WishlistService wishlistService;
 
+    @Autowired
     private UserService userService;
     @Autowired
     private AddressService addressService;
@@ -157,7 +159,10 @@ public class ProdController {
     @GetMapping("/myProdList")
     public String myProdList(HttpSession session, Model model){
         UserSessionDto user = (UserSessionDto)session.getAttribute("user");
-
+        if(user == null) {
+            return "redirect:/user/login";
+        }
+        model.addAttribute("user", userService.getProfile(user.getUid()));
         model.addAttribute("products", prodService.getMyProducts(user.getUid()));
 
         return  "prod/prodList";

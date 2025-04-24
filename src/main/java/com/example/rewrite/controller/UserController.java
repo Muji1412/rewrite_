@@ -46,6 +46,9 @@ public class UserController {
     @GetMapping("/mypage")
     public String myPage(HttpSession session ,Model model) {
         UserSessionDto user = (UserSessionDto) session.getAttribute("user");
+        if(user == null) {
+            return "redirect:/user/login";
+        }
         model.addAttribute("nickname", user.getNickname());
         model.addAttribute("user", userService.getProfile(user.getUid()));
         model.addAttribute("sellprod", userService.getSellProd(user.getUid()));
@@ -55,6 +58,9 @@ public class UserController {
     @GetMapping("/edit")
     public String userEdit(HttpSession session, Model model){
         UserSessionDto user = (UserSessionDto)session.getAttribute("user");
+        if(user == null) {
+            return "redirect:/user/login";
+        }
         model.addAttribute("user", user);
         return "user/edit_profile";
     }
@@ -69,7 +75,9 @@ public class UserController {
                          RedirectAttributes redirectAttributes) {
 
         UserSessionDto user = (UserSessionDto) session.getAttribute("user");
-
+        if(user == null) {
+            return "redirect:/user/login";
+        }
 
 //        if(!pw.equals(userService.getPassword(user.getUid()))){
 //            redirectAttributes.addFlashAttribute("message", "현재 비밀번호가 일치하지 않습니다.");
@@ -112,8 +120,11 @@ public class UserController {
 
     @PostMapping("/delete")    //회원 탈퇴
     public String delete(HttpSession session){
-        // 여유 남을때 session이 null인 경우도 체크하면 좋음
+
         UserSessionDto user = (UserSessionDto) session.getAttribute("user");
+        if(user == null) {
+            return "redirect:/user/login";
+        }
         userService.userDelete(user.getUid()); 
         return "redirect:/logout"; //스프링 시큐리티 로그아웃 
     }
