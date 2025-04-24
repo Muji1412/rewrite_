@@ -138,7 +138,7 @@ public class ProdServiceImpl implements ProdService {
     @Override
     @Transactional
     public ProductDTO updateProduct(ProductDTO productDTO) {
-        Product product = productRepository.findById(productDTO.getProdId())
+        Product product = productRepository.findById(Long.valueOf(productDTO.getProdId()))
                 .orElseThrow(() -> new RuntimeException("상품을 찾을 수 없습니다."));
 
         // 변경 가능한 필드 업데이트
