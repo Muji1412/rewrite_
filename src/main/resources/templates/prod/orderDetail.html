@@ -94,10 +94,19 @@
     </div>
 
     <div class="button-container">
-        <button type="button">목록</button>
+        <button type="button" class="list-btn">목록</button>
     </div>
 
 </div>
 </section>
 
 </th:block>
+<script>
+    var btn = document.querySelector(".list-btn")
+
+    btn.onclick = function(){
+        window.location.href = "/prod/orderList";
+    }
+
+
+</script>
