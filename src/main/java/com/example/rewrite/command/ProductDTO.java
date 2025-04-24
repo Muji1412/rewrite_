@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @ToString
 public class ProductDTO {
 
-    private Integer prodId;
+    private Long prodId;
     private String categoryMax;
     private String categoryMin;
     private String title;

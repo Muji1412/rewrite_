@@ -38,7 +38,7 @@ public class Wishlist {
      * product 테이블의 prod_id와 연결
      */
     @ManyToOne
-    @JoinColumn(name = "prod_id")
+    @JoinColumn(name = "prod_id", referencedColumnName = "prod_id")
     private Product product;
 
     /**

@@ -111,7 +111,7 @@ public class ProdServiceImpl implements ProdService {
     // 엔티티를 DTO로 변환
     private ProductDTO convertToDto(Product product) {
         ProductDTO.ProductDTOBuilder build = ProductDTO.builder()
-                .prodId(Integer.valueOf(product.getProdId()))
+                .prodId(Long.valueOf(product.getProdId()))
                 .title(product.getTitle())
                 .categoryMax(product.getCategoryMax())
                 .categoryMin(product.getCategoryMin())
