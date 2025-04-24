@@ -26,6 +26,13 @@
                 </div>
             </div>
 
+            <div class="detail-section">
+                <div class="detail-label">첨부파일</div>
+                <div class="detail-content sub-content">
+                    <p th:text="${qna.fileAttachment}"></p>
+                </div>
+            </div>
+
             <div class="button-container">
                 <a href="/qna/qnaList" th:href="@{/qna/qnaList}" class="list-button">목록으로</a>
             </div>
