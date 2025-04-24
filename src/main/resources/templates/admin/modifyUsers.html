@@ -346,10 +346,7 @@
          * @param {string} uid - 사용자 UID
          */
         function handleViewDetail(uid) {
-            console.log(`사용자 UID ${uid}의 상세 정보 보기`);
-            // 여기에 상세 정보 페이지로 이동하거나 모달을 띄우는 로직 구현
-            alert(`(가상) UID ${uid} 사용자의 상세 페이지로 이동합니다.\n실제 구현이 필요합니다.`);
-            // window.location.href = `/admin/user/${uid}`; // 예시: 상세 페이지 URL
+            window.location.href = `/admin/modifyProducts?uid=${uid}`;
         }
 
         function handleDeleteUser(uid) {
