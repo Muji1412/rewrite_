@@ -16,6 +16,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.GrantedAuthority;
@@ -183,7 +186,10 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     //마이페이지 판매내역 조회
     @Override
     public List<Product> getSellProd(Long uid) {
-        return usersRepository.getSellProd(uid);
+        // PageRequest.of(페이지 번호, 페이지당 항목 수)
+        Pageable pageable = PageRequest.of(0, 4); // 첫 번째 페이지에서 4개 항목
+        Page<Product> productPage = usersRepository.getSellProd(uid, pageable);
+        return productPage.getContent(); // Page에서 List로 변환
     }
 
     @Override
@@ -234,5 +240,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         }
     }
 
+    @Override
+    public String getPassword(Long uid) {
 
+        return usersRepository.findUserByUid(uid).getPw();
+    }
 }

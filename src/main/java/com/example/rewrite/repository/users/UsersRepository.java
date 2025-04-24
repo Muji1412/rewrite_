@@ -3,6 +3,7 @@ package com.example.rewrite.repository.users;
 import com.example.rewrite.command.UserVO;
 import com.example.rewrite.entity.Product;
 import com.example.rewrite.entity.Users;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -29,38 +30,42 @@ public interface UsersRepository extends JpaRepository<Users, Long> {
 
 
 
-
+    //프로필 수정
     @Modifying
     @Transactional
     @Query("UPDATE Users u " +
-            "Set u.nickname = :#{#user.nickname}, " +
-            "u.pw = :#{#user.pw}," +
-            " u.imgUrl = :#{#user.imgUrl} " +
-            "where u.uid = :#{#user.uid}")
-    void userModify(@Param("user")UserVO users);
+            "SET u.nickname = :#{#user.nickname}, " +
+            "u.pw = :#{#user.pw}, " +
+            "u.imgUrl = CASE WHEN :#{#user.imgUrl} IS NULL THEN u.imgUrl ELSE :#{#user.imgUrl} END " +
+            "WHERE u.uid = :#{#user.uid}")
+    void userModify(@Param("user") UserVO users);
 
+    //회원 탈퇴
     @Modifying
     @Transactional
     @Query("UPDATE Users u " +
-            "set u.email = '탈퇴한회원'," +
+            "set u.email = 'withdrawn@user.com'," +
             "u.id=:uuid," +
-            "u.name='탈퇴한 회원'," +
-            "u.nickname='탈퇴한 회원'," +
-            "u.phone='탈퇴한회원'," +
+            "u.name='Withdrawn User'," +
+            "u.nickname='Withdrawn User'," +
+            "u.phone='00000000000'," +
             "u.pw=:uuid," +
-            "u.role='탈퇴한회원'" +
+            "u.role='WITHDRAWN'" +
             "where u.uid = :uid")
     void userDelete(@Param("uid") Long uid,
-                    @Param("uuid")String uuid); //회원 탈퇴
+                    @Param("uuid")String uuid);
 
+    //마이페이지 판매 수 조회
     @Query("SELECT COUNT(p)" +
             "FROM Product p WHERE p.user.uid = :uid ")
     String sellCount(@Param("uid")Long uid);
 
     Users findUserByUid(Long uid);
 
-    @Query("SELECT p FROM Product p where p.user.uid = :uid")
-    List<Product> getSellProd(Long uid);
+    //마이페이지 최근 판매내역 조회
+    @Query(value = "SELECT p FROM Product p WHERE p.user.uid = :uid ORDER BY p.regDate DESC ",
+            countQuery = "SELECT count(p) FROM Product p WHERE p.user.uid = :uid")
+    Page<Product> getSellProd(Long uid, Pageable pageable);
 
     @Query("SELECT u FROM Users u WHERE " +
             "(:searchTerm IS NULL OR " +
