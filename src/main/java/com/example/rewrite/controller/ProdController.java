@@ -40,10 +40,51 @@ public class ProdController {
     }
 
     @GetMapping("/orderPay")
-    public String orderPay() {
+    public String orderPay(HttpSession session, Model model) {
+        UserSessionDto user = (UserSessionDto) session.getAttribute("user");
+        if(user == null) {
+            return "redirect:/user/login";
+        }
+        Long uid = user.getUid();
+        System.out.println("uid: " + uid);  // 문자열 + 변수
+        Address defaultAddress = addressService.getDefaultAddress(uid);
+        if (defaultAddress == null) {
+            System.out.println("defaultAddress is null");
+        } else {
+            System.out.println("디폴트어드레스 null 아님");
+            System.out.println("defaultAddress: " + defaultAddress);
+        }
+        model.addAttribute("defaultAddress", defaultAddress);
+
+        if (defaultAddress != null && defaultAddress.getAddress() != null) {
+            String[] parts = defaultAddress.getAddress().split("/");
+
+            if (parts.length == 3) {
+                model.addAttribute("postcode", parts[0]);
+                model.addAttribute("addr", parts[1]);
+                model.addAttribute("detailAddress", parts[2]);
+            } else {
+                model.addAttribute("postcode", "");
+                model.addAttribute("addr", "");
+                model.addAttribute("detailAddress", "");
+            }
+        }
+        System.out.println("기본 주소: " + defaultAddress);
+        if(defaultAddress != null && defaultAddress.getPhoneNum() != null) {
+            String phoneNum = defaultAddress.getPhoneNum();
+            String formatPhoneNum = phoneNum;
+
+            if(phoneNum.length() == 11) {
+                formatPhoneNum = phoneNum.replaceFirst("(\\d{3})(\\d{4})(\\d{4})","$1-$2-$3");
+            }
+
+            model.addAttribute("formatPhoneNum", formatPhoneNum);
+        }
+
+
+
         return "prod/orderPay";
     }
-
     @GetMapping("/cart")
     public String cart(Model model, HttpSession session) {
         UserSessionDto user = (UserSessionDto)session.getAttribute("user");
