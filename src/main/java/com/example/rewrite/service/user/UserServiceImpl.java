@@ -1,15 +1,23 @@
 package com.example.rewrite.service.user;
 
 import com.example.rewrite.command.UserVO;
+import com.example.rewrite.command.user.ApiResponseDto;
 import com.example.rewrite.command.user.FindIdRequestDto;
 import com.example.rewrite.command.user.SignupRequestDto;
+import com.example.rewrite.command.user.UserDTO;
+import com.example.rewrite.entity.Cart;
 import com.example.rewrite.entity.Product;
 import com.example.rewrite.entity.Users;
+import com.example.rewrite.repository.cart.CartRepository;
+import com.example.rewrite.repository.product.ProductRepository;
 import com.example.rewrite.repository.users.UsersRepository;
 import com.example.rewrite.service.mail.MailService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
@@ -20,10 +28,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Slf4j
 @Service("UserService")
@@ -38,6 +43,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     private final UsersRepository usersRepository;
     private final PasswordEncoder passwordEncoder;
     private final MailService mailService;
+    private final ProductRepository productRepository;
+    private final CartRepository cartRepository;
 
     @Override
     @Transactional
@@ -177,6 +184,54 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public List<Product> getSellProd(Long uid) {
         return usersRepository.getSellProd(uid);
+    }
+
+    @Override
+    public List<UserDTO> findUsers(String search, String role) {
+        List<Users> usersList = usersRepository.searchUsers(search, role);
+
+        System.out.println("유저디티오 디버깅");
+
+        List<UserDTO> userDTOList = new ArrayList<>();
+        for (Users users : usersList) {
+            System.out.println(users);
+            UserDTO user = UserDTO.fromEntity(users);
+            userDTOList.add(user);
+        }
+        for (UserDTO userDTO : userDTOList) {
+
+            System.out.println(userDTO.toString());
+        }
+
+        return userDTOList;
+    }
+
+    @Override
+    @Transactional
+    public void changeRole(Long uid, String role) {
+        Users user = usersRepository.findUserByUid(uid);
+        user.setRole(role);
+        usersRepository.save(user);
+    }
+
+    @Override
+    @Transactional
+    public void deleteUser(Long uid) {
+        Users user = usersRepository.findUserByUid(uid);
+
+
+        if (user != null) {
+
+            List<Product> products = productRepository.findProductsByUserUid(uid);
+            for (Product product : products) {
+                List<Cart> carts = cartRepository.findCartsByProduct(product);
+                cartRepository.deleteAll(carts);
+            }
+
+            cartRepository.deleteByUserUid(uid); //순서 중요
+            productRepository.deleteByUserUid(uid);
+            usersRepository.delete(user);
+        }
     }
 
 
