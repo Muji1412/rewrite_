@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -68,6 +69,20 @@ public class CartServiceImpl implements CartService {
     public void deleteCart(Long cartId, Long uid) {
         cartRepository.deleteByCartIdAndUser_Uid(cartId, uid);
     }
+
+    @Override
+    public List<Cart> getCheckedCarts(Long uid) {
+        return cartRepository.findByUser_UidAndIsCheckedTrue(uid);
+    }
+
+    @Override
+    public void updateCheckedStatus(Long cartId, Boolean isChecked) {
+        Cart cart = cartRepository.findById(cartId)
+                .orElseThrow(() -> new RuntimeException("Cart not found"));
+        cart.setIsChecked(isChecked);
+        cartRepository.save(cart);
+    }
+
 
 }
 
