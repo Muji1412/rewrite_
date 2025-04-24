@@ -159,15 +159,8 @@ public class ProdServiceImpl implements ProdService {
             return list;
         }
     }
-
     @Override
-    public void deleteProduct(Long id) {
-        // 단순히 하나의 jpa만 부르는 경우에는 트랜잭셔널 붙힐필요 없음
-      
-    @Transactional
     public void deleteProduct(Long id) {
         productRepository.deleteById(id);
     }
-
-
 }
