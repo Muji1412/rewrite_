@@ -9,7 +9,11 @@ import com.example.rewrite.repository.product.ProductRepository;
 import com.example.rewrite.service.address.AddressService;
 import com.example.rewrite.service.cart.CartService;
 import com.example.rewrite.service.prod.ProdService;
+
+import com.example.rewrite.service.wishlist.WishlistService;
+
 import com.example.rewrite.service.user.UserService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -31,9 +35,13 @@ public class ProdController {
 
     private final ProductRepository productRepository;
     @Autowired
+
+    private WishlistService wishlistService;
+
     private UserService userService;
     @Autowired
     private AddressService addressService;
+
 
     public ProdController(ProductRepository productRepository) {
         this.productRepository = productRepository;
@@ -123,16 +131,26 @@ public class ProdController {
     }
 
     @GetMapping("/prodDetail")
-    public String prodDetail(@RequestParam Long prodId, Model model){
-        // 서비스를 통해 상품 상세 정보를 가져옴
+    public String prodDetail(@RequestParam Long prodId, Model model, HttpSession session) {
+        // 상품 상세 정보 조회
         ProductDTO product = prodService.getProductById(prodId);
-        // 모델에 상품 정보 추가
         model.addAttribute("product", product);
+
+        // 로그인한 경우 찜 상태 확인
+        UserSessionDto user = (UserSessionDto) session.getAttribute("user");
+        if (user != null) {
+            boolean isWishlisted = wishlistService.isWishlisted(user.getUid(), prodId);
+            model.addAttribute("isWishlisted", isWishlisted);
+        }
+
         return "prod/prodDetail";
     }
 
     @GetMapping("/prodList")
     public String prodList(Model model) {
+
+
+
         // 서비스를 통해 모든 상품 목록을 가져옴
         List<ProductDTO> products = prodService.getAllProducts();
         // 모델에 상품 목록 추가
