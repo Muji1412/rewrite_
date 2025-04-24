@@ -1,19 +1,19 @@
 package com.example.rewrite.command;
 
 import com.example.rewrite.entity.Product;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+
 import java.time.LocalDateTime;
 
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
+@Getter
+@Setter
+@ToString
 public class ProductDTO {
 
-    private Long prodId;
+    private Integer prodId;
     private String categoryMax;
     private String categoryMin;
     private String title;

@@ -111,7 +111,7 @@ public class ProdServiceImpl implements ProdService {
     // 엔티티를 DTO로 변환
     private ProductDTO convertToDto(Product product) {
         ProductDTO.ProductDTOBuilder build = ProductDTO.builder()
-                .prodId(Long.valueOf(product.getProdId()))
+                .prodId(Integer.valueOf(product.getProdId()))
                 .title(product.getTitle())
                 .categoryMax(product.getCategoryMax())
                 .categoryMin(product.getCategoryMin())
@@ -138,7 +138,7 @@ public class ProdServiceImpl implements ProdService {
     @Override
     @Transactional
     public ProductDTO updateProduct(ProductDTO productDTO) {
-        Product product = productRepository.findById(productDTO.getProdId())
+        Product product = productRepository.findById(Long.valueOf(productDTO.getProdId()))
                 .orElseThrow(() -> new RuntimeException("상품을 찾을 수 없습니다."));
 
         // 변경 가능한 필드 업데이트
