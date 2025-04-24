@@ -49,10 +49,7 @@ public class ProdController {
         System.out.println("uid: " + uid);  // 문자열 + 변수
         Address defaultAddress = addressService.getDefaultAddress(uid);
         if (defaultAddress == null) {
-            System.out.println("defaultAddress is null");
-        } else {
-            System.out.println("디폴트어드레스 null 아님");
-            System.out.println("defaultAddress: " + defaultAddress);
+            return "redirect:/address/detail";
         }
         model.addAttribute("defaultAddress", defaultAddress);
 
@@ -81,7 +78,9 @@ public class ProdController {
             model.addAttribute("formatPhoneNum", formatPhoneNum);
         }
 
-
+        List<Cart> checkedCarts = cartService.getCheckedCarts(uid);
+        model.addAttribute("cartList", checkedCarts);
+        System.out.println("checkedCarts: " + checkedCarts.toString());
 
         return "prod/orderPay";
     }

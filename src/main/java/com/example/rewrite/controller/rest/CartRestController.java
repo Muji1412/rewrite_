@@ -22,13 +22,13 @@ public class CartRestController {
     @Autowired
     private CartService cartService;
 
-    @DeleteMapping("/{cartId}")
-    public ResponseEntity<String> deleteCart(@PathVariable Long cartId, HttpSession session) {
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteCart(@PathVariable Long id, HttpSession session) {
         try {
             UserSessionDto user = (UserSessionDto) session.getAttribute("user");
-            System.out.println("삭제 요청: cartId=" + cartId + ", uid=" + user.getUid());
+            System.out.println("삭제 요청: Id=" + id + ", uid=" + user.getUid());
 
-            cartService.deleteCart(cartId, user.getUid());
+            cartService.deleteCart(id, user.getUid());
 
             return new ResponseEntity<>("삭제 성공", HttpStatus.OK);
         } catch (Exception e) {
@@ -37,6 +37,13 @@ public class CartRestController {
             return new ResponseEntity<>("삭제 실패: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
+    }
+
+    @PatchMapping("/{cartId}/check")
+    public ResponseEntity<Void> updateCheckedStatus(@PathVariable Long cartId, @RequestBody Map<String, Boolean> body) {
+        Boolean isChecked = body.get("isChecked");
+        cartService.updateCheckedStatus(cartId, isChecked);
+        return ResponseEntity.ok().build();
     }
 
 }

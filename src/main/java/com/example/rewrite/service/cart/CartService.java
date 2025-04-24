@@ -13,4 +13,11 @@ public interface CartService {
     List<Cart> getCarts(Long uid);
     void deleteCart(Long cartId, Long uid);
 
+    // 추가 메서드 - 주문/결제 페이지용
+    // 체크된 장바구니 상품만 조회
+    List<Cart> getCheckedCarts(Long uid);
+    void updateCheckedStatus(Long cartId, Boolean isChecked);
+
+
+
 }

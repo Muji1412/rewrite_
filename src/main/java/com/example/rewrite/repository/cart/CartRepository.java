@@ -6,6 +6,7 @@ import com.example.rewrite.entity.Cart;
 import com.example.rewrite.entity.Product;
 import com.example.rewrite.entity.Users;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 import java.util.Optional;
@@ -15,6 +16,10 @@ public interface CartRepository extends JpaRepository<Cart, Long> {
     List<Cart> findByUser_Uid(Long uid);
 
     void deleteByCartIdAndUser_Uid(Long cartId, Long uid);
+
+    // 추가할 메서드들
+    // 1. 선택된 장바구니 아이템만 조회 (체크된 상품)
+    List<Cart> findByUser_UidAndIsCheckedTrue(Long uid);
 
 
 }
