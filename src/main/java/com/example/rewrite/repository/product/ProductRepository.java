@@ -23,4 +23,5 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     List<Product> findProductsByUserUid(Long uid);
     void deleteByUserUid(Long uid);
+    List<Product> findByUserUid(Long uid);
 }

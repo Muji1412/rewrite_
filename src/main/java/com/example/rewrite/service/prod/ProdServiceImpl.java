@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -137,6 +138,32 @@ public class ProdServiceImpl implements ProdService {
     }
 
     @Override
+    public List<ProductDTO> searchProductByUid(Long uid) {
+        
+        //uid 없는경우에는 전체 상품 땡겨옴
+        if (uid == null) {
+            List<Product> products = productRepository.findAll();
+            List<ProductDTO> list = new ArrayList<>();
+            for (Product product : products) {
+                ProductDTO dto = ProductDTO.fromEntity(product);
+                list.add(dto);
+            }
+            return list;
+        } else {
+            List<Product> products = productRepository.findProductsByUserUid(uid);
+            List<ProductDTO> list = new ArrayList<>();
+            for (Product product : products) {
+                ProductDTO dto = ProductDTO.fromEntity(product);
+                list.add(dto);
+            }
+            return list;
+        }
+    }
+
+    @Override
+    public void deleteProduct(Long id) {
+        // 단순히 하나의 jpa만 부르는 경우에는 트랜잭셔널 붙힐필요 없음
+      
     @Transactional
     public void deleteProduct(Long id) {
         productRepository.deleteById(id);
