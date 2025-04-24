@@ -40,13 +40,12 @@
                 <span th:text="${product.categoryMax + '/' + product.categoryMin}"></span>
                 <span class="date" th:text="${#temporals.format(product.regDate, 'yy.MM.dd')}"></span>
             </div>
-            <div class="price_heart">
-                <span class="price" th:text="${#numbers.formatInteger(product.price, 1, 'COMMA')} + '원'"></span>
-              <span class="heart">
-                <span class="heart"><i id="heart" class="fa fa-heart-o" style="font-size: 25px; color: black; cursor: pointer;"></i></span>
-
-              </span>
-            </div>
+              <div class="price_heart" th:data-product-id="${product.prodId}">
+                    <span class="price" th:text="${#numbers.formatInteger(product.price, 1, 'COMMA')} + '원'"></span>
+                    <span class="heart">
+                    <span class="heart"><i id="heart" class="fa fa-heart-o" style="font-size: 25px; color: black; cursor: pointer;"></i></span>
+                    </span>
+              </div>
 
             <div class="description">
                 <div th:text="${product.description}">상품 설명이 여기에 표시됩니다.</div>
@@ -56,6 +55,10 @@
                   <a th:if="${session.user?.uid != null && session.user?.uid == product.uid}"
                      th:href="@{/prod/productUpdate(prodId=${product.prodId})}"
                      class="edit-link">수정하기</a>
+                  <a th:if="${session.user?.uid != null && session.user?.uid == product.uid}"
+                     th:href="@{/prod/productDelete(prodId=${product.prodId})}"
+                     onclick="return confirm('정말 이 상품을 삭제하시겠습니까?');"
+                     class="delete-link">삭제하기</a>
               </div>
             <div>
                 <button class="button1" th:onclick="|location.href='@{/prod/prodList}'|" >목록으로</button>
