@@ -86,4 +86,48 @@ document.addEventListener('DOMContentLoaded', function() {
             behavior: 'smooth'
         });
     };
+
+
+
 });
+
+// 드롭다운 토글
+function toggleDropdown(event) {
+    event.stopPropagation(); // 다른 곳 클릭 시 닫히는 것 방지
+    document.querySelector('.dropdown-content').classList.toggle('show');
+}
+
+// 옵션 선택 시
+function selectSort(text, value) {
+    document.querySelector('.dropbtn_content').innerText = text;
+    document.querySelector('.dropdown-content').classList.remove('show');
+    // 정렬 적용 (페이지 이동)
+    const url = new URL(window.location.href);
+    url.searchParams.set('sortBy', value);
+    window.location.href = url.toString();
+}
+
+// 바깥 클릭 시 드롭다운 닫기
+window.onclick = function(event) {
+    if (!event.target.matches('.dropbtn')) {
+        var dropdowns = document.getElementsByClassName("dropdown-content");
+        for (var i = 0; i < dropdowns.length; i++) {
+            var openDropdown = dropdowns[i];
+            if (openDropdown.classList.contains('show')) {
+                openDropdown.classList.remove('show');
+            }
+        }
+    }
+};
+
+// 페이지 로드 시 현재 정렬 기준 표시
+window.onload = function() {
+    const params = new URLSearchParams(window.location.search);
+    const sortBy = params.get('sortBy');
+    let text = "정렬기준 선택하기";
+    if (sortBy === "latest") text = "최신순";
+    else if (sortBy === "views") text = "조회수순";
+    else if (sortBy === "priceAsc") text = "가격낮은순";
+    else if (sortBy === "priceDesc") text = "가격높은순";
+    document.querySelector('.dropbtn_content').innerText = text;
+};
