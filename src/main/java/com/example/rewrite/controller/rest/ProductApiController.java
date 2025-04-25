@@ -2,6 +2,8 @@ package com.example.rewrite.controller.rest;
 
 import com.example.rewrite.command.ProductDTO;
 import com.example.rewrite.command.user.UserSessionDto;
+import com.example.rewrite.entity.Address;
+import com.example.rewrite.service.address.AddressService;
 import com.example.rewrite.service.prod.ProdService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,10 +20,12 @@ import java.util.Map;
 public class ProductApiController {
 
     private final ProdService productService;
+    private final AddressService addressService;
 
     @Autowired
-    public ProductApiController(ProdService productService) {
+    public ProductApiController(ProdService productService, AddressService addressService) {
         this.productService = productService;
+        this.addressService = addressService;
     }
 
     @GetMapping
@@ -39,7 +43,6 @@ public class ProductApiController {
 
     @PostMapping
     public ResponseEntity<?> createProduct(@RequestBody ProductDTO productDTO, HttpSession session) {
-        // 세션에서 사용자 정보 가져오기
         UserSessionDto user = (UserSessionDto) session.getAttribute("user");
         if (user == null) {
             Map<String, String> response = new HashMap<>();
@@ -47,8 +50,18 @@ public class ProductApiController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
         }
 
-        // DTO에 현재 사용자 ID 설정
+        // uid 세팅
         productDTO.setUid(user.getUid());
+
+        // ① 유저의 주소 조회 (예: 기본 주소)
+        // 예시: AddressService가 있다면
+        String pickupAddress = null;
+        Address defaultAddress = addressService.getDefaultAddress(user.getUid());
+        if (defaultAddress != null) {
+            pickupAddress = defaultAddress.getAddress();
+        }
+        // ② DTO에 주소 세팅
+        productDTO.setPickupAddress(pickupAddress);
 
         // 상품 등록
         ProductDTO createdProduct = productService.registerProduct(productDTO);
