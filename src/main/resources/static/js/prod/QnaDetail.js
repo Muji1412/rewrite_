@@ -1,19 +1,17 @@
-$(document).ready(function(){
-    // 모달 열기 함수
-    function open(){
-        $('#pop').css({"display":"block"});
-        // $('#semi_wrap').css({"position":"sticky"});
-        // $('section').css({"margin-top":"0"});
+$(document).ready(function () {
+    // 모달 관련 함수 정의
+    function openModal() {
+        $('#pop').css({"display": "block"});
     }
 
-    // 모달 닫기 함수
-    function close(){
-        $('#pop').css({"display":"none"});
-        // $('#semi_wrap').css({"position":"fixed"});
-        // $('section').css({"margin-top":"101px"});
+    function closeModal() {
+        $('#pop').css({"display": "none"});
     }
+
+    // 이벤트 리스너 등록 - 직접 요소를 선택하여 확인
+    console.log("title_right 요소 수: " + $(".title_right").length);
 
     // 이벤트 리스너 연결
-    $(".title_right").on("click", open);
-    $("#close").on("click", close);
+    $(document).on("click", ".title_right", openModal); // 동적 요소에도 작동
+    $(document).on("click", "#close", closeModal);
 });

@@ -140,7 +140,7 @@ h2{
   transition: opacity 0.3s ease;
 }
 
-.product-video {
+.prod-video {
   position: absolute;
   top: 0;
   left: 0;
@@ -157,6 +157,6 @@ h2{
   opacity: 0;
 }
 
-.media-container:hover .product-video {
+.media-container:hover .prod-video {
   opacity: 1;
 }

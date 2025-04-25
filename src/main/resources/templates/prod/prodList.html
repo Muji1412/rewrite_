@@ -24,6 +24,7 @@
                 <h2 th:unless="${#httpServletRequest.getRequestURI().contains('myProdList')}">상품 리스트</h2>
             </div>
 
+
             <div class="list-header">
                 <div class="dropdown">
                     <button class="dropbtn" onclick="toggleDropdown(event)">
@@ -37,6 +38,7 @@
                     </div>
                 </div>
                 <button class="write-btn" th:onclick="|location.href='@{/prod/productReg}'|">판매하기</button>
+
             </div>
                 <div class="card-container">
                     <!-- 상품 목록 반복 -->
