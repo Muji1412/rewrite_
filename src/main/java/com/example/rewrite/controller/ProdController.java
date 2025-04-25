@@ -145,11 +145,15 @@ public class ProdController {
         return "prod/orderDetail";
     }
 
-
     @GetMapping("/productReg")
-    public String reg(){
+    public String reg(HttpSession session) {
+        UserSessionDto user = (UserSessionDto) session.getAttribute("user");
+        if (user == null) {
+            return "redirect:/user/login";
+        }
         return "prod/productReg";
     }
+
 
     @GetMapping("/prodDetail")
     public String prodDetail(@RequestParam Long prodId, Model model, HttpSession session) {

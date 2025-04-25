@@ -25,20 +25,21 @@
             </div>
 
 
-
-            <div class="dropdown">
-                <button class="dropbtn" onclick="toggleDropdown(event)">
-                    <span class="dropbtn_content">정렬기준 선택하기</span>
-                </button>
-                <div class="dropdown-content">
-                    <div class="sort-option" onclick="selectSort('최신순', 'latest')">최신순</div>
-                    <div class="sort-option" onclick="selectSort('조회수순', 'views')">조회수순</div>
-                    <div class="sort-option" onclick="selectSort('가격낮은순', 'priceAsc')">가격낮은순</div>
-                    <div class="sort-option" onclick="selectSort('가격높은순', 'priceDesc')">가격높은순</div>
+            <div class="list-header">
+                <div class="dropdown">
+                    <button class="dropbtn" onclick="toggleDropdown(event)">
+                        <span class="dropbtn_content">정렬기준 선택하기</span>
+                    </button>
+                    <div class="dropdown-content">
+                        <div class="sort-option" onclick="selectSort('최신순', 'latest')">최신순</div>
+                        <div class="sort-option" onclick="selectSort('조회수순', 'views')">조회수순</div>
+                        <div class="sort-option" onclick="selectSort('가격낮은순', 'priceAsc')">가격낮은순</div>
+                        <div class="sort-option" onclick="selectSort('가격높은순', 'priceDesc')">가격높은순</div>
+                    </div>
                 </div>
+                <button class="write-btn" th:onclick="|location.href='@{/prod/productReg}'|">판매하기</button>
 
             </div>
-
                 <div class="card-container">
                     <!-- 상품 목록 반복 -->
                     <div class="card" th:each="product : ${products}" th:data-prod-id="${product.prodId}">
