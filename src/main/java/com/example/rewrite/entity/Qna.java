@@ -37,7 +37,7 @@ public class Qna {
     // 예: @Column(name = "REG_DATE") private LocalDateTime regDate;
     private String regDate; // SQL 타입 VARCHAR -> Java String (현재 SQL 정의 기준)
 
-    @Column(name = "ANSWER", nullable = false, length = 255)
+    @Column(name = "ANSWER", nullable = true, length = 255)
     private String answer;
 
     @Column(name = "ANSWER_STAT", nullable = false, length = 255)
@@ -56,7 +56,7 @@ public class Qna {
     private Long uid; // Java 필드명은 camelCase 권장 (key2)
 
     // 모든 필드를 받는 생성자 (필요에 따라 추가)
-    public Qna(Long qnaId, String title, String content, String regDate, String answer, String category, String userId, Long uid, String fileAttachment) {
+    public Qna(Long qnaId, String title, String content, String regDate, String answer, String answer_stat, String category, String userId, Long uid, String fileAttachment) {
         this.qnaId = qnaId;
         this.title = title;
         this.content = content;

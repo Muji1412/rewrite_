@@ -30,34 +30,46 @@ import javax.servlet.http.HttpSession;
 @RequestMapping("/admin")
 public class AdminController {
 
-        @Autowired
-        private NoticeService noticeService;
+    @Autowired
+    private NoticeService noticeService;
 
-        @Autowired
-        private QnaRepository qnaRepository;
+    @Autowired
+    private QnaRepository qnaRepository;
 
-        @GetMapping("/modifyUsers") public String modifyUsers() {return "admin/modifyUsers";}
-        @GetMapping("/noticeWrite") public String noticeWrite(Model model) {return "admin/noticeWrite";}
-        @GetMapping("/modifyProducts") public String modifyProducts() {return "admin/modifyProducts";}
+    @GetMapping("/modifyUsers")
+    public String modifyUsers() {
+        return "admin/modifyUsers";
+    }
+
+    @GetMapping("/noticeWrite")
+    public String noticeWrite(Model model) {
+        return "admin/noticeWrite";
+    }
+
+    @GetMapping("/modifyProducts")
+    public String modifyProducts() {
+        return "admin/modifyProducts";
+    }
 
 
-        @PostMapping("/write")
-        public String write(NoticeDTO noticeDTO, Model model) {
-            log.info("디버깅 - write 왔는지 체크");
-            noticeService.uploadNotice(noticeDTO);
-            return "redirect:/notice/noticeList";
+    @PostMapping("/write")
+    public String write(NoticeDTO noticeDTO, Model model) {
+        log.info("디버깅 - write 왔는지 체크");
+        noticeService.uploadNotice(noticeDTO);
+        return "redirect:/notice/noticeList";
+    }
+
+    @PostMapping("/noticeDelete/{noticeId}")
+    public String deleteNoticePost(@PathVariable("noticeId") Long id) {
+        log.info("공지사항 삭제 요청 (POST) - ID: {}", id);
+        try {
+            noticeService.deleteNotice(id);
+        } catch (Exception e) {
+            log.error("공지사항 삭제 중 오류 발생 - ID: {}", id, e);
         }
-        @PostMapping("/noticeDelete/{noticeId}")
-        public String deleteNoticePost(@PathVariable("noticeId") Long id) {
-            log.info("공지사항 삭제 요청 (POST) - ID: {}", id);
-            try {
-                noticeService.deleteNotice(id);
-            } catch (Exception e) {
-                log.error("공지사항 삭제 중 오류 발생 - ID: {}", id, e);
-            }
-            return "redirect:/notice/noticeList";
-        }
-  
+        return "redirect:/notice/noticeList";
+    }
+
     @GetMapping("/qnaList")
     public String inquiryList(HttpSession session, RedirectAttributes redirectAttributes,
                               @PageableDefault(size = 10, sort = "qnaId", direction = Sort.Direction.DESC) Pageable pageable,
@@ -109,14 +121,14 @@ public class AdminController {
 
     // 문의 상세 페이지
     @GetMapping("/qnaDetail")
-    public String qnaDetail(@RequestParam(name="id",required = false) Long qnaId, Model model,
+    public String qnaDetail(@RequestParam(name = "id", required = false) Long qnaId, Model model,
                             HttpSession session, RedirectAttributes redirectAttributes) {
         // 문의 조회
         Qna qna = qnaRepository.findById(qnaId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 문의가 존재하지 않습니다."));
 
         // 문의 작성자 또는 관리자만 조회 가능 (선택적)
-        UserSessionDto user= (UserSessionDto) session.getAttribute("user");
+        UserSessionDto user = (UserSessionDto) session.getAttribute("user");
         boolean isAdmin = "admin".equals(user.getRole());
 
         log.info("isAdmin:{}", isAdmin);
@@ -131,5 +143,28 @@ public class AdminController {
         return "admin/qnaDetail";
     }
 
+    //문의답변작성
+    @PostMapping("/saveAnswer")
+    public String saveAnswer(@RequestParam("qnaId") Long qnaId,
+                             @RequestParam("answer") String answer,
+                             RedirectAttributes redirectAttributes) {
+        try {
+            // 해당 QnA 조회
+            Qna qna = qnaRepository.findById(qnaId)
+                    .orElseThrow(() -> new IllegalArgumentException("해당 문의가 존재하지 않습니다."));
 
+            // 답변 업데이트
+            qna.setAnswer(answer);
+            qnaRepository.save(qna);
+
+            redirectAttributes.addFlashAttribute("message", "답변이 성공적으로 저장되었습니다.");
+        } catch (Exception e) {
+            log.error("답변 저장 중 오류 발생 - ID: {}", qnaId, e);
+            redirectAttributes.addFlashAttribute("error", "답변 저장 중 오류가 발생했습니다.");
+        }
+
+        return "redirect:/admin/qnaDetail?id=" + qnaId;
     }
+
+
+}

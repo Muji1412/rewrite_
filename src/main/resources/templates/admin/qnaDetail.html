@@ -3,6 +3,23 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
 <th:block th:replace="~{/include/include :: def(~{::#wrap})}">
+    <div id="pop">
+        <div id="pop_box">
+            <div class="pop_content">
+                <div class="answer-section">
+                    <h3>답변하기</h3>
+                    <form th:action="@{/admin/saveAnswer}" method="post">
+                        <input type="hidden" name="qnaId" th:value="${qna.qnaId}"/>
+                        <div class="form-group">
+                            <textarea class="form-control" name="answer" rows="5" th:text="${qna.answer != 'n' ? qna.answer : ''}"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">답변 저장</button>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
     <section class="section" id="wrap">
         <div class="container notice-detail-container">
             <div class="page-title">
@@ -41,5 +58,25 @@
             </div>
         </div>
     </section>
+    <script>
+        // 모달 열기 함수
+        function open(){
+            $('#pop').css({"display":"block"});
+            // $('#semi_wrap').css({"position":"sticky"});
+            // $('section').css({"margin-top":"0"});
+        }
+
+        // 모달 닫기 함수
+        function close(){
+            $('#pop').css({"display":"none"});
+            // $('#semi_wrap').css({"position":"fixed"});
+            // $('section').css({"margin-top":"101px"});
+        }
+
+        // 이벤트 리스너 연결
+        $(".title_right").on("click", open);
+        $("#close").on("click", close);
+    </script>
     </body>
 </th:block>
+<script src="../../js/QnaDetail.js" th:src="@{/js/QnaDetail.js}"></script>
