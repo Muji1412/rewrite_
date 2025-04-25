@@ -84,9 +84,14 @@ public class AddressController {
             return "redirect:/user/login";
         }
 
-        address.setUid(user.getUid()); //세션으로 변경 예정
+        address.setUid(user.getUid());
+        System.out.println("이거다"+ addressService.getAddress(user.getUid()));
+        if(addressService.getAddress(user.getUid()).isEmpty()){ //주소지 등록이 처음일 경우
+            address.setIsDefault("C"); //기본값 설정
+        }else{
+            address.setIsDefault("N");
+        }
 
-        address.setIsDefault("N"); //기본값 설정
         address.setDelChk("N"); //기본값 설정
 
         //분리된 주소, 전화번호 합성 후 DB에 저장
