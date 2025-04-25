@@ -104,7 +104,7 @@
                   <!--주소 쪼개서 보여주기-->
                   [[${list.pickupAddress != null ? (
                   #strings.contains(list.pickupAddress, '특별자치') ?
-                  #strings.substring(#strings.substringAfter(list.pickupAddress, '/'), 0, 9) :
+                  #strings.substring(#strings.substringAfter(list.pickupAddress, '/'), 0, 11) :
                   #strings.substring(#strings.substringAfter(list.pickupAddress, '/'), 0, 6)
                   ) : ''}]]
                   [[${#temporals.format(list.regDate, 'yy년MM월dd일')}]] 등록</div>

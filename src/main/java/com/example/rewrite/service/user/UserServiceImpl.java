@@ -157,8 +157,10 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     @Transactional
     public void userModify(UserVO user) {
-
-        user.setPw(passwordEncoder.encode(user.getPw()));
+        // 비밀번호가 입력된 경우에만 암호화하여 저장
+        if(user.getPw() != null && !user.getPw().isEmpty()) {
+            user.setPw(passwordEncoder.encode(user.getPw()));
+        }
 
         usersRepository.userModify(user);
     }
@@ -240,9 +242,13 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         }
     }
 
+    // 비밀번호 확인
     @Override
-    public String getPassword(Long uid) {
-
-        return usersRepository.findUserByUid(uid).getPw();
+    public boolean checkCurrentPassword(Long uid, String password) {
+        Users user = usersRepository.findUserByUid(uid);
+        if(user != null) {
+            return passwordEncoder.matches(password, user.getPw());
+        }
+        return false;
     }
 }

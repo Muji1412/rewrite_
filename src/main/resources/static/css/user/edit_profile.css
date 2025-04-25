@@ -84,3 +84,20 @@ button {
     cursor: pointer;
     border-radius: 8px;
   }
+
+.address-link {
+    display: inline-block;
+    padding: 2px 5px;
+    background-color: #f8f9fa;
+    color: #212529;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    text-decoration: none;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.address-link:hover {
+    background-color: #e9ecef;
+    color: #000;
+    text-decoration: none;
+}
