@@ -17,7 +17,10 @@
 
     <!-- 배송지 정보 -->
     <section class="info-section">
-        <h2>배송지 정보</h2>
+        <div class="section-header">
+            <h2>배송지 정보</h2>
+            <button type="button" class="change-address-btn" onclick="openAddressPopup()">배송지변경</button>
+        </div>
         <div class="info-table">
             <div class="info-row">
                 <div class="info-label">받는분</div>
@@ -114,10 +117,10 @@
                     <span class="total-amount">[[${totalShippingFee}]]</span>
                 </div>
             </div>
-            <button class="checkout-button">결제하기</button>
+            <button class="checkout-button" onclick="placeOrder()">결제하기</button>
         </aside>
     </div>
 </div>
 </section>
-</body>
 </th:block>
+
