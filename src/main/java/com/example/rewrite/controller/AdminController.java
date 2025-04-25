@@ -38,7 +38,7 @@ public class AdminController {
 
     @GetMapping("/modifyUsers")
     public String modifyUsers() {
-        return "admin/modifyUsers";
+        return "/";
     }
 
     @GetMapping("/noticeWrite")

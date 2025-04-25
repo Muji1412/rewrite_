@@ -50,13 +50,14 @@ dependencies {
     runtimeOnly 'com.oracle.database.jdbc:ojdbc11'
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    runtimeOnly 'com.h2database:h2'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
     // SQL 로깅용
     implementation 'org.bgee.log4jdbc-log4j2:log4jdbc-log4j2-jdbc4.1:1.16'
 
-    // 이 의존성 제거
-    // implementation 'org.springframework.cloud:spring-cloud-gcp'
+    // Json impl for TossPayment
+    implementation 'com.googlecode.json-simple:json-simple:1.1.1'
 }
 
 dependencyManagement {
