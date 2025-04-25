@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface AddressRepository extends JpaRepository<Address,Long> {
 
@@ -52,4 +53,5 @@ public interface AddressRepository extends JpaRepository<Address,Long> {
             "a.phoneNum = :#{#address.phoneNum} " +
             "WHERE a.addressId = :#{#address.addressId}")
     void modifyAddress(@Param("address") Address address);
+
 }

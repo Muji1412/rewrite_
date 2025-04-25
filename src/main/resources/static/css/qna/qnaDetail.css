@@ -5,6 +5,22 @@
     font-family: 'Noto Sans KR', sans-serif;
 }
 
+/* popup */
+
+#pop{position: fixed; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 999; display: none;}
+#pop_box{width: 450px; height: 500px; position: relative; left: 50%; top: 50%; transform: translate(-50%,-50%); background: #fff; border-radius: 10px;}
+#close{position: absolute; right: 10px; top: 10px;background: none;border: none;}
+#close img{width: 40px;height: 40px;cursor: pointer;}
+.pop_content{position: absolute;  left: 25px; top: 30px; width: 400px;height: 450px;margin: 0 auto; }
+
+.answer-header{width: 100%;height: 50px;}
+.answer-header h3{float: left; margin-top: 20px;}
+
+.answer-section{margin-top: 30px;width: 100%;height:200px; position: relative;}
+.answer-section textarea{width: 100%;height: 100%;resize: none;}
+
+.btn-primary{cursor: pointer; position: absolute;right: 0; bottom: -120px;width: 100px;height: 38px; border: none;background: #2796e2;color: #fff;font-weight: 600;border-radius: 5px;}
+
 .section {
     display: flex;
     justify-content: center;
@@ -49,15 +65,18 @@
 
 .title_right{
     width: 100px;
-    border: none;
-    background: #faa;
+    background: none;
+    border: 1px solid black;
+    border-radius: 4px;
     cursor: pointer;
+    transition: 0.3s;
 }
-
+.title_right:hover{background: #c7c7c7;transition: 0.3s;}
 
 /* --- 상세 내용 스타일 --- */
 .detail-section {
     margin-bottom: 25px; /* 각 섹션 사이 여백 */
+
 }
 
 .detail-label {
@@ -89,8 +108,11 @@
     min-height: 250px; /* 내용 영역 최소 높이 */
     white-space: pre-wrap; /* HTML 내의 줄바꿈 및 공백 유지 (엔터키, <br>) */
 }
+.main-content p{
+    margin-top: -28px;
+}
 
-.sub-content{min-height: 40px;}
+.sub-content{min-height: 30px;}
 
 /* --- 버튼 컨테이너 및 버튼 스타일 --- */
 .button-container {

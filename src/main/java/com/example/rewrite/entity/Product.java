@@ -59,7 +59,7 @@ public class Product {
     private String categoryMin;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "UID", referencedColumnName = "uid")
+    @JoinColumn(name = "UID", referencedColumnName = "uid", nullable = false)
     private Users user;
 
     @Column(name = "IMG_1", length = 200)

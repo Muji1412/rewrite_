@@ -25,8 +25,6 @@ public class AddressController {
     @Autowired
     private AddressService addressService;
 
-
-
     @GetMapping("/detail") //주소지 페이지
     public String addressDetail(HttpSession session, Model model) {
 

@@ -19,12 +19,24 @@ h1 {
     font-weight: bold;
 }
 
-h2 {
-    font-size: 18px;
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     margin-bottom: 15px;
+    border-bottom: 2px solid #333;
+}
+
+.section-header h2 {
+    font-size: 18px;
+    margin-bottom: 10px;
     font-weight: bold;
-    padding-bottom: 10px;
-    border-bottom: 2px solid #333; /* Separator line like in image */
+}
+
+.change-address-btn{
+    border: 1px solid;
+    background-color: white;
+    padding: 5px;
 }
 
 .info-section {

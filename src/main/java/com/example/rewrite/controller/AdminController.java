@@ -152,19 +152,20 @@ public class AdminController {
             // 해당 QnA 조회
             Qna qna = qnaRepository.findById(qnaId)
                     .orElseThrow(() -> new IllegalArgumentException("해당 문의가 존재하지 않습니다."));
-
             // 답변 업데이트
             qna.setAnswer(answer);
+            // 답변상태를 'y'로 변경
+            qna.setAnswer_stat("y");
+            // 변경사항 저장
             qnaRepository.save(qna);
-
             redirectAttributes.addFlashAttribute("message", "답변이 성공적으로 저장되었습니다.");
         } catch (Exception e) {
             log.error("답변 저장 중 오류 발생 - ID: {}", qnaId, e);
             redirectAttributes.addFlashAttribute("error", "답변 저장 중 오류가 발생했습니다.");
         }
-
         return "redirect:/admin/qnaDetail?id=" + qnaId;
     }
+
 
 
 }

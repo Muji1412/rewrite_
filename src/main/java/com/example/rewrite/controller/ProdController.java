@@ -104,7 +104,7 @@ public class ProdController {
         // 최종 결제금액 예시
         int finalPrice = totalPrice;  // 예시로 총금액을 주문금액과 같게 설정
         String totalShippingFee = String.format("%,d", finalPrice) + "원";
-        model.addAttribute("formattedFinalPrice", totalShippingFee);  // 총 결제금액
+        model.addAttribute("totalShippingFee", totalShippingFee);  // 총 결제금액
 
 
         model.addAttribute("cartList", checkedCarts);
@@ -145,11 +145,15 @@ public class ProdController {
         return "prod/orderDetail";
     }
 
-
     @GetMapping("/productReg")
-    public String reg(){
+    public String reg(HttpSession session) {
+        UserSessionDto user = (UserSessionDto) session.getAttribute("user");
+        if (user == null) {
+            return "redirect:/user/login";
+        }
         return "prod/productReg";
     }
+
 
     @GetMapping("/prodDetail")
     public String prodDetail(@RequestParam Long prodId, Model model, HttpSession session) {
