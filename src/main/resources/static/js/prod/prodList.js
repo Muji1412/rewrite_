@@ -120,11 +120,13 @@ window.onclick = function(event) {
     }
 };
 
+
+
 // 페이지 로드 시 현재 정렬 기준 표시
 window.onload = function() {
     const params = new URLSearchParams(window.location.search);
     const sortBy = params.get('sortBy');
-    let text = "정렬기준 선택하기";
+    let text = "최신순";
     if (sortBy === "latest") text = "최신순";
     else if (sortBy === "views") text = "조회수순";
     else if (sortBy === "priceAsc") text = "가격낮은순";
