@@ -197,4 +197,40 @@ $(document).ready(function(){
 
     // 초기 미디어 표시
     showInitialMedia();
+
+    // 끌어올리기 버튼 클릭 이벤트
+    $('#bumpBtn').on('click', function() {
+        if (!productId) {
+            alert('상품 정보를 찾을 수 없습니다.');
+            return;
+        }
+        $.ajax({
+            url: '/prod/bump', // 서버의 끌어올리기 처리 URL
+            type: 'POST',
+            data: { prodId: productId },
+            success: function(response) {
+                if (response === 'ok') {
+                    alert('끌어올리기가 완료되었습니다!');
+                    // 작성일자 텍스트를 즉시 변경 (예시: #regDate가 작성일자 표시하는 요소)
+                    const now = new Date();
+                    const formatted = now.getFullYear() + '-' +
+                        String(now.getMonth()+1).padStart(2,'0') + '-' +
+                        String(now.getDate()).padStart(2,'0') + ' ' +
+                        String(now.getHours()).padStart(2,'0') + ':' +
+                        String(now.getMinutes()).padStart(2,'0');
+                    $('#regDate').text(formatted);
+                } else if (response === 'forbidden') {
+                    alert('본인 글만 끌어올릴 수 있습니다.');
+                } else if (response === 'unauthorized') {
+                    alert('로그인이 필요합니다.');
+                } else {
+                    alert('알 수 없는 오류가 발생했습니다.');
+                }
+            },
+            error: function() {
+                alert('끌어올리기에 실패했습니다.');
+            }
+        });
+    });
+
 });
