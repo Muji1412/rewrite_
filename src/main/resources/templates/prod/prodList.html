@@ -25,6 +25,7 @@
                 <h2 th:unless="${#httpServletRequest.getRequestURI().contains('myProdList')}">상품 리스트</h2>
             </div>
 
+            <th:block th:if="!${#httpServletRequest.getRequestURI().contains('myProdList')}">
             <div class="sort-buttons">
                 <a class="btn" th:classappend="${currentSort == 'latest' ? 'btn-primary' : 'btn-outline-primary'}"
                    th:href="@{/prod/prodList(sortBy=latest)}">최신순</a>
@@ -35,6 +36,7 @@
                 <a class="btn" th:classappend="${currentSort == 'priceDesc' ? 'btn-primary' : 'btn-outline-primary'}"
                    th:href="@{/prod/prodList(sortBy=priceDesc)}">가격높은순</a>
             </div>
+            </th:block>
 
                 <div class="card-container">
                     <!-- 상품 목록 반복 -->
