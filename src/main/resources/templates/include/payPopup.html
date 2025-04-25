@@ -1,0 +1,36 @@
+<th:block th:fragment="def (item)">
+    <div id="payPop" style="display: none" onclick="openPay()">
+        <div id="pop_box">
+            <div class="pop_content">
+                <div id="payPop_header">
+                    <h2>배송지 선택</h2>
+                    <div id="closePay"><img src="../img/close_icon.png" th:src="@{/img/close_icon.png}" alt="close_img" onclick="closePay()"></div>
+                </div>
+                <div id="payPop_section">
+                    <!-- 카드 -->
+                    <div th:each = "list : ${list}">
+                        <div class="address-box">
+                            <div class="address-info">
+                                <span>[[${list.entity.addressAlias}]]</span>
+                                <span class="default">[[${list.entity.isDefault}]]</span><br>
+                                <span>[[${list.addr}]]</span><br>
+                                <span>[[${list.detailAddress}]]</span><br>
+                                <span>([[${list.postcode}]])</span><br>
+                                <span>[[${list.entity.createdAt}]] <br>[[${list.phoneNum}]]</span>
+
+                            </div>
+                            <div class="button-group" style="position: relative;">
+                                <form id="actionForm" action="" method="post">
+                                    <input type="hidden" name="addressId" th:value="${list.entity.addressId}">
+                                    <button type="button" class="btn btn-edit">수정</button>
+                                    <button type="button" class="btn btn-select" >선택</button>
+                                    <button type="button" class="btn btn-delete">삭제</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</th:block>

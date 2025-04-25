@@ -1,4 +1,4 @@
-<link rel="stylesheet" href="/css/prod/checkout.css">
+<link rel="stylesheet" href="/css/prod/checkout.css" th:href="@{/css/prod/checkout.css}">
 <th:block th:replace="~{/include/include :: def(~{::#wrap})}">
 <section id="wrap">
 <div class="checkout-container">
@@ -19,7 +19,7 @@
     <section class="info-section">
         <div class="section-header">
             <h2>배송지 정보</h2>
-            <button type="button" class="change-address-btn" onclick="openAddressPopup()">배송지변경</button>
+            <button type="button" class="change-address-btn payPop" onclick="openPay()">배송지변경</button>
         </div>
         <div class="info-table">
             <div class="info-row">
@@ -123,4 +123,4 @@
 </div>
 </section>
 </th:block>
-
+<script src="../../js/orderPay.js" th:src="@{/js/orderPay.js}"></script>
