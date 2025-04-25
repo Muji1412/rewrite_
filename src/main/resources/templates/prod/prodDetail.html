@@ -64,10 +64,18 @@
                 <button class="button1" th:onclick="|location.href='@{/prod/prodList}'|" >목록으로</button>
             </div>
             <div>
-                <form th:action="@{/cart/add}" method="post">
-                    <input type="hidden" name="prodId" th:value="${product.prodId}" />
-                    <button type="submit" class="button2">장바구니</button>
-                </form>
+                <th:block th:unless="${session.user != null and session.user.uid == product.uid}">
+                    <form th:action="@{/cart/add}" method="post">
+                        <input type="hidden" name="prodId" th:value="${product.prodId}" />
+                        <button type="submit" class="button2">장바구니</button>
+                    </form>
+                </th:block>
+                <th:block th:if="${session.user != null and session.user.uid == product.uid}">
+                    <form th:action="@{/prod/bump}" method="post">
+                        <input type="hidden" name="prodId" th:value="${product.prodId}" />
+                        <button type="submit" class="button2">끌어올리기</button>
+                    </form>
+                </th:block>
             </div>
           </form>
           </div>

@@ -154,8 +154,7 @@ section{
 .card .date {
     font-size: 12px;
     color: #888;
-    margin: 0px 15px 0px;
-    padding-bottom: 10px;
+
 }
 
 
@@ -163,3 +162,65 @@ section{
 .top:hover {
     opacity: 1;
 }
+
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+.dropbtn {
+    background-color: #f5f5f5;
+    color: #3b3b3b;
+    padding: 10px 16px;
+    font-size: 16px;
+    border: 1px solid #999;
+    cursor: pointer;
+    width: 200px;
+    text-align: left;
+    border-radius: 6px;
+}
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #fff;
+    min-width: 200px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.08);
+    z-index: 2;
+}
+.dropdown-content .sort-option {
+    color: #333;
+    padding: 10px 16px;
+    cursor: pointer;
+    border-bottom: 1px solid #f0f0f0;
+}
+.dropdown-content .sort-option:last-child {
+    border-bottom: none;
+}
+.dropdown-content .sort-option:hover {
+    background-color: #f0f0f0;
+}
+.show {
+    display: block;
+}
+
+.card-info-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 0 15px 10px 15px; /* 기존 .date 마진 참고 */
+}
+
+.card-info-row .date {
+    font-size: 12px;
+    color: #888;
+}
+
+.card-info-row .view-count {
+    font-size: 12px;
+    color: #888;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+

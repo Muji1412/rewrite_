@@ -27,5 +27,8 @@ public interface ProdService {
 
     // 상품 삭제
     void deleteProduct(Long id);
+    
+    //끌어 올리기
+    void bumpProduct(Long prodId);
 
 }
