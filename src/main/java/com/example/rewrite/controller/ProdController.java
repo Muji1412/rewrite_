@@ -251,4 +251,20 @@ public class ProdController {
         return "redirect:/prod/prodList";
     }
 
+    @PostMapping("/bump")
+    public String bumpProduct(@RequestParam Long prodId, HttpSession session, RedirectAttributes redirectAttributes) {
+        UserSessionDto user = (UserSessionDto) session.getAttribute("user");
+        if (user == null) {
+            return "redirect:/user/login";
+        }
+        ProductDTO product = prodService.getProductById(prodId);
+        if (!user.getUid().equals(product.getUid())) {
+            redirectAttributes.addFlashAttribute("error", "본인 글만 끌어올릴 수 있습니다.");
+            return "redirect:/prod/prodDetail?prodId=" + prodId;
+        }
+        prodService.bumpProduct(prodId);
+        redirectAttributes.addFlashAttribute("success", "끌어올리기가 완료되었습니다!");
+        return "redirect:/prod/prodDetail?prodId=" + prodId; // 상세페이지로 리다이렉트
+    }
+
 }

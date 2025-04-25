@@ -1,10 +1,12 @@
 package com.example.rewrite.service.prod;
 
 import com.example.rewrite.command.ProductDTO;
+import com.example.rewrite.entity.Address;
 import com.example.rewrite.entity.Product;
 import com.example.rewrite.entity.Users;
 import com.example.rewrite.repository.product.ProductRepository;
 import com.example.rewrite.repository.users.UsersRepository;
+import com.example.rewrite.service.address.AddressService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -16,12 +18,16 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class ProdServiceImpl implements ProdService {
+public  class ProdServiceImpl implements ProdService {
 
     private final ProductRepository productRepository;
 
     @Autowired
     private UsersRepository userRepository;
+
+    @Autowired
+    private AddressService addressService;
+
     @Autowired
     public ProdServiceImpl(ProductRepository productRepository) {
         this.productRepository = productRepository;
@@ -89,6 +95,11 @@ public class ProdServiceImpl implements ProdService {
         Users user = userRepository.findById(productDTO.getUid())
                 .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
 
+        // 1. 기본 주소 조회
+        Address defaultAddress = addressService.getDefaultAddress(user.getUid());
+        String pickupAddress = (defaultAddress != null) ? defaultAddress.getAddress() : null;
+
+        // 2. 상품 엔티티 생성
         Product product = Product.builder()
                 .title(productDTO.getTitle())
                 .categoryMax(productDTO.getCategoryMax())
@@ -101,7 +112,8 @@ public class ProdServiceImpl implements ProdService {
                 .img4(productDTO.getImg4())
                 .videoUrl(productDTO.getVideoUrl())
                 .regDate(LocalDateTime.now())
-                .user(user)  // 사용자 정보 설정
+                .pickupAddress(pickupAddress) // 기본 주소 저장
+                .user(user)
                 .build();
 
         Product savedProduct = productRepository.save(product);
@@ -183,4 +195,14 @@ public class ProdServiceImpl implements ProdService {
     public void deleteProduct(Long id) {
         productRepository.deleteById(id);
     }
+
+    @Transactional
+    public void bumpProduct(Long prodId) {
+        Product product = productRepository.findById(prodId)
+                .orElseThrow(() -> new RuntimeException("상품을 찾을 수 없습니다."));
+        product.setRegDate(LocalDateTime.now()); // 작성일자를 현재로 변경
+        productRepository.save(product);
+    }
+
+
 }
