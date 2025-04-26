@@ -5,6 +5,7 @@ import com.example.rewrite.command.user.UserSessionDto;
 import com.example.rewrite.entity.Address;
 import com.example.rewrite.entity.Cart;
 import com.example.rewrite.entity.Users;
+import com.example.rewrite.entity.Wishlist;
 import com.example.rewrite.repository.product.ProductRepository;
 import com.example.rewrite.service.address.AddressService;
 import com.example.rewrite.service.cart.CartService;
@@ -190,6 +191,21 @@ public class ProdController {
         model.addAttribute("products", prodService.getMyProducts(user.getUid()));
 
         return  "prod/prodList";
+    }
+
+    @GetMapping("/wishList")
+    public String wishList(HttpSession session, Model model) {
+        UserSessionDto user = (UserSessionDto) session.getAttribute("user");
+        if (user == null) {
+            return "redirect:/user/login";
+        }
+
+        List<Wishlist> wishList = wishlistService.getWishlistByUserId(user.getUid());
+        System.out.println("wishList: " + wishList.toString());
+
+        model.addAttribute("user", userService.getProfile(user.getUid()));
+        model.addAttribute("wishList", wishList);
+        return "prod/prodList";
     }
 
     @PostMapping("/productReg")
