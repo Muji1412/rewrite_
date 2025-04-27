@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <head>
     <meta charset="UTF-8">
@@ -24,6 +25,7 @@
             <li><a href="#">고객센터</a></li>
             <li><a href="#">알림</a></li>
             <li><a href="#">로그인</a></li>
+            <li sec:authorize="hasRole('ADMIN')"><a href="admin/modifyUsers">유저관리</a></li>
         </ul>
     </div>
     <div class="header_bottom">
