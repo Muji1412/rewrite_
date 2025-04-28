@@ -8,7 +8,7 @@ let selectedPaymentMethod = "CARD"; // 기본값은 신용카드
 let orderItems = [];
 
 // ------  SDK 초기화 ------
-const clientKey = "test_ck_D5GePWvyJnrK0W0k6q8gLzN97Eoq";
+const clientKey = "test_ck_nRQoOaPz8L5b264AqJOz3y47BMw6";
 const customerKey = generateRandomString();
 const tossPayments = TossPayments(clientKey);
 const payment = tossPayments.payment({

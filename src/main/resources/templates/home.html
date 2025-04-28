@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org"
-      th:each=""> <!-- Thymeleaf 사용 선언 (필수는 아님) -->
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <head>
     <meta charset="UTF-8">
@@ -50,6 +50,10 @@
     <p><a href="/admin/modifyProducts">상품관리</a></p>
     <p><a href="/admin/noticeWrite">공지사항 작성하러가기</a></p>
     <p><a href="/admin/qnaList">문의답변 작성하러가기</a></p>
+</div>
+
+<div>
+    <p>현재 권한: <span sec:authentication="principal.authorities"></span></p>
 </div>
 
 

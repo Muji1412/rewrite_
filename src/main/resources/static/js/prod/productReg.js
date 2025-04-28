@@ -426,7 +426,10 @@ document.getElementById('product-form').addEventListener('submit', function(e) {
             img2: imageUrls[1] || "",
             img3: imageUrls[2] || "",
             img4: imageUrls[3] || "",
-            videoUrl: uploadedVideoUrl || ""
+            videoUrl: uploadedVideoUrl || "",
+            pickupAddress: document.querySelector('input[name="postcode"]').value + '/' +
+                document.querySelector('input[name="addr"]').value + '/' +
+                document.querySelector('input[name="detailAddress"]').value,
         };
 
         console.log('등록 데이터:', productData); // 디버깅용

@@ -128,7 +128,7 @@ public class QnaController {
 
         // 저장
         qnaRepository.save(newQna);
-        redirectAttributes.addFlashAttribute("message", "문의가 등록되었습니다.");
+        redirectAttributes.addFlashAttribute("message", "문의가 접수되었습니다.");
         return "redirect:/qna/qnaList";
     }
 

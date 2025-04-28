@@ -2,18 +2,31 @@
 <script src="https://js.tosspayments.com/v2/standard"></script>
 <link rel="stylesheet" href="/css/prod/checkout.css" th:href="@{/css/prod/checkout.css}">
 <th:block th:replace="~{/include/include :: def(~{::#wrap})}">
-    <section id="wrap">
-        <div class="checkout-container">
-            <!-- 추가된 헤더 섹션 -->
-            <div class="checkout-header">  <!-- 제목과 단계 표시줄을 묶는 div -->
-                <h1>주문/결제</h1>
-                <nav aria-label="결제 진행 단계"> <!-- 단계별 네비게이션임을 나타내는 nav 태그 -->
-                    <ol class="checkout-progress"> <!-- 순서 있는 목록(ol)으로 단계 표시 -->
-                        <li>01 장바구니</li>
-                        <li class="current-step" aria-current="step">02 주문/결제</li> <!-- 현재 단계 표시 (클래스, aria 속성) -->
-                        <li>03 주문완료</li>
-                    </ol>
-                </nav>
+<section id="wrap">
+<div class="checkout-container">
+    <!-- 추가된 헤더 섹션 -->
+    <div class="checkout-header">  <!-- 제목과 단계 표시줄을 묶는 div -->
+        <h1>주문/결제</h1>
+        <nav aria-label="결제 진행 단계"> <!-- 단계별 네비게이션임을 나타내는 nav 태그 -->
+            <ol class="checkout-progress"> <!-- 순서 있는 목록(ol)으로 단계 표시 -->
+                <li>01 장바구니</li>
+                <li class="current-step" aria-current="step">02 주문/결제</li> <!-- 현재 단계 표시 (클래스, aria 속성) -->
+                <li>03 주문완료</li>
+            </ol>
+        </nav>
+    </div>
+    <!-- // 추가된 헤더 섹션 끝 -->
+
+    <!-- 배송지 정보 -->
+    <section class="info-section">
+        <div class="section-header">
+            <h2>배송지 정보</h2>
+            <button type="button" class="change-address-btn payPop address-change-btn">배송지변경</button>
+        </div>
+        <div class="info-table">
+            <div class="info-row">
+                <div class="info-label">받는분</div>
+                <div class="info-value">[[${defaultAddress.createdAt}]]</div>
             </div>
             <!-- // 추가된 헤더 섹션 끝 -->
 

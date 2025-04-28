@@ -19,7 +19,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpSession;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/prod")
@@ -144,11 +146,32 @@ public class ProdController {
     }
 
     @GetMapping("/productReg")
-    public String reg(HttpSession session) {
+    public String reg(HttpSession session, Model model) {
         UserSessionDto user = (UserSessionDto) session.getAttribute("user");
         if (user == null) {
             return "redirect:/user/login";
         }
+
+        // 기본 주소 조회
+        Address defaultAddress = addressService.getDefaultAddress(user.getUid());
+        String postcode = "";
+        String addr = "";
+        String detailAddress = "";
+
+        if (defaultAddress != null && defaultAddress.getAddress() != null) {
+            String[] parts = defaultAddress.getAddress().split("/");
+            if (parts.length == 3) {
+                postcode = parts[0];
+                addr = parts[1];
+                detailAddress = parts[2];
+            }
+        }
+
+        // 모델에 값 전달
+        model.addAttribute("postCode", postcode);
+        model.addAttribute("addr", addr);
+        model.addAttribute("detailAddress", detailAddress);
+
         return "prod/productReg";
     }
 
@@ -170,10 +193,19 @@ public class ProdController {
     }
 
     @GetMapping("/prodList")
-    public String listProducts(Model model,
-                               @RequestParam(defaultValue = "latest") String sortBy) {
+    public String listProducts(Model model, @RequestParam(defaultValue = "latest") String sortBy, HttpSession session) {
         List<ProductDTO> products = prodService.getAllProducts(sortBy);
+
+        UserSessionDto user = (UserSessionDto) session.getAttribute("user");
+        Map<Long, Boolean> wishMap = new HashMap<>();
+        if (user != null) {
+            for (ProductDTO prod : products) {
+                boolean isWishlisted = wishlistService.isWishlisted(user.getUid(), prod.getProdId());
+                wishMap.put(prod.getProdId(), isWishlisted);
+            }
+        }
         model.addAttribute("products", products);
+        model.addAttribute("wishMap", wishMap); // 상품ID별 찜 상태
         model.addAttribute("currentSort", sortBy);
         return "prod/prodList";
     }
@@ -184,8 +216,17 @@ public class ProdController {
         if(user == null) {
             return "redirect:/user/login";
         }
+        Map<Long, Boolean> wishMap = new HashMap<>();
+        if (user != null) {
+            for (ProductDTO prod : prodService.getMyProducts(user.getUid())) {
+                boolean isWishlisted = wishlistService.isWishlisted(user.getUid(), prod.getProdId());
+                wishMap.put(prod.getProdId(), isWishlisted);
+            }
+        }
+
         model.addAttribute("user", userService.getProfile(user.getUid()));
-        model.addAttribute("products", prodService.getMyProducts(user.getUid()));
+        model.addAttribute("wishMap", wishMap);
+        model.addAttribute("products",prodService.getMyProducts(user.getUid()) );
 
         return  "prod/prodList";
     }
@@ -284,5 +325,31 @@ public class ProdController {
         return "redirect:/prod/prodDetail?prodId=" + prodId; // 상세페이지로 리다이렉트
     }
 
+    @GetMapping("/orderSuccess")
+    public String orderSuccess(
+            @RequestParam(value = "paymentKey", required = false) String paymentKey,
+            @RequestParam(value = "orderId", required = false) String orderId,
+            @RequestParam(value = "amount", required = false) Integer amount,
+            Model model, HttpSession session) {
+
+        // 결제 정보를 모델에 추가
+        if (paymentKey != null) {
+            model.addAttribute("paymentKey", paymentKey);
+        }
+        if (orderId != null) {
+            model.addAttribute("orderId", orderId);
+        }
+        if (amount != null) {
+            model.addAttribute("amount", amount);
+        }
+
+        // 세션에서 사용자 ID를 가져와 모델에 추가
+        Long userId = (Long) session.getAttribute("userId");
+        if (userId != null) {
+            model.addAttribute("userId", userId);
+        }
+
+        return "prod/orderSuccess";
+    }
 
 }
