@@ -35,6 +35,15 @@ document.addEventListener('DOMContentLoaded', function() {
                 document.querySelector('input[name="price"]').value = product.price;
                 document.querySelector('textarea[name="description"]').value = product.description;
 
+
+                document.querySelector('input[name="postcode"]').value = product.pickupAddress;
+                // if (product.pickupAddress) {
+                //     const parts = product.pickupAddress.split('/');
+                //     document.querySelector('input[name="postcode"]').value = parts[0] || '';
+                //     document.querySelector('input[name="addr"]').value = parts[1] || '';
+                //     document.querySelector('input[name="detailAddress"]').value = parts[2] || '';
+                // }
+
                 // 카테고리 선택 상태 복원
                 if (product.categoryMax) {
                     document.getElementById('category_max').value = product.categoryMax;
@@ -309,6 +318,8 @@ document.getElementById('product-form').addEventListener('submit', function(e) {
         return;
     }
 
+
+
     // URL에서 prodId 확인
     const urlParams = new URLSearchParams(window.location.search);
     const prodId = urlParams.get('prodId');
@@ -411,6 +422,20 @@ document.getElementById('product-form').addEventListener('submit', function(e) {
             img3: imageUrls[2] || "",
             img4: imageUrls[3] || ""
         });
+
+        // 주소값을 pickupAddress로 합쳐서 히든 필드로 추가
+        let pickupAddressField = document.querySelector('input[name="pickupAddress"]');
+        if (!pickupAddressField) {
+            pickupAddressField = document.createElement('input');
+            pickupAddressField.type = 'hidden';
+            pickupAddressField.name = 'pickupAddress';
+            form.appendChild(pickupAddressField);
+        }
+        pickupAddressField.value =
+            document.querySelector('input[name="postcode"]').value + '/' +
+            document.querySelector('input[name="addr"]').value + '/' +
+            document.querySelector('input[name="detailAddress"]').value;
+
 
         // 폼 제출
         form.submit();

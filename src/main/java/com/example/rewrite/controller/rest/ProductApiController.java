@@ -38,6 +38,7 @@ public class ProductApiController {
     @GetMapping("/{id}")
     public ResponseEntity<ProductDTO> getProductById(@PathVariable Long id) {
         ProductDTO product = productService.getProductById(id);
+        System.out.println(product);
         return ResponseEntity.ok(product);
     }
 

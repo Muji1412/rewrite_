@@ -233,4 +233,22 @@ $(document).ready(function(){
         });
     });
 
+    const prodStatus = /*[[${product.prodStatus}]]*/ '';
+
+// 장바구니 버튼
+    document.getElementById('cartBtn')?.addEventListener('click', function(e) {
+        if (prodStatus === '판매완료') {
+            e.preventDefault();
+            alert('판매완료된 상품입니다.');
+        }
+    });
+
+// 끌어올리기 버튼
+    document.getElementById('bumpBtn')?.addEventListener('click', function(e) {
+        if (prodStatus === '판매완료') {
+            e.preventDefault();
+            alert('판매완료된 상품입니다.');
+        }
+    });
+
 });
