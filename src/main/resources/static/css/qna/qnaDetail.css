@@ -113,6 +113,7 @@
 }
 
 .sub-content{min-height: 30px;}
+.sub-content a{color: #000;}
 
 /* --- 버튼 컨테이너 및 버튼 스타일 --- */
 .button-container {
