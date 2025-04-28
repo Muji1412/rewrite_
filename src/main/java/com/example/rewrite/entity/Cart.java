@@ -29,6 +29,7 @@ public class Cart {
     @JoinColumn(name = "prod_id", referencedColumnName = "prod_id", nullable = false)
     private Product product;
 
+    @Builder.Default
     @Column(name = "is_checked",  columnDefinition = "boolean default false")
     private Boolean isChecked = false; //checked
 
