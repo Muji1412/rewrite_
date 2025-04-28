@@ -2,7 +2,6 @@ package com.example.rewrite.controller.rest;
 
 import com.example.rewrite.entity.OrderCart;
 import com.example.rewrite.entity.Orders;
-import com.example.rewrite.repository.ordercart.OrderCartRepository;
 import com.example.rewrite.service.ordercart.OrderCartService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
