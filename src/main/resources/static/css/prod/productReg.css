@@ -105,6 +105,9 @@ section {
   cursor: pointer;
 }
 
+.register-btn:hover {
+  background-color: black;
+}
 
 
 .tarea{
@@ -170,4 +173,18 @@ textarea:focus {
 .image-upload-preview-container {
   display: flex;
   gap: 10px;
+}
+
+.address-reg {
+  background-color: #D9D9D9;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-left: 15px;
+}
+
+.address-reg:hover {
+  background-color: black;
 }

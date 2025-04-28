@@ -9,14 +9,6 @@
             <th:block th:replace="~{include/side :: def(~{::#wrap})}"/>
         </th:block>
 
-        <script th:if="${success}" th:inline="javascript">
-            /*<![CDATA[*/
-            alert([[${success}]]);
-            /*]]>*/
-        </script>
-
-
-
         <div class="box">
 
             <div class="title-box">
@@ -51,6 +43,8 @@
                     <!-- 찜 목록 반복 -->
                     <div class="card" th:each="item : ${wishList}" th:data-prod-id="${item.product.prodId}">
                         <div class="media-container">
+                            <!-- 여기만 수정! -->
+                            <div th:if="${item.product.prodStatus} == '판매완료'" class="soldout-badge">판매완료</div>
                             <!-- 메인 이미지 -->
                             <img th:src="${item.product.img1 != null ? item.product.img1 : '/img/no-image.jpg'}"
                                  alt="상품 이미지" class="prodImg">
@@ -61,7 +55,14 @@
                         </div>
 
                         <!-- 상품 정보 -->
-                        <p class="title" th:text="${item.product.title}">상품명</p>
+                        <div class="heart-container">
+                            <span class="title" th:text="${item.product.title}">상품명</span>
+<!--                            <i class="fa"-->
+<!--                               th:classappend="${wishMap[item.product.prodId]} ? 'fa-heart heart-active' : 'fa-heart-o'"-->
+<!--                               th:style="${wishMap[item.product.prodId]} ? 'color:red;' : 'color:#bbb;'"-->
+<!--                               th:attr="data-prod-id=${item.product.prodId}">-->
+<!--                            </i>-->
+                        </div>
                         <strong class="price" th:text="${#numbers.formatInteger(item.product.price, 1, 'COMMA')} + '원'">가격</strong>
                         <div class="card-info-row">
                             <span class="date" th:text="${#temporals.format(item.product.regDate, 'yy.MM.dd')}">날짜</span>
@@ -70,6 +71,7 @@
                     <span th:text="${item.product.viewCount}"></span>
                 </span>
                         </div>
+
                     </div>
 
                     <!-- 찜한 상품이 없을 경우 메시지 출력 -->
@@ -79,6 +81,7 @@
                 </div>
             </th:block>
 
+
             <!-- wishList가 아닐때 작동됨 -->
             <th:block th:if="!${#httpServletRequest.getRequestURI().contains('wishList')}">
                 <div class="card-container">
@@ -86,6 +89,7 @@
                     <div class="card" th:each="product : ${products}" th:data-prod-id="${product.prodId}">
                         <!-- 비디오 및 이미지 컨테이너 -->
                         <div class="media-container">
+                            <div th:if="${product.prodStatus} == '판매완료'" class="soldout-badge">판매완료</div>
                             <!-- 메인 이미지 -->
                             <img th:src="${product.img1 != null ? product.img1 : '/img/no-image.jpg'}"
                                  alt="상품 이미지" class="prodImg">
@@ -99,7 +103,15 @@
                         </div>
 
                         <!-- 상품 정보 -->
-                        <p class="title" th:text="${product.title}">상품명</p>
+
+                        <div class="heart-container">
+                            <span class="title" th:text="${product.title}">상품명</span>
+                            <i class="fa"
+                               th:classappend="${wishMap[product.prodId]} ? 'fa-heart heart-active' : 'fa-heart-o'"
+                               th:style="${wishMap[product.prodId]} ? 'color:red;' : 'color:#bbb;'"
+                               th:attr="data-prod-id=${product.prodId}">
+                            </i>
+                        </div>
                         <strong class="price" th:text="${#numbers.formatInteger(product.price, 1, 'COMMA')} + '원'">가격</strong>
                         <div class="card-info-row">
                             <span class="date" th:text="${#temporals.format(product.regDate, 'yy.MM.dd')}">날짜</span>
@@ -108,6 +120,7 @@
                                 <span th:text="${product.viewcount}"></span>
                             </span>
                         </div>
+
                     </div>
 
                     <!-- 상품이 없을 경우 메시지 출력 -->
@@ -126,6 +139,9 @@
     </body>
 
 </th:block>
+
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <link rel="stylesheet" href="/css/prod/prodList.css" th:href="@{/css/prod/prodList.css}">
+
 <script src="/js/prod/prodList.js" th:src="@{/js/prod/prodList.js}"></script>
