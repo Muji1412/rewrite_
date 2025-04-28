@@ -7,7 +7,6 @@ import com.example.rewrite.repository.product.ProductRepository;
 import com.example.rewrite.repository.qna.QnaRepository;
 import com.example.rewrite.service.fileUpload.FileUploadService;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.util.http.fileupload.FileUpload;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,7 +19,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpSession;
 
-@Slf4j
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api")
@@ -49,6 +47,7 @@ public class QnaRestController {
         String userId = userSession.getId();
 
         Qna qna = Qna.builder()
+                .answer("답변 대기중입니다.")
                 .category(category)
                 .title(title)
                 .content(content)
