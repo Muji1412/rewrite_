@@ -2,13 +2,11 @@ package com.example.rewrite.controller;
 
 import com.example.rewrite.command.ProductDTO;
 import com.example.rewrite.command.user.UserSessionDto;
-import com.example.rewrite.entity.Address;
-import com.example.rewrite.entity.Cart;
-import com.example.rewrite.entity.Users;
-import com.example.rewrite.entity.Wishlist;
+import com.example.rewrite.entity.*;
 import com.example.rewrite.repository.product.ProductRepository;
 import com.example.rewrite.service.address.AddressService;
 import com.example.rewrite.service.cart.CartService;
+import com.example.rewrite.service.order.OrderService;
 import com.example.rewrite.service.prod.ProdService;
 
 import com.example.rewrite.service.wishlist.WishlistService;
@@ -44,6 +42,9 @@ public class ProdController {
     private UserService userService;
     @Autowired
     private AddressService addressService;
+
+    @Autowired
+    private OrderService orderService;
 
 
     public ProdController(ProductRepository productRepository) {
@@ -142,7 +143,10 @@ public class ProdController {
     }
 
     @GetMapping("/orderDetail")
-    public String orderDetail() {
+    public String orderDetail(@RequestParam("oid")Long oid,
+                              Model model) {
+        model.addAttribute("product",orderService.findOrderDetail(oid)) ;
+        model.addAttribute("order", orderService.findByOrderId(oid));
         return "prod/orderDetail";
     }
 
@@ -241,7 +245,14 @@ public class ProdController {
 
     //주문 내역 페이지 이동
     @GetMapping("/orderList")
-    public String orderList(){
+    public String orderList(HttpSession session, Model model) {
+        UserSessionDto user = (UserSessionDto) session.getAttribute("user");
+
+        List<Orders>orders = orderService.getOrderList(user.getUid());
+
+        List<OrderCart>cart = orderService.getOrderDetail(user.getUid());
+        model.addAttribute("orderlist", orders );
+        model.addAttribute("cart", cart);
 
         return "prod/orderList";
     }
