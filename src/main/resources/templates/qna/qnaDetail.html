@@ -29,7 +29,11 @@
             <div class="detail-section">
                 <div class="detail-label">첨부파일</div>
                 <div class="detail-content sub-content">
-                    <p th:text="${qna.fileAttachment}"></p>
+                    <!--                    <p th:text="${qna.fileAttachment}"></p>-->
+                    <a th:if="${qna.fileAttachment != null}"
+                       th:href="${qna.fileAttachment}"
+                       th:text="${qna.fileAttachment}"
+                       target="_blank"></a>
                 </div>
             </div>
 
