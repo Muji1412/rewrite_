@@ -56,6 +56,7 @@ public class ProductDTO {
                 .img3(product.getImg3())
                 .img4(product.getImg4())
                 .userNickname(product.getUser() != null ? product.getUser().getNickname() : null) // Users에서 닉네임 가져오기
+                .userImgUrl(product.getUser() != null ? product.getUser().getImgUrl() : null)
                 .build();
     }
 

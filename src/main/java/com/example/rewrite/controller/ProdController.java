@@ -218,7 +218,9 @@ public class ProdController {
         }
         Map<Long, Boolean> wishMap = new HashMap<>();
         if (user != null) {
-            for (ProductDTO prod : prodService.getMyProducts(user.getUid())) {
+            for (ProductDTO prod
+
+                    : prodService.getMyProducts(user.getUid())) {
                 boolean isWishlisted = wishlistService.isWishlisted(user.getUid(), prod.getProdId());
                 wishMap.put(prod.getProdId(), isWishlisted);
             }
@@ -265,7 +267,23 @@ public class ProdController {
     @GetMapping("/productUpdate")
     public String productUpdate(@RequestParam Long prodId, Model model) {
         ProductDTO product = prodService.getProductById(prodId);
-        model.addAttribute("product", product);
+        String postCode = "";
+        String addr = "";
+        String detailAddress = "";
+
+        String pickupAddress = product.getPickupAddress();
+        if (pickupAddress != null && pickupAddress.contains("/")) {
+            String[] parts = pickupAddress.split("/");
+            if (parts.length == 3) {
+                postCode = parts[0];
+                addr = parts[1];
+                detailAddress = parts[2];
+            }
+        }
+// 이후 model에 addAttribute
+        model.addAttribute("postCode", postCode);
+        model.addAttribute("addr", addr);
+        model.addAttribute("detailAddress", detailAddress);
         return "prod/productReg";  // 등록 페이지를 재사용
     }
 
