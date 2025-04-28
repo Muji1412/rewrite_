@@ -17,12 +17,12 @@
             </div>
         </div>
         <nav class="main_nav">
-            <form action="#">
+            <form action="/search" method="get">
                 <div class="search_head">
                     <!-- <img src="img/search_icon.png" alt="search_arrow"> -->
                 </div>
                 <div class="search_sec">
-                    <input type="text" placeholder="검색어를 입력하세요.">
+                    <input type="text" name= "keyword" placeholder="검색어를 입력하세요.">
                 </div>
                 <div class="search_foot">
                     <img src="img/search_icon.png" alt="search_arrow">
@@ -40,3 +40,4 @@
 
     </section>
 </th:block>
+<script src="/js/prod/search.js" th:src="@{/js/prod/search.js}"></script>
