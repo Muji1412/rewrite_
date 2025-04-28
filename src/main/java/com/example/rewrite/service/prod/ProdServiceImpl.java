@@ -143,9 +143,8 @@ public  class ProdServiceImpl implements ProdService {
                 .regDate(product.getRegDate())
                 .pickupStatus(product.getPickupStatus())
                 .prodStatus(product.getProdStatus())
-                .viewcount(product.getViewCount() != null ? product.getViewCount() : 0L);
+                .viewCount(product.getViewCount() != null ? product.getViewCount() : 0L);
 
-        // 연관된 사용자 정보가 있다면 추가
         if (product.getUser() != null) {
             build.uid(product.getUser().getUid())
                     .userNickname(product.getUser().getNickname())
