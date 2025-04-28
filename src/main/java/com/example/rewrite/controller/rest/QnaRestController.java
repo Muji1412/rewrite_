@@ -45,7 +45,9 @@ public class QnaRestController {
 
         UserSessionDto userSession = (UserSessionDto) session.getAttribute("user");
         String userId = userSession.getId();
-
+        
+        
+        // 에러픽스용
         Qna qna = Qna.builder()
                 .answer("답변 대기중입니다.")
                 .category(category)
