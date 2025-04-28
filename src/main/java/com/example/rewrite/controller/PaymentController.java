@@ -1,5 +1,15 @@
 package com.example.rewrite.controller;
 
+import com.example.rewrite.entity.Address;
+import com.example.rewrite.entity.Cart;
+import com.example.rewrite.entity.Orders;
+import com.example.rewrite.entity.Users;
+import com.example.rewrite.repository.users.UsersRepository;
+import com.example.rewrite.service.address.AddressService;
+import com.example.rewrite.service.cart.CartService;
+import com.example.rewrite.service.order.OrderService;
+import com.example.rewrite.service.payment.PaymentService;
+import com.example.rewrite.service.prod.ProdService;
 import com.example.rewrite.service.cart.CartService;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -7,6 +17,7 @@ import org.json.simple.parser.ParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,6 +29,11 @@ import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
+import java.util.Base64;
+import java.util.HashMap;
+import java.util.List;
+=======
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
@@ -33,6 +49,79 @@ public class PaymentController {
     @Autowired
     private CartService cartService;
 
+    @Autowired
+    private OrderService orderService;
+
+    @Autowired
+    private ProdService prodService;
+
+    @Autowired
+    private UsersRepository usersRepository;
+
+    @Autowired
+    private AddressService addressService;
+    @Autowired
+    private PaymentService paymentService;
+
+    // 우리 서비스단에서 쓸 컨트롤러
+    @RequestMapping("/confirm/payDone")
+    public String confirmPayDone(HttpServletRequest request,
+                                 @RequestParam("uid") Long uid,
+                                 @RequestParam("orderId") Long orderId,
+                                 @RequestParam("paymentKey") String paymentKey,
+                                 @RequestParam("tossOrderId") String tossOrderId,
+                                 @RequestParam("finalPrice") Integer finalPrice) {
+        logger.info("confirmPayDone 메서드 실행 - 결제 끝남.");
+
+        // 1. 사용자 및 배송지 정보 조회
+        Users buyer = usersRepository.findById(uid).orElseThrow();
+        Address defaultAddress = addressService.getDefaultAddress(uid);
+
+        //체크된 장바구니 상품 조회
+        List<Cart> checkedCarts = cartService.getCheckedCarts(uid);
+
+        //배송지
+        String[] addressParts = defaultAddress.getAddress().split("/");
+        String postcode = addressParts.length > 0 ? addressParts[0] : "";
+        String addr = addressParts.length > 1 ? addressParts[1] : "";
+        String detailAddr = addressParts.length > 2 ? addressParts[2] : "";
+
+        // 배송 요청사항 추출
+        String deliveryRequest = request.getParameter("deliveryRequest");
+        //결제 정보를 바탕으로 주문 객체 생성 및 저장
+        Orders order = Orders.builder()
+                .buyer(buyer)
+                .address(defaultAddress)
+                .receiverName(buyer.getName())
+                .receiverPhone(buyer.getPhone())
+                .postcode(postcode)
+                .addr(addr)
+                .detailAddr(detailAddr)
+                .finalPrice(finalPrice)
+                .orderedAt(LocalDateTime.now())
+                .paidAt(LocalDateTime.now())
+                .deliveryRequest(deliveryRequest)
+                .orderStatus("주문완료")
+                .paymentStatus("결제")
+                .paymentKey(paymentKey)
+                .paymentMethod(request.getParameter("paymentMethod") != null ?
+                        request.getParameter("paymentMethod") : "CARD")
+                .tossOrderId(tossOrderId)
+                .build();
+
+        orderService.saveOrder(order, checkedCarts);
+        // TODO - UID에 관련된 카트 삭제 (장바구니 초기화시키기)
+        cartService.clearUserCart(uid);
+        // TODO - 결제내역 테이블에 기록해주기
+        paymentService.recordPaymentHistory(order,buyer,paymentKey,"결제완료",request.getParameter("paymentMethod"),LocalDateTime.now());
+        // TODO - 결제한 물품들 status 변경해주기 (판매됨으로)
+        List<Cart> orderedCarts = cartService.getCheckedCarts(uid);
+        for (Cart cart : orderedCarts) {
+            prodService.updateProductStatus(cart.getProduct().getProdId(), "판매완료");
+        }
+        // TODO - 다음에 컨트롤러나 api 하나 만들어서, 오더카트(오더에 해당되는 물품들 가져오는거 만들기)
+
+        return "redirect:/prod/orderSuccess";
     // 우리 서비스단에서 쓸 컨트롤러
     @RequestMapping("/confirm/payDone")
     public String confirmPayDone(HttpServletRequest request, @RequestParam("uid") Long uid) {

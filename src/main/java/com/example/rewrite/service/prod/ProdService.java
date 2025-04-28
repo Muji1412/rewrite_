@@ -27,8 +27,12 @@ public interface ProdService {
 
     // 상품 삭제
     void deleteProduct(Long id);
-    
+
     //끌어 올리기
     void bumpProduct(Long prodId);
 
+    //결제되면 판매완료 처라
+    void updateProductStatus(Long prodId, String prodStatus);
+
 }
+

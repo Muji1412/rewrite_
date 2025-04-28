@@ -1,3 +1,6 @@
+
+<link rel="stylesheet" href="/css/prod/checkout.css">
+<script src="https://js.tosspayments.com/v2/standard"></script>
 <link rel="stylesheet" href="/css/prod/checkout.css" th:href="@{/css/prod/checkout.css}">
 <th:block th:replace="~{/include/include :: def(~{::#wrap})}">
 <section id="wrap">
@@ -122,5 +125,6 @@
     </div>
 </div>
 </section>
+<script th:src="@{/js/payment.js}"></script>
 </th:block>
 <script src="../../js/orderPay.js" th:src="@{/js/orderPay.js}"></script>
