@@ -3,6 +3,7 @@ package com.example.rewrite.entity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
@@ -16,6 +17,7 @@ import java.time.LocalDateTime;
 @Table(name = "wishlist")
 @Getter @Setter
 @NoArgsConstructor
+@ToString
 public class Wishlist {
 
     /**

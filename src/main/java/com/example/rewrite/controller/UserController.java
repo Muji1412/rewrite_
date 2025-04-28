@@ -70,10 +70,10 @@ public class UserController {
     @PostMapping("/modify")
     public String modify(HttpSession session,
                          @RequestParam(value = "imgUrl", required = false) String imgUrl,
-//                         @RequestParam("pw") String pw,
                          @RequestParam("nickname") String nickname,
-                         @RequestParam("password") String password,
-                         @RequestParam("eqpassword") String eqpassword,
+                         @RequestParam(value = "currentPassword", required = false) String currentPassword,
+                         @RequestParam(value = "password", required = false) String password,
+                         @RequestParam(value = "eqpassword", required = false) String eqpassword,
                          RedirectAttributes redirectAttributes) {
 
         UserSessionDto user = (UserSessionDto) session.getAttribute("user");
@@ -81,18 +81,31 @@ public class UserController {
             return "redirect:/user/login";
         }
 
-//        if(!pw.equals(userService.getPassword(user.getUid()))){
-//            redirectAttributes.addFlashAttribute("message", "현재 비밀번호가 일치하지 않습니다.");
-//            return "redirect:/user/edit";
-//        }
         UserVO vo = new UserVO();
-        vo.setNickname(nickname);
-        vo.setPw(eqpassword);
         vo.setUid(user.getUid());
+        vo.setNickname(nickname);
 
-        if(!(password.equals(eqpassword))){
-            redirectAttributes.addFlashAttribute("message", "비밀번호가 일치하지 않습니다.");
-            return "redirect:/user/edit";
+        // 비밀번호가 입력된 경우에만 처리
+        if(password != null && !password.isEmpty()) {
+            // 현재 비밀번호 확인
+            if(currentPassword == null || currentPassword.isEmpty()) {
+                redirectAttributes.addFlashAttribute("message", "현재 비밀번호를 입력해주세요.");
+                return "redirect:/user/edit";
+            }
+
+            // 현재 비밀번호 검증
+            if(!userService.checkCurrentPassword(user.getUid(), currentPassword)) {
+                redirectAttributes.addFlashAttribute("message", "현재 비밀번호가 일치하지 않습니다.");
+                return "redirect:/user/edit";
+            }
+
+            // 새 비밀번호 일치 확인
+            if(!password.equals(eqpassword)){
+                redirectAttributes.addFlashAttribute("message", "새 비밀번호가 일치하지 않습니다.");
+                return "redirect:/user/edit";
+            }
+
+            vo.setPw(password);
         }
 
         // 이미지 URL이 제공된 경우에만 설정
@@ -100,11 +113,10 @@ public class UserController {
             vo.setImgUrl(imgUrl);
         }
 
-
         try {
             userService.userModify(vo);
 
-            // 세션 정보도 업데이트
+            // 세션 정보 업데이트
             user.setNickname(nickname);
             if (imgUrl != null && !imgUrl.isEmpty()) {
                 user.setImgUrl(imgUrl);
@@ -117,17 +129,33 @@ public class UserController {
             redirectAttributes.addFlashAttribute("message", "회원정보 수정 중 오류가 발생했습니다.");
             return "redirect:/user/edit";
         }
-
     }
 
+
+
     @PostMapping("/delete")    //회원 탈퇴
-    public String delete(HttpSession session){
+    public String delete(HttpSession session,
+                         @RequestParam("currentPassword") String currentPassword,
+                         RedirectAttributes redirectAttributes){
 
         UserSessionDto user = (UserSessionDto) session.getAttribute("user");
         if(user == null) {
             return "redirect:/user/login";
         }
-        userService.userDelete(user.getUid()); 
+
+        if(currentPassword == null || currentPassword.isEmpty()) {
+            redirectAttributes.addFlashAttribute("message", "현재 비밀번호를 입력해주세요.");
+            return "redirect:/user/edit";
+        }
+
+        // 현재 비밀번호가 맞는지 검증
+        if(!userService.checkCurrentPassword(user.getUid(), currentPassword)) {
+            redirectAttributes.addFlashAttribute("message", "비밀번호가 일치하지 않습니다.");
+            return "redirect:/user/edit";
+        }
+
+        userService.userDelete(user.getUid());
+        session.invalidate();
         return "redirect:/logout"; //스프링 시큐리티 로그아웃 
     }
     @GetMapping("/cs_main")

@@ -1,11 +1,11 @@
-<th:block th:if="${#httpServletRequest.getRequestURI().contains('myProdList')}">
+<th:block th:if="!${#httpServletRequest.getRequestURI().contains('prodList')}">
 <link rel="stylesheet" href="/css/sideBar.css" th:href="@{/css/sideBar.css}">
 </th:block>
 <th:block th:replace="~{include/include :: def(~{::#wrap})} ">
 
 
     <section id="wrap" class="section">
-        <th:block th:if="${#httpServletRequest.getRequestURI().contains('myProdList')}">
+        <th:block th:if="!${#httpServletRequest.getRequestURI().contains('prodList')}">
             <th:block th:replace="~{include/side :: def(~{::#wrap})}"/>
         </th:block>
 
@@ -21,10 +21,13 @@
 
             <div class="title-box">
                 <h2 th:if="${#httpServletRequest.getRequestURI().contains('myProdList')}">[[${user.nickname}]]님의 판매 내역</h2>
-                <h2 th:unless="${#httpServletRequest.getRequestURI().contains('myProdList')}">상품 리스트</h2>
+                <h2 th:if="${#httpServletRequest.getRequestURI().contains('prodList')}">상품 리스트</h2>
+                <h2 th:if="${#httpServletRequest.getRequestURI().contains('wishList')}">[[${user.nickname}]]님의 찜 목록</h2>
             </div>
 
 
+
+            <th:block th:if="${#httpServletRequest.getRequestURI().contains('prodList')}">
             <div class="list-header">
                 <div class="dropdown">
                     <button class="dropbtn" onclick="toggleDropdown(event)">
@@ -40,6 +43,44 @@
                 <button class="write-btn" th:onclick="|location.href='@{/prod/productReg}'|">판매하기</button>
 
             </div>
+            </th:block>
+
+            <!--wishList로 작동됨-->
+            <th:block th:if="${#httpServletRequest.getRequestURI().contains('wishList')}">
+                <div class="card-container">
+                    <!-- 찜 목록 반복 -->
+                    <div class="card" th:each="item : ${wishList}" th:data-prod-id="${item.product.prodId}">
+                        <div class="media-container">
+                            <!-- 메인 이미지 -->
+                            <img th:src="${item.product.img1 != null ? item.product.img1 : '/img/no-image.jpg'}"
+                                 alt="상품 이미지" class="prodImg">
+
+                            <!-- 비디오 요소 -->
+                            <video class="prod-video" th:if="${item.product.videoUrl != null}"
+                                   th:data-src="${item.product.videoUrl}" muted preload="none"></video>
+                        </div>
+
+                        <!-- 상품 정보 -->
+                        <p class="title" th:text="${item.product.title}">상품명</p>
+                        <strong class="price" th:text="${#numbers.formatInteger(item.product.price, 1, 'COMMA')} + '원'">가격</strong>
+                        <div class="card-info-row">
+                            <span class="date" th:text="${#temporals.format(item.product.regDate, 'yy.MM.dd')}">날짜</span>
+                            <span class="view-count">
+                    <span>조회수: </span>
+                    <span th:text="${item.product.viewCount}"></span>
+                </span>
+                        </div>
+                    </div>
+
+                    <!-- 찜한 상품이 없을 경우 메시지 출력 -->
+                    <div class="no-products" th:if="${#lists.isEmpty(wishList)}">
+                        <p>찜한 상품이 없습니다.</p>
+                    </div>
+                </div>
+            </th:block>
+
+            <!-- wishList가 아닐때 작동됨 -->
+            <th:block th:if="!${#httpServletRequest.getRequestURI().contains('wishList')}">
                 <div class="card-container">
                     <!-- 상품 목록 반복 -->
                     <div class="card" th:each="product : ${products}" th:data-prod-id="${product.prodId}">
@@ -74,7 +115,7 @@
                         <p>등록된 상품이 없습니다.</p>
                     </div>
                 </div>
-
+            </th:block>
         </div>
 
 

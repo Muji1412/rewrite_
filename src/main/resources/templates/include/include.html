@@ -13,7 +13,13 @@
 
 <body>
 <div id="semi_wrap">
+<!--  타임리프 코드 2개가 아래에 있는 삼항연산식으로 변경  -->
     <th:block th:replace="~{/include/popup :: def(~{::*})}"/>
+    <th:block th:replace="~{/include/payPopup :: def(~{::*})}"/>
+    <!-- 하나의 표현식으로 조건부 렌더링 -->
+<!--    <th:block th:replace="${pageType == 'qna'} ? ~{/include/popup :: def(~{::*})} : (${pageType == 'order'} ? ~{/include/payPopup :: def(~{::*})} : ~{})"></th:block>-->
+
+
     <header class="header">
         <div class="header_top">
             <ul class="header_semi_menu">

@@ -35,10 +35,12 @@ public interface UsersRepository extends JpaRepository<Users, Long> {
     @Transactional
     @Query("UPDATE Users u " +
             "SET u.nickname = :#{#user.nickname}, " +
-            "u.pw = :#{#user.pw}, " +
+            "u.pw = CASE WHEN :#{#user.pw} IS NULL THEN u.pw ELSE :#{#user.pw} END, " +
             "u.imgUrl = CASE WHEN :#{#user.imgUrl} IS NULL THEN u.imgUrl ELSE :#{#user.imgUrl} END " +
             "WHERE u.uid = :#{#user.uid}")
     void userModify(@Param("user") UserVO users);
+
+
 
     //회원 탈퇴
     @Modifying
