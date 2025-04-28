@@ -16,8 +16,21 @@ const payment = tossPayments.payment({
 });
 
 // 페이지 로드 시 이벤트 리스너 설정
-//ㅎㅎ
 document.addEventListener('DOMContentLoaded', function() {
+    console.log("DOM 로드 완료: 결제 초기화 시작");
+
+    // 결제 버튼에 이벤트 리스너 추가
+    const checkoutButton = document.querySelector('.checkout-button');
+    if (checkoutButton) {
+        checkoutButton.addEventListener('click', function() {
+            console.log("결제 버튼 클릭됨");
+            placeOrder();
+        });
+        console.log("결제 버튼 이벤트 리스너 설정 완료");
+    } else {
+        console.error("결제 버튼을 찾을 수 없습니다");
+    }
+
     // 결제 방법 라디오 버튼에 이벤트 리스너 추가
     const radios = document.querySelectorAll('input[name="payment-method"]');
     radios.forEach(radio => {
@@ -44,20 +57,22 @@ document.addEventListener('DOMContentLoaded', function() {
 
 function selectPaymentMethod(method) {
     selectedPaymentMethod = method;
+    console.log("결제 방법 선택됨:", method);
 }
 
 function collectOrderItems() {
     const productRows = document.querySelectorAll('.product-table tbody tr');
     orderItems = Array.from(productRows).map(row => {
-        const productName = row.querySelector('.product-name').textContent;
-        const productPrice = row.querySelector('.product-price').textContent.replace(/[^0-9]/g, '');
-        const productImage = row.querySelector('.product-thumbnail').getAttribute('src');
+        const productName = row.querySelector('.product-name')?.textContent || "상품명 없음";
+        const productPrice = row.querySelector('.product-price')?.textContent.replace(/[^0-9]/g, '') || "0";
+        const productImage = row.querySelector('.product-thumbnail')?.getAttribute('src') || "";
         return {
             name: productName,
             price: parseInt(productPrice, 10),
             image: productImage
         };
     });
+    console.log("상품 정보 수집 완료:", orderItems.length + "개 상품");
 }
 
 function updatePaymentAmount() {
@@ -66,31 +81,44 @@ function updatePaymentAmount() {
     const totalAmountElement = document.querySelector('.total-amount');
 
     if (orderAmountElement && shippingFeeElement && totalAmountElement) {
-        const orderAmountValue = parseInt(orderAmountElement.textContent.replace(/[^0-9]/g, ''), 10);
-        const shippingFeeValue = parseInt(shippingFeeElement.textContent.replace(/[^0-9]/g, ''), 10);
-        const totalAmountValue = parseInt(totalAmountElement.textContent.replace(/[^0-9]/g, ''), 10);
+        const orderAmountValue = parseInt(orderAmountElement.textContent.replace(/[^0-9]/g, ''), 10) || 0;
+        const shippingFeeValue = parseInt(shippingFeeElement.textContent.replace(/[^0-9]/g, ''), 10) || 0;
+        const totalAmountValue = parseInt(totalAmountElement.textContent.replace(/[^0-9]/g, ''), 10) || 0;
 
-        amount.value = totalAmountValue;
+        amount.value = totalAmountValue || (orderAmountValue + shippingFeeValue);
         window.orderAmount = orderAmountValue;
         window.shippingFee = shippingFeeValue;
+
+        console.log("결제 금액 업데이트:", amount.value + "원");
+    } else {
+        console.error("결제 금액 요소를 찾을 수 없습니다");
     }
 }
 
 async function placeOrder() {
+    console.log("결제 프로세스 시작");
     updatePaymentAmount();
+
+    // 결제 금액 유효성 검사
+    if (!amount.value || amount.value <= 0) {
+        alert("결제 금액이 유효하지 않습니다. 페이지를 새로고침 후 다시 시도해주세요.");
+        console.error("유효하지 않은 결제 금액:", amount.value);
+        return;
+    }
+
     try {
         const orderId = generateRandomString();
-        // 수정: 올바른 orderName 생성
+        // 올바른 orderName 생성
         let orderName = orderItems.length > 0 ?
             orderItems[0].name + (orderItems.length > 1 ? ` 외 ${orderItems.length - 1}건` : '') :
             "상품 주문";
 
-        const receiverName = document.querySelector('.info-row:nth-child(1) .info-value').textContent.trim();
-        const receiverPhone = document.querySelector('.info-row:nth-child(2) .info-value').textContent.trim();
-        const addressInfo = document.querySelector('.info-row:nth-child(3) .info-value span').textContent.trim();
-        const deliveryRequest = document.querySelector('.info-value.input-value input').value.trim();
+        const receiverName = document.querySelector('.info-row:nth-child(1) .info-value')?.textContent.trim() || "수령인 정보 없음";
+        const receiverPhone = document.querySelector('.info-row:nth-child(2) .info-value')?.textContent.trim() || "";
+        const addressInfo = document.querySelector('.info-row:nth-child(3) .info-value span')?.textContent.trim() || "";
+        const deliveryRequest = document.querySelector('.info-value.input-value input')?.value.trim() || "";
 
-        // 수정: 우편번호 올바르게 추출
+        // 우편번호 올바르게 추출
         const postcodeMatch = addressInfo.match(/\(([^)]+)\)/);
         const postcode = postcodeMatch ? postcodeMatch[1] : '';
         const addressWithoutPostcode = addressInfo.replace(/\s*\([^)]+\)/, '').trim();
@@ -119,20 +147,24 @@ async function placeOrder() {
             paymentMethod: selectedPaymentMethod
         };
 
+        console.log("주문 데이터 생성:", orderId);
         sessionStorage.setItem('orderData', JSON.stringify(orderData));
 
         const commonParams = {
             amount: amount,
             orderId: orderId,
             orderName: orderName,
-            successUrl: window.location.origin + "/payment/success",
-            failUrl: window.location.origin + "/payment/fail",
+            successUrl: window.location.origin + "/prod/orderSuccess",
+            failUrl: window.location.origin + "/prod/orderPay",
             customerEmail: "", // 사용자 이메일 정보가 있으면 추가
             customerName: receiverName
         };
 
+        console.log("결제 요청 준비:", selectedPaymentMethod);
+
         switch (selectedPaymentMethod) {
             case "CARD":
+                console.log("카드 결제 요청 시작");
                 await payment.requestPayment({
                     method: "CARD",
                     ...commonParams,
@@ -145,6 +177,7 @@ async function placeOrder() {
                 });
                 break;
             case "KAKAO_PAY":
+                console.log("카카오페이 결제 요청 시작");
                 await payment.requestPayment({
                     method: "EASY_PAY",
                     ...commonParams,
@@ -152,6 +185,7 @@ async function placeOrder() {
                 });
                 break;
             case "TOSS_PAY":
+                console.log("토스페이 결제 요청 시작");
                 await payment.requestPayment({
                     method: "EASY_PAY",
                     ...commonParams,
@@ -160,6 +194,7 @@ async function placeOrder() {
                 break;
             default:
                 alert("결제 방법을 선택해주세요.");
+                console.error("선택된 결제 방법 없음");
                 break;
         }
     } catch (error) {
@@ -172,9 +207,8 @@ function generateRandomString() {
     return window.btoa(Math.random()).slice(0, 20);
 }
 
-// 주소 팝업 열기 함수
-function openAddressPopup() {
+// 주소 팝업 열기 함수 (HTML의 onclick="openPay()"와 일치하도록 변경)
+function openPay() {
     // 배송지 변경 팝업 구현
-    // 예: 새 창 또는 모달 다이얼로그로 주소 선택 인터페이스 표시
     alert("배송지 변경 기능은 아직 구현되지 않았습니다.");
 }
