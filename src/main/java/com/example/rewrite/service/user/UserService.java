@@ -33,5 +33,5 @@ public interface UserService {
     void changeRole(Long uid, String role);
     void deleteUser(Long uid);
     boolean checkCurrentPassword(Long uid, String password);
-
+    Integer buyCount(Long uid);
 }

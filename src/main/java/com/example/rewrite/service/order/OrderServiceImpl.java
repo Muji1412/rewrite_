@@ -3,6 +3,7 @@ package com.example.rewrite.service.order;
 import com.example.rewrite.entity.Cart;
 import com.example.rewrite.entity.OrderCart;
 import com.example.rewrite.entity.Orders;
+import com.example.rewrite.entity.Product;
 import com.example.rewrite.repository.cart.CartRepository;
 import com.example.rewrite.repository.order.OrderRepository;
 import com.example.rewrite.repository.ordercart.OrderCartRepository;
@@ -79,4 +80,29 @@ public class OrderServiceImpl implements OrderService {
 
 
 
+    @Override
+    public List<Orders> getOrderList(Long uid) {
+        return ordersRepository.findByBuyerUid(uid);
+    }
+
+    @Override
+    public List<OrderCart> getOrderDetail(Long uid) {
+
+        return ordersRepository.findByOrderId(uid);
+    }
+
+    @Override
+    public List<OrderCart> findOrderCartsByBuyerUid(Long uid) {
+        return ordersRepository.findOrderCartsByBuyerUid(uid);
+    }
+
+    @Override
+    public List<Product> findOrderDetail(Long oid) {
+        return ordersRepository.findOrderDetail(oid);
+    }
+
+    @Override
+    public Orders findByOrderId(Long oid) {
+        return ordersRepository.getOrder(oid);
+    }
 }
