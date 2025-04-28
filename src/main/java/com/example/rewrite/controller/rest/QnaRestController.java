@@ -47,6 +47,7 @@ public class QnaRestController {
         String userId = userSession.getId();
 
         Qna qna = Qna.builder()
+                .answer("답변 대기중입니다.")
                 .category(category)
                 .title(title)
                 .content(content)
