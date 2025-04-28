@@ -2,10 +2,12 @@ package com.example.rewrite.repository.product;
 
 import com.example.rewrite.entity.Product;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,4 +26,9 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     List<Product> findProductsByUserUid(Long uid);
     void deleteByUserUid(Long uid);
     List<Product> findByUserUid(Long uid);
+    List<Product> findProductsByCategoryMax(String category);
+
+    List<Product> getProductsByCategoryMax(String categoryMax);
+
+    List<Product> findByCategoryMax(String category, Sort sort);
 }
