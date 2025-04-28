@@ -87,6 +87,35 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     };
 
+    document.querySelectorAll('.heart-container i').forEach(function(heart) {
+        heart.addEventListener('click', function(event) {
+            event.stopPropagation(); // 카드 클릭 이벤트와 분리
+            const prodId = this.getAttribute('data-prod-id');
+            const icon = this;
+            // AJAX 요청 예시 (URL은 실제 찜 토글 API로 변경)
+            $.ajax({
+                url: '/wishlist/toggle',
+                type: 'POST',
+                data: { prodId: prodId },
+                dataType: 'json',
+                success: function(response) {
+                    if (response.isWishlisted) {
+                        icon.classList.remove('fa-heart-o');
+                        icon.classList.add('fa-heart');
+                        icon.style.color = 'red';
+                    } else {
+                        icon.classList.remove('fa-heart');
+                        icon.classList.add('fa-heart-o');
+                        icon.style.color = '#bbb';
+                    }
+                },
+                error: function() {
+                    alert('로그인이 필요합니다.');
+                }
+            });
+        });
+    });
+
 
 
 });
@@ -133,3 +162,4 @@ window.onload = function() {
     else if (sortBy === "priceDesc") text = "가격높은순";
     document.querySelector('.dropbtn_content').innerText = text;
 };
+

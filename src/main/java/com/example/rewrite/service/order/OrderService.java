@@ -9,11 +9,16 @@ import java.math.BigDecimal;
 import java.util.List;
 
 public interface OrderService {
+
     void saveOrder(Orders order, List<Cart> checkedCarts);//order에 저장
     List<Orders> getOrderList(Long uid);//주문 리스트
     List<OrderCart> getOrderDetail(Long oid);//주문 상세
     List<OrderCart> findOrderCartsByBuyerUid(Long uid);
     List<Product> findOrderDetail(Long oid);
     Orders findByOrderId(Long oid);//주문 상세
+    void saveOrder(Orders order, List<Cart> checkedCarts);
+
+    void updateOrderWithPaymentInfo(String orderId, String paymentKey, int amount, String paymentMethod, String paymentStatus, String approvedAt);
+    //order에 저장
 }
 

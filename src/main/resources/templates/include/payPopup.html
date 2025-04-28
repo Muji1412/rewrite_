@@ -1,10 +1,12 @@
 <th:block th:fragment="def (item)">
-    <div id="payPop" style="display: none" onclick="openPay()">
+    <div id="payPop" style="display: none">
         <div id="pop_box">
             <div class="pop_content">
                 <div id="payPop_header">
                     <h2>배송지 선택</h2>
-                    <div id="closePay"><img src="../img/close_icon.png" th:src="@{/img/close_icon.png}" alt="close_img" onclick="closePay()"></div>
+                    <div id="closePay">
+                        <img src="../img/close_icon.png" th:src="@{/img/close_icon.png}" alt="close_img" onclick="closePay()">
+                    </div>
                 </div>
                 <div id="payPop_section">
                     <!-- 카드 -->

@@ -84,7 +84,8 @@ public  class ProdServiceImpl implements ProdService {
         Product product = productRepository.findProductWithUserById(id)
                 .orElseThrow(() -> new RuntimeException("상품을 찾을 수 없습니다."));
 
-        return convertToDto(product);
+        ProductDTO productDTO = ProductDTO.fromEntity(product);
+        return productDTO;
     }
 
     // 상품 등록
@@ -96,8 +97,11 @@ public  class ProdServiceImpl implements ProdService {
                 .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
 
         // 1. 기본 주소 조회
-        Address defaultAddress = addressService.getDefaultAddress(user.getUid());
-        String pickupAddress = (defaultAddress != null) ? defaultAddress.getAddress() : null;
+        String pickupAddress = productDTO.getPickupAddress();
+        if (pickupAddress == null || pickupAddress.trim().isEmpty()) {
+            Address defaultAddress = addressService.getDefaultAddress(user.getUid());
+            pickupAddress = (defaultAddress != null) ? defaultAddress.getAddress() : null;
+        }
 
         // 2. 상품 엔티티 생성
         Product product = Product.builder()
@@ -113,6 +117,8 @@ public  class ProdServiceImpl implements ProdService {
                 .videoUrl(productDTO.getVideoUrl())
                 .regDate(LocalDateTime.now())
                 .pickupAddress(pickupAddress) // 기본 주소 저장
+                .pickupStatus("픽업대기중")      // 추가: 픽업상태 기본값
+                .prodStatus("판매중")            // 추가: 상품상태 기본값
                 .user(user)
                 .build();
 
@@ -135,6 +141,8 @@ public  class ProdServiceImpl implements ProdService {
                 .img4(product.getImg4())
                 .videoUrl(product.getVideoUrl())
                 .regDate(product.getRegDate())
+                .pickupStatus(product.getPickupStatus())
+                .prodStatus(product.getProdStatus())
                 .viewcount(product.getViewCount() != null ? product.getViewCount() : 0L);
 
         // 연관된 사용자 정보가 있다면 추가
@@ -164,6 +172,7 @@ public  class ProdServiceImpl implements ProdService {
         product.setImg3(productDTO.getImg3());
         product.setImg4(productDTO.getImg4());
         product.setVideoUrl(productDTO.getVideoUrl());
+        product.setPickupAddress(productDTO.getPickupAddress());
 
         Product updatedProduct = productRepository.save(product);
         return convertToDto(updatedProduct);
@@ -214,4 +223,13 @@ public  class ProdServiceImpl implements ProdService {
     }
 
 
+    @Override
+    public List<Product> searchProductsByTitle(String keyword) {
+        return productRepository.findByTitleContaining(keyword);
+    }
+
+    @Override
+    public List<Product> getAllProducts() {
+        return productRepository.findAll();
+    }
 }

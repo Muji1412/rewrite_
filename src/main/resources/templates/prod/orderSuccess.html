@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>주문완료</title>
     <link rel="stylesheet" href="/css/orderSuccess.css">
-    <link rel="stylesheet" href="css/common.css">
+    <link rel="stylesheet" href="/css/common.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <script src="../../../../../../../ReWriteUI/js/script.js"></script>
+    <script src=""></script>
 </head>
 <body>
     <header class="header">
@@ -20,7 +20,7 @@
         </div>
         <div class="header_bottom">
             <div class="logo_box">
-                <img src="../../../../../../../ReWriteUI/img/logo.png" alt="logo">
+                <img src="/img/logo.png" alt="logo">
             </div>
             <div class="drop_menu">
                 <ul class="e_drop">
@@ -43,18 +43,16 @@
                 </ul>
             </div>
             <div class="sub_icon">
-                <img src="../../../../../../../ReWriteUI/img/mypage_icon.png" alt="my_page">
-                <img src="../../../../../../../ReWriteUI/img/mycart_icon.png" alt="my_cart">
+                <img src="/img/mypage_icon.png" alt="my_page">
+                <img src="/img/mycart_icon.png" alt="my_cart">
             </div>
         </div>
     </header>
     <section class="section">
         <div class="order-container">
-            <img src="../../../../../../../ReWriteUI/img/success.png" alt="주문완료">
-            <p>고객님의 주문이 완료 되었습니다.</p>
-            <p>주문에대한 자세한 정보는 주문내역을 통하여 확인이 가능합니다.</p>
-            <button><a href="#">주문내역보기</a></button>            
-            <button><a href="#">홈으로 가기</a></button>            
+            <img src="/img/success.png" alt="주문완료">
+            <p>주문이 완료 되었습니다.</p>
+            <p>잠시 후 결제내역 페이지로 이동합니다.</p>
         </div>
     </section>
     <footer class="footer">
@@ -91,5 +89,54 @@
             </div>
         </div>
     </footer>
+
+    <script>
+        // 쿼리 파라미터 값을 서버로 전달해 결제 요청할 때 보낸 데이터와 동일한지 반드시 확인하세요.
+        const urlParams = new URLSearchParams(window.location.search);
+
+        // 서버로 결제 승인에 필요한 결제 정보를 보내세요.
+        async function confirmPayment() {
+            const userId = /*[[${userId}]]*/ null;
+            var requestData = {
+                paymentKey: urlParams.get("paymentKey"),
+                orderId: urlParams.get("orderId"),
+                amount: urlParams.get("amount"),
+            };
+
+            try {
+                const response = await fetch("/confirm/payment?uid=" + userId, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(requestData),
+                });
+
+                const json = await response.json();
+
+                if (!response.ok) {
+                    throw { message: json.message, code: json.code };
+                }
+
+                // 결제 성공 처리
+                console.log('결제가 성공적으로 완료되었습니다.');
+
+                // 3초 후 주문내역 페이지로 이동 (선택사항)
+                setTimeout(() => {
+                    window.location.href = '/prod/orderList';
+                }, 3000);
+
+                return json;
+            } catch (error) {
+                console.error('결제 처리 중 오류가 발생했습니다:', error);
+                alert('결제 처리 중 오류가 발생했습니다. 고객센터에 문의해주세요.');
+            }
+        }
+
+        // 페이지 로드 시 자동으로 결제 확인 요청
+        document.addEventListener('DOMContentLoaded', confirmPayment);
+
+
+    </script>
 </body>
 </html>

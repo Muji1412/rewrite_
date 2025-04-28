@@ -10,6 +10,8 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
+
 
 
 @Repository
@@ -31,4 +33,5 @@ public interface OrderRepository extends JpaRepository<Orders, Long> {
     // 특정 주문내역 조회
     @Query("SELECT o FROM Orders o WHERE o.orderId = :orderId")
     Orders getOrder(@Param("orderId") Long oid);
+    Optional<Orders> findByTossOrderId(String tossOrderId);
 }

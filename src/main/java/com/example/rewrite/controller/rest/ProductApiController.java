@@ -38,6 +38,7 @@ public class ProductApiController {
     @GetMapping("/{id}")
     public ResponseEntity<ProductDTO> getProductById(@PathVariable Long id) {
         ProductDTO product = productService.getProductById(id);
+        System.out.println(product);
         return ResponseEntity.ok(product);
     }
 
@@ -60,8 +61,6 @@ public class ProductApiController {
         if (defaultAddress != null) {
             pickupAddress = defaultAddress.getAddress();
         }
-        // ② DTO에 주소 세팅
-        productDTO.setPickupAddress(pickupAddress);
 
         // 상품 등록
         ProductDTO createdProduct = productService.registerProduct(productDTO);
