@@ -5,8 +5,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMailMessage;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
 
 @Slf4j
 @Service
@@ -57,5 +62,45 @@ public class MailServiceImpl implements MailService {
             log.error("[MailService] 비밀번호 찾기 메일 발송 실패 - Email: {}, Error: {}", toEmail, e.getMessage(), e);
         }
 
+    }
+
+    @Override
+    @Async
+    public void sendWelcomeEmail(String toEmail, String userId, String name) {
+        log.info("[MailService] 웰컴 이메일 발송 시작: {}", toEmail);
+
+        try {
+            // MimeMessage 객체 생성 (HTML을 지원하는 메시지 객체)
+            MimeMessage mimeMessage = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
+
+            // 이메일 정보 설정
+            helper.setTo(toEmail);
+            helper.setSubject("[Rewrite] " + name + "님, 회원가입을 환영합니다.");
+
+            // HTML 내용 설정
+            String htmlContent =
+                    "<div style='background-color:#f0f8ff; padding:20px;'>" +
+                            "  <div style='max-width:600px; margin:0 auto; background-color:#ffffff; padding:20px; border-radius:10px; font-family: Arial, sans-serif;'>" +
+                            "    <h1 style='color:#2e8b57; text-align:center;'>환영합니다! 다시 쓰다 플랫폼에 오신 것을 환영합니다! ♻️</h1>" +
+                            "    <p style='font-size:16px; line-height:1.5;'>안녕하세요 <strong>" + name + "</strong>님,</p>" +
+                            "    <p style='font-size:16px; line-height:1.5;'><strong>다시 쓰다</strong> 중고물품 거래 플랫폼에 가입해 주셔서 감사합니다. 환경을 생각하고, 자원을 아끼는 현명한 선택을 하셨습니다.</p>" +
+                            "    <p style='font-size:16px; line-height:1.5;'>이제 다양한 중고 물품을 안전하고 편리하게 거래하실 수 있습니다.</p>" +
+                            "    <div style='text-align:center; margin-top:30px;'>" +
+                            "      <a href='https://rewrite.com/login?userId=" + userId + "' style='background-color:#2e8b57; color:white; padding:12px 24px; text-decoration:none; border-radius:5px; font-weight:bold;'>거래 시작하기</a>" +
+                            "    </div>" +
+                            "    <p style='margin-top:30px; font-size:14px; color:#666; text-align:center;'>문의사항이 있으시면 언제든지 연락주세요!</p>" +
+                            "  </div>" +
+                            "</div>";
+
+            helper.setText(htmlContent, true); // true 파라미터가 HTML 메일임을 나타냄
+
+            // 이메일 발송
+            mailSender.send(mimeMessage);
+
+            log.info("[MailService] 웰컴 이메일 발송 완료: {}", toEmail);
+        } catch (MailException | MessagingException e) {
+            log.error("[MailService] 웰컴 이메일 발송 실패 - Email: {}, Error: {}", toEmail, e.getMessage(), e);
+        }
     }
 }
