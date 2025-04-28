@@ -287,4 +287,32 @@ public class ProdController {
         return "redirect:/prod/prodDetail?prodId=" + prodId; // 상세페이지로 리다이렉트
     }
 
+    @GetMapping("/orderSuccess")
+    public String orderSuccess(
+            @RequestParam(value = "paymentKey", required = false) String paymentKey,
+            @RequestParam(value = "orderId", required = false) String orderId,
+            @RequestParam(value = "amount", required = false) Integer amount,
+            Model model, HttpSession session) {
+
+        // 결제 정보를 모델에 추가
+        if (paymentKey != null) {
+            model.addAttribute("paymentKey", paymentKey);
+        }
+        if (orderId != null) {
+            model.addAttribute("orderId", orderId);
+        }
+        if (amount != null) {
+            model.addAttribute("amount", amount);
+        }
+
+        // 세션에서 사용자 ID를 가져와 모델에 추가
+        Long userId = (Long) session.getAttribute("userId");
+        if (userId != null) {
+            model.addAttribute("userId", userId);
+        }
+
+        return "prod/orderSuccess";
+    }
+
+
 }
