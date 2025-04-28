@@ -199,9 +199,17 @@ public class ProdController {
         return "prod/prodDetail";
     }
 
-    @GetMapping("/prodList")
-    public String listProducts(Model model, @RequestParam(defaultValue = "latest") String sortBy, HttpSession session) {
-        List<ProductDTO> products = prodService.getAllProducts(sortBy);
+    @GetMapping("/prodList/{category}")
+    public String listProductsByCategory(@PathVariable String category,
+                                         @RequestParam(defaultValue = "latest") String sortBy,
+                                         Model model,
+                                         HttpSession session) {
+        List<ProductDTO> products;
+        if (category == null || category.isEmpty()) {
+            products = prodService.getAllProducts(sortBy);
+        } else {
+            products = prodService.getProductsByCategory(category, sortBy);
+        }
 
         UserSessionDto user = (UserSessionDto) session.getAttribute("user");
         Map<Long, Boolean> wishMap = new HashMap<>();

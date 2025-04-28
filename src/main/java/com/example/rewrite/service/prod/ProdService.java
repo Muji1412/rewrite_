@@ -35,6 +35,8 @@ public interface ProdService {
     //결제되면 판매완료 처라
     void updateProductStatus(Long prodId, String prodStatus);
 
+    List<ProductDTO> getProductsByCategory(String category, String sortBy);
+
     List<Product> searchProductsByTitle(String keyword);
 
     List<Product> getAllProducts();
