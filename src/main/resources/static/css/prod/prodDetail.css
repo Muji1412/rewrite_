@@ -274,4 +274,22 @@ section {
   text-decoration: none;
 }
 
+.soldout-badge {
+  position: absolute;
+  top: 18px;
+  left: 18px;
+  background: rgba(255, 80, 80, 0.95);
+  color: #fff;
+  font-weight: bold;
+  font-size: 20px;
+  padding: 10px 24px;
+  border-radius: 10px;
+  z-index: 10;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  letter-spacing: 2px;
+}
+#sliderContent {
+  position: relative; /* 배지 위치 기준 */
+}
+
 

@@ -1,6 +1,7 @@
 package com.example.rewrite.service.prod;
 
 import com.example.rewrite.command.ProductDTO;
+import com.example.rewrite.entity.Product;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -36,5 +37,8 @@ public interface ProdService {
 
     List<ProductDTO> getProductsByCategory(String category, String sortBy);
 
+    List<Product> searchProductsByTitle(String keyword);
+
+    List<Product> getAllProducts();
 }
 

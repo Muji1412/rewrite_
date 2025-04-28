@@ -9,6 +9,7 @@ import com.example.rewrite.entity.Cart;
 import com.example.rewrite.entity.Product;
 import com.example.rewrite.entity.Users;
 import com.example.rewrite.repository.cart.CartRepository;
+import com.example.rewrite.repository.order.OrderRepository;
 import com.example.rewrite.repository.product.ProductRepository;
 import com.example.rewrite.repository.users.UsersRepository;
 import com.example.rewrite.service.mail.MailService;
@@ -48,7 +49,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     private final MailService mailService;
     private final ProductRepository productRepository;
     private final CartRepository cartRepository;
-
+    @Autowired
+    private OrderRepository orderRepository;
     @Override
     @Transactional
     public Users signup(SignupRequestDto signupRequestDto) {
@@ -250,5 +252,11 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             return passwordEncoder.matches(password, user.getPw());
         }
         return false;
+    }
+
+    @Override
+    public Integer buyCount(Long uid) {
+
+        return orderRepository.findByBuyerUid(uid).size();
     }
 }

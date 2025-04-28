@@ -31,4 +31,6 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     List<Product> getProductsByCategoryMax(String categoryMax);
 
     List<Product> findByCategoryMax(String category, Sort sort);
+
+    List<Product> findByTitleContaining(String keyword);
 }

@@ -11,8 +11,12 @@
           <div class="product-image">
             <div class="image-slider">
                 <div class="slider-area">
+                    <div th:if="${product.prodStatus} == '판매완료'" class="soldout-badge">판매완료</div>
                   <button id="prevBtn" class="slider-btn slider-btn-left">&#60;</button>
-                  <div id="sliderContent"><div id="mediaWrapper"></div></div>
+                  <div id="sliderContent">
+
+                      <div id="mediaWrapper"></div>
+                  </div>
                   <button id="nextBtn" class="slider-btn slider-btn-right">&#62;</button>
                 </div>
               </div>
@@ -52,7 +56,7 @@
             </div>
               <div class="meta-info">
                   <span>조회수: <span th:text="${product.viewcount}"></span></span>
-                  <a th:if="${session.user?.uid != null && session.user?.uid == product.uid}"
+                  <a th:if="${session.user?.uid != null and session.user?.uid == product.uid and product.prodStatus != '판매완료'}"
                      th:href="@{/prod/productUpdate(prodId=${product.prodId})}"
                      class="edit-link">수정하기</a>
                   <a th:if="${session.user?.uid != null && session.user?.uid == product.uid}"
@@ -65,15 +69,20 @@
             </div>
             <div>
                 <th:block th:unless="${session.user != null and session.user.uid == product.uid}">
-                    <form th:action="@{/cart/add}" method="post">
+                    <!-- 장바구니 버튼: 판매완료면 비활성화 -->
+                    <form th:action="@{/cart/add}" method="post" th:unless="${session.user != null and session.user.uid == product.uid}">
                         <input type="hidden" name="prodId" th:value="${product.prodId}" />
-                        <button type="submit" class="button2">장바구니</button>
+                        <button type="submit" class="button2"
+                                th:attr="disabled=${product.prodStatus} == '판매완료' ? 'disabled' : null"
+                                id="cartBtn">장바구니</button>
                     </form>
-                </th:block>
-                <th:block th:if="${session.user != null and session.user.uid == product.uid}">
-                    <form th:action="@{/prod/bump}" method="post">
+
+                    <!-- 끌어올리기 버튼: 판매완료면 비활성화 -->
+                    <form th:action="@{/prod/bump}" method="post" th:if="${session.user != null and session.user.uid == product.uid}">
                         <input type="hidden" name="prodId" th:value="${product.prodId}" />
-                        <button type="submit" class="button2">끌어올리기</button>
+                        <button type="submit" class="button2"
+                                th:attr="disabled=${product.prodStatus} == '판매완료' ? 'disabled' : null"
+                                id="bumpBtn">끌어올리기</button>
                     </form>
                 </th:block>
             </div>

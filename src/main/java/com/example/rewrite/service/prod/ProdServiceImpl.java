@@ -84,7 +84,8 @@ public  class ProdServiceImpl implements ProdService {
         Product product = productRepository.findProductWithUserById(id)
                 .orElseThrow(() -> new RuntimeException("상품을 찾을 수 없습니다."));
 
-        return convertToDto(product);
+        ProductDTO productDTO = ProductDTO.fromEntity(product);
+        return productDTO;
     }
 
     // 상품 등록
@@ -171,6 +172,7 @@ public  class ProdServiceImpl implements ProdService {
         product.setImg3(productDTO.getImg3());
         product.setImg4(productDTO.getImg4());
         product.setVideoUrl(productDTO.getVideoUrl());
+        product.setPickupAddress(productDTO.getPickupAddress());
 
         Product updatedProduct = productRepository.save(product);
         return convertToDto(updatedProduct);
@@ -251,4 +253,13 @@ public  class ProdServiceImpl implements ProdService {
 
 
 
+    @Override
+    public List<Product> searchProductsByTitle(String keyword) {
+        return productRepository.findByTitleContaining(keyword);
+    }
+
+    @Override
+    public List<Product> getAllProducts() {
+        return productRepository.findAll();
+    }
 }
