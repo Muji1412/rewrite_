@@ -54,6 +54,7 @@ public class AuthController {
             // 회원가입 성공시, 성공 메세지를 body에 담아주면 json형식으로 보내줌.
             Map<String, Object> successBody = new HashMap<>();
             successBody.put("message", "회원가입을 환영합니다. " + registeredUser.getName() +"님!");
+            mailService.sendWelcomeEmail(registeredUser.getEmail(), registeredUser.getId(), registeredUser.getName());
 
             return ResponseEntity.status(HttpStatus.CREATED)
                     .body(successBody);
