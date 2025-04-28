@@ -145,7 +145,6 @@ public  class ProdServiceImpl implements ProdService {
                 .prodStatus(product.getProdStatus())
                 .viewCount(product.getViewCount() != null ? product.getViewCount() : 0L);
 
-        // 연관된 사용자 정보가 있다면 추가
         if (product.getUser() != null) {
             build.uid(product.getUser().getUid())
                     .userNickname(product.getUser().getNickname())
