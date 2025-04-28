@@ -10,14 +10,12 @@ import com.example.rewrite.service.cart.CartService;
 import com.example.rewrite.service.order.OrderService;
 import com.example.rewrite.service.payment.PaymentService;
 import com.example.rewrite.service.prod.ProdService;
-import com.example.rewrite.service.cart.CartService;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.annotation.Order;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -33,9 +31,6 @@ import java.time.LocalDateTime;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
-=======
-import java.util.Base64;
-import java.util.HashMap;
 import java.util.Map;
 
 @Controller
@@ -113,30 +108,18 @@ public class PaymentController {
         // TODO - UID에 관련된 카트 삭제 (장바구니 초기화시키기)
         cartService.clearUserCart(uid);
         // TODO - 결제내역 테이블에 기록해주기
-        paymentService.recordPaymentHistory(order,buyer,paymentKey,"결제완료",request.getParameter("paymentMethod"),LocalDateTime.now());
+        paymentService.recordPaymentHistory(order, buyer, paymentKey, "결제완료", request.getParameter("paymentMethod"), LocalDateTime.now());
         // TODO - 결제한 물품들 status 변경해주기 (판매됨으로)
         List<Cart> orderedCarts = cartService.getCheckedCarts(uid);
         for (Cart cart : orderedCarts) {
             prodService.updateProductStatus(cart.getProduct().getProdId(), "판매완료");
         }
         // TODO - 다음에 컨트롤러나 api 하나 만들어서, 오더카트(오더에 해당되는 물품들 가져오는거 만들기)
-
         return "redirect:/prod/orderSuccess";
-    // 우리 서비스단에서 쓸 컨트롤러
-    @RequestMapping("/confirm/payDone")
-    public String confirmPayDone(HttpServletRequest request, @RequestParam("uid") Long uid) {
-        logger.info("confirmPayDone 메서드 실행 - 결제 끝남.");
-        // TODO - UID에 관련된 카트 삭제 (장바구니 초기화시키기)
-        // TODO - 결제내역 테이블에 기록해주기
-        // TODO - 결제한 물품들 status 변경해주기 (판매됨으로)
-        // TODO - 다음에 컨트롤러나 api 하나 만들어서, 오더카트(오더에 해당되는 물품들 가져오는거 만들기)
-        return null;
     }
 
 
-
-
-    // 토스 제공 성공시 쓸 컨트롤러
+        // 토스 제공 성공시 쓸 컨트롤러
     // @RequestMapping은 method를 지정하지 않겠다는 이야기, Post, get, delete 등 전부 사용이 가능함
     @RequestMapping(value = {"/confirm/widget", "/confirm/payment"})
     public ResponseEntity<JSONObject> confirmPayment(HttpServletRequest request, @RequestBody String jsonBody) throws Exception {
@@ -152,12 +135,6 @@ public class PaymentController {
         int statusCode = response.containsKey("error") ? 400 : 200;
         return ResponseEntity.status(statusCode).body(response);
     }
-
-
-
-
-
-
 
     //유틸 메서드 목록
 
