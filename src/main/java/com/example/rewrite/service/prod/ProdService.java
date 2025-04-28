@@ -1,6 +1,7 @@
 package com.example.rewrite.service.prod;
 
 import com.example.rewrite.command.ProductDTO;
+import com.example.rewrite.entity.Product;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -34,5 +35,8 @@ public interface ProdService {
     //결제되면 판매완료 처라
     void updateProductStatus(Long prodId, String prodStatus);
 
+    List<Product> searchProductsByTitle(String keyword);
+
+    List<Product> getAllProducts();
 }
 

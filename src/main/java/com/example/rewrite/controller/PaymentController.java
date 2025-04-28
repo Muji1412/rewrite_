@@ -64,6 +64,7 @@ public class PaymentController {
                                  @RequestParam("uid") Long uid,
                                  @RequestParam("orderId") Long orderId,
                                  @RequestParam("paymentKey") String paymentKey,
+                                 @RequestParam("deliverRequest") String deliverRequest,
                                  @RequestParam("tossOrderId") String tossOrderId,
                                  @RequestParam("finalPrice") Integer finalPrice) {
         logger.info("confirmPayDone 메서드 실행 - 결제 끝남.");

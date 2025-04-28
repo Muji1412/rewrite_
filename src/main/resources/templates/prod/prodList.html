@@ -5,7 +5,7 @@
 
 
     <section id="wrap" class="section">
-        <th:block th:if="!${#httpServletRequest.getRequestURI().contains('prodList')}">
+        <th:block th:if="!${#httpServletRequest.getRequestURI().contains('prodList')|| #httpServletRequest.getRequestURI().contains('search')}">
             <th:block th:replace="~{include/side :: def(~{::#wrap})}"/>
         </th:block>
 
@@ -21,8 +21,12 @@
 
             <div class="title-box">
                 <h2 th:if="${#httpServletRequest.getRequestURI().contains('myProdList')}">[[${user.nickname}]]님의 판매 내역</h2>
-                <h2 th:if="${#httpServletRequest.getRequestURI().contains('prodList')}">상품 리스트</h2>
+                <h2 th:if="${#httpServletRequest.getRequestURI().contains('prodList') || #httpServletRequest.getRequestURI().contains('search')}">상품 리스트</h2>
                 <h2 th:if="${#httpServletRequest.getRequestURI().contains('wishList')}">[[${user.nickname}]]님의 찜 목록</h2>
+                <h2 th:if="${#httpServletRequest.getRequestURI().contains('prodList') and keyword != null}">
+                    <span th:text="${keyword}"></span> 검색 결과
+                </h2>
+
             </div>
 
 
@@ -105,7 +109,7 @@
                             <span class="date" th:text="${#temporals.format(product.regDate, 'yy.MM.dd')}">날짜</span>
                             <span class="view-count">
                                 <span>조회수: </span>
-                                <span th:text="${product.viewcount}"></span>
+                                <span th:text="${product.viewCount}"></span>
                             </span>
                         </div>
                     </div>
@@ -117,6 +121,7 @@
                 </div>
             </th:block>
         </div>
+
 
 
 

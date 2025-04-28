@@ -214,4 +214,13 @@ public  class ProdServiceImpl implements ProdService {
     }
 
 
+    @Override
+    public List<Product> searchProductsByTitle(String keyword) {
+        return productRepository.findByTitleContaining(keyword);
+    }
+
+    @Override
+    public List<Product> getAllProducts() {
+        return productRepository.findAll();
+    }
 }

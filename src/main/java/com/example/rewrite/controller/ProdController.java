@@ -2,10 +2,7 @@ package com.example.rewrite.controller;
 
 import com.example.rewrite.command.ProductDTO;
 import com.example.rewrite.command.user.UserSessionDto;
-import com.example.rewrite.entity.Address;
-import com.example.rewrite.entity.Cart;
-import com.example.rewrite.entity.Users;
-import com.example.rewrite.entity.Wishlist;
+import com.example.rewrite.entity.*;
 import com.example.rewrite.repository.product.ProductRepository;
 import com.example.rewrite.service.address.AddressService;
 import com.example.rewrite.service.cart.CartService;
@@ -286,5 +283,6 @@ public class ProdController {
         redirectAttributes.addFlashAttribute("success", "끌어올리기가 완료되었습니다!");
         return "redirect:/prod/prodDetail?prodId=" + prodId; // 상세페이지로 리다이렉트
     }
+
 
 }

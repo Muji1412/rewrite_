@@ -207,8 +207,3 @@ function generateRandomString() {
     return window.btoa(Math.random()).slice(0, 20);
 }
 
-// 주소 팝업 열기 함수 (HTML의 onclick="openPay()"와 일치하도록 변경)
-function openPay() {
-    // 배송지 변경 팝업 구현
-    alert("배송지 변경 기능은 아직 구현되지 않았습니다.");
-}
