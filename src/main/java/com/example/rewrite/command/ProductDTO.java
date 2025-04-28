@@ -34,6 +34,13 @@ public class ProductDTO {
     private String userNickname; // 사용자 닉네임
     private String userImgUrl;   // 사용자 프로필 이미지
 
+    private String imgPath;
+    public String getImgPath() {
+        return imgPath;
+    }
+    public void setImgPath(String imgPath) {
+        this.imgPath = imgPath;
+    }
 
     public static ProductDTO fromEntity(Product product) {
         return ProductDTO.builder()
