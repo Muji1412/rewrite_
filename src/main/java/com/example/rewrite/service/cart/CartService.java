@@ -18,6 +18,8 @@ public interface CartService {
     List<Cart> getCheckedCarts(Long uid);
     void updateCheckedStatus(Long cartId, Boolean isChecked);
 
+    void clearUserCart(Long uid); //장바구니 비우기
+
 
 
 }

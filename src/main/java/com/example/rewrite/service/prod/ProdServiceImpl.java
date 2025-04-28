@@ -204,5 +204,14 @@ public  class ProdServiceImpl implements ProdService {
         productRepository.save(product);
     }
 
+    @Override
+    public void updateProductStatus(Long prodId, String ProdStatus) {
+        Product product = productRepository.findById(prodId).orElseThrow(() -> new IllegalArgumentException("Product not found"));
+
+        product.setProdStatus(ProdStatus);
+
+        productRepository.save(product);
+    }
+
 
 }
