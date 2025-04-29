@@ -6,6 +6,7 @@ import com.example.rewrite.entity.Product;
 import com.example.rewrite.entity.Users;
 import com.example.rewrite.repository.review.ReviewRepository;
 import com.example.rewrite.repository.users.UsersRepository;
+import com.example.rewrite.service.order.OrderService;
 import com.example.rewrite.service.user.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.catalina.User;
@@ -37,6 +38,8 @@ public class UserController {
     private UserService userService;
     @Autowired
     private AuthenticationManager authenticationManager;
+    @Autowired
+    private OrderService orderService;
 
     @GetMapping("/signup")
     public String signup() {
@@ -51,6 +54,7 @@ public class UserController {
         if(user == null) {
             return "redirect:/user/login";
         }
+        model.addAttribute("orderprod",orderService.getOrderAll(user.getUid()));
         model.addAttribute("buycount", userService.buyCount(user.getUid()));
         model.addAttribute("nickname", user.getNickname());
         model.addAttribute("user", userService.getProfile(user.getUid()));

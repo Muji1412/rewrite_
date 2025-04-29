@@ -144,11 +144,24 @@ public class ProdController {
         return "prod/cart";
     }
 
-    @GetMapping("/orderDetail")
-    public String orderDetail(@RequestParam("oid")Long oid,
-                              Model model) {
+    @GetMapping("/orderDetail/{oid}")
+    public String orderDetail(@PathVariable("oid") Long oid,
+                                HttpSession session,
+                                Model model) {
+        UserSessionDto user = (UserSessionDto) session.getAttribute("user");
+        Orders order = orderService.findByOrderId(oid);
+        if(user == null) {
+            return "redirect:/user/login";
+        }
+
+//        // 주문자와 로그인한 사용자가 다를 경우
+//        if(!(order.getBuyer().getUid().equals(user.getUid()))) {
+//            return "redirect:/";
+//        }
+
+        //order의 아이템 불러오기
         model.addAttribute("product",orderService.findOrderDetail(oid)) ;
-        model.addAttribute("order", orderService.findByOrderId(oid));
+        model.addAttribute("order", order);
         return "prod/orderDetail";
     }
 

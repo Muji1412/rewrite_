@@ -74,4 +74,6 @@ public class Product {
     @Column(name = "IMG_4", length = 200)
     private String img4;
 
+//    @OneToMany
+//    private List<OrderCart> orderCarts;
 }
