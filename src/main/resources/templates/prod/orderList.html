@@ -10,60 +10,58 @@
             <div style="margin: 0 0 20px 20px">
                 <h2>주문 내역</h2>
             </div>
-            <div th:each="entry : ${groupedOrderCartList}">
+            <div th:each="summaries : ${summaries}">
                 <div class="card">
                     <div class="left">
                         <div class="img_box">
-                            <!-- 대표 상품 이미지 (첫 번째 상품) -->
-                            <img th:src="@{${entry.value[0].product.img1}}" alt="제품사진">
+                            <img th:src="@{${summaries.value[0].img1}}" alt="제품사진">
                         </div>
                         <div class="left_box">
                             <div class="first">
-                                <h6>주문번호: [[${entry.key}]]</h6>
-
-                                <!-- 대표 상품명 + 외 N개 -->
+                                <h6>주문번호: [[${summaries.key}]]</h6>
                                 <strong>제품명 : </strong>
                                 <strong>
-                                    [[${entry.value[0].product.title}]]
-                                    <span th:if="${#lists.size(entry.value) > 1}">
-                            외 [[${#lists.size(entry.value) - 1}]]개
-                        </span>
+                                    [[${summaries.value[0].title}]]
+                                    <span th:if="${#lists.size(summaries.value) > 1}">
+                                        외 [[${#lists.size(summaries.value) - 1}]]개
+                                    </span>
                                 </strong>
                             </div>
-
                             <div class="second">
-                                <span>가격 : </span>
-                                <span>[[${#numbers.formatInteger(entry.value[0].price, 3, 'COMMA')}]]원</span>
+                                <span>총 가격 : </span>
+                                <span>[[${#numbers.formatInteger(summaries.value[0].finalPrice, 3, 'COMMA')}]]원</span>
                             </div>
-
                             <div class="third">
                                 <span>판매자 : </span>
-                                <span>우와</span> <!-- 판매자도 첫번째 상품 기준 -->
+                                <span>
+                                    [[${summaries.value[0].sellerNickname}]]
+                                <span th:if="${#lists.size(summaries.value) > 1}">
+                                        외 [[${#lists.size(summaries.value) - 1}]]명
+                                    </span>
+                                </span>
                             </div>
+
                         </div>
                     </div>
-
                     <div class="right">
                         <div class="icon_box">
-                            <a th:href="@{/prod/orderDetail/{oid}(oid=${entry.key})}">
+                            <a th:href="@{/prod/orderDetail/{oid}(oid=${summaries.key})}">
                                 <img src="/img/user/Vector.png" alt="상세보기">
                             </a>
                         </div>
                         <div class="right_box">
                             <div class="first">
                                 <p>주문일자</p>
-                                <p>[[${#temporals.format(entry.value[0].product.regDate, 'yy년 MM월 dd일')}]]</p>
+                                <p>[[${#temporals.format(summaries.value[0].orderedAt, 'yy년 MM월 dd일')}]]</p>
                                 <!-- 나중에 주문일도 바인딩 가능 -->
                             </div>
                             <div class="second">
-                                <strong>[[${entry.value[0].product.pickupStatus}]]</strong>
+                                <strong>[[${summaries.value[0].orderStatus}]]</strong>
                             </div>
                         </div>
                     </div>
-
                 </div>
             </div>
-
 
             <button class="top" onclick="scrollToTop()">TOP</button>
 
