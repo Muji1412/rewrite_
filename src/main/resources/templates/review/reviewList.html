@@ -28,8 +28,8 @@
 
                     <tbody id="tableBody">
                     <!-- 리뷰 데이터 출력 -->
-                    <tr th:each="review : ${reviews}">
-                        <td th:text="${review.id}">번호</td>
+                    <tr th:each="review, status : ${reviews}">
+                        <td th:text="${status.count}">번호</td>
                         <td>
                             <a th:href="@{/review/reviewDetail(reviewId=${review.id})}" th:text="${review.title}">상품명</a>
                         </td>

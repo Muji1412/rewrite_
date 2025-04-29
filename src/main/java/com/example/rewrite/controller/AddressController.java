@@ -57,7 +57,11 @@ public class AddressController {
     }
 
     @GetMapping("/reg") //주소지 등록 페이지
-    public String addressReg(){
+    public String addressReg(HttpSession session){
+        UserSessionDto user = (UserSessionDto)session.getAttribute("user");
+        if(user == null) {
+            return "redirect:/user/login";
+        }
 
         return "address/addressWrite";
     }

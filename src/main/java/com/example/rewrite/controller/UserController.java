@@ -7,6 +7,7 @@ import com.example.rewrite.entity.Users;
 import com.example.rewrite.repository.review.ReviewRepository;
 import com.example.rewrite.repository.users.UsersRepository;
 import com.example.rewrite.service.order.OrderService;
+import com.example.rewrite.service.review.ReviewService;
 import com.example.rewrite.service.user.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.catalina.User;
@@ -40,6 +41,8 @@ public class UserController {
     private AuthenticationManager authenticationManager;
     @Autowired
     private OrderService orderService;
+    @Autowired
+    private ReviewService reviewService;
 
     @GetMapping("/signup")
     public String signup() {
@@ -54,13 +57,15 @@ public class UserController {
         if(user == null) {
             return "redirect:/user/login";
         }
+        Long uid = user.getUid();
 
-        model.addAttribute("orderprod",orderService.getOrderAll(user.getUid()));
-        model.addAttribute("buycount", userService.buyCount(user.getUid()));
+        model.addAttribute("review", reviewService.getReviewsByUid(uid).size());
+        model.addAttribute("orderprod",orderService.getOrderAll(uid));
+        model.addAttribute("buycount", userService.buyCount(uid));
         model.addAttribute("nickname", user.getNickname());
-        model.addAttribute("user", userService.getProfile(user.getUid()));
-        model.addAttribute("sellprod", userService.getSellProd(user.getUid()));
-        model.addAttribute("sellcount", userService.sellCount(user.getUid()));
+        model.addAttribute("user", userService.getProfile(uid));
+        model.addAttribute("sellprod", userService.getSellProd(uid));
+        model.addAttribute("sellcount", userService.sellCount(uid));
         return "user/mypage";
     }
     @GetMapping("/edit")
