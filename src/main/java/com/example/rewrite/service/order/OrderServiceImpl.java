@@ -8,6 +8,7 @@ import com.example.rewrite.repository.cart.CartRepository;
 import com.example.rewrite.repository.order.OrderRepository;
 import com.example.rewrite.repository.ordercart.OrderCartRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -104,5 +105,12 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public Orders findByOrderId(Long oid) {
         return ordersRepository.getOrder(oid);
+    }
+
+    @Override
+    public List<Product> getOrderAll(Long uid) {
+        PageRequest pageRequest = PageRequest.of(0, 4); // 첫 번째 페이지, 4개 항목
+
+        return ordersRepository.getOrderAll(uid, pageRequest);
     }
 }

@@ -9,42 +9,33 @@
         <div class="box">
 
             <div th:each="list : ${orderlist}">
-
                 <div class="card">
                     <div class="left">
                         <div class="img_box">
                             <img src="/img/item1.png" alt="제품사진">
                         </div>
-
                         <div class="left_box">
-
                             <div class="first">
                                 <h6>주문 번호 : [[${list.orderId}]]</h6>
                                 <strong>제품명 : </strong> <strong>소리지르는 나</strong>
                             </div>
-
                             <div class="second">
                                 <span>가격 : </span> <span>212,000원</span>
                             </div>
-
                             <div class="third">
                                 <span>판매자 : </span> <span>소리지르는 너</span>
                             </div>
-
                         </div>
                     </div>
                     <div class="right">
-
                         <div class="icon_box">
-                            <a href="/prod/orderDetail"><img src="/img/user/Vector.png" alt="상세보기"></a>
+                            <a th:href="@{/prod/orderDetail/{oid}(oid=${list.orderId})}"><img src="/img/user/Vector.png" alt="상세보기"></a>
                         </div>
-
                         <div class="right_box">
                             <div class="first">
                                 <p>주문일자</p>
                                 <p>2025.04.09</p>
                             </div>
-
                             <div class="second">
                                 <strong>픽업대기</strong>
                             </div>
@@ -53,87 +44,87 @@
                 </div>
             </div>
 
-            <div class="card">
-                <div class="left">
-                    <div class="img_box">
-                        <img src="../img/하루만기다리면(안경).jpg" alt="제품사진">
-                    </div>
+<!--            <div class="card">-->
+<!--                <div class="left">-->
+<!--                    <div class="img_box">-->
+<!--                        <img src="../img/하루만기다리면(안경).jpg" alt="제품사진">-->
+<!--                    </div>-->
 
-                    <div class="left_box">
+<!--                    <div class="left_box">-->
 
-                        <div class="first">
-                            <strong>제품명 : </strong> <strong>안경쓴 나</strong>
-                        </div>
+<!--                        <div class="first">-->
+<!--                            <strong>제품명 : </strong> <strong>안경쓴 나</strong>-->
+<!--                        </div>-->
 
-                        <div class="second">
-                            <span>가격 : </span> <span>313,000원</span>
-                        </div>
+<!--                        <div class="second">-->
+<!--                            <span>가격 : </span> <span>313,000원</span>-->
+<!--                        </div>-->
 
-                        <div class="third">
-                            <span>판매자 : </span> <span>안경쓴 너</span>
-                        </div>
+<!--                        <div class="third">-->
+<!--                            <span>판매자 : </span> <span>안경쓴 너</span>-->
+<!--                        </div>-->
 
-                    </div>
-                </div>
-                <div class="right">
+<!--                    </div>-->
+<!--                </div>-->
+<!--                <div class="right">-->
 
-                    <div class="icon_box">
-                        <a href="#"><img src="../img/Right.png" alt="상세보기"></a>
+<!--                    <div class="icon_box">-->
+<!--                        <a href="#"><img src="../img/Right.png" alt="상세보기"></a>-->
 
-                    </div>
+<!--                    </div>-->
 
-                    <div class="right_box">
-                        <div class="first">
-                            <p>주문일자</p>
-                            <p>2025.04.08</p>
-                        </div>
+<!--                    <div class="right_box">-->
+<!--                        <div class="first">-->
+<!--                            <p>주문일자</p>-->
+<!--                            <p>2025.04.08</p>-->
+<!--                        </div>-->
 
-                        <div class="second">
-                            <strong style="color: rgb(255, 179, 0);">배송중</strong>
-                        </div>
-
-
-                    </div>
+<!--                        <div class="second">-->
+<!--                            <strong style="color: rgb(255, 179, 0);">배송중</strong>-->
+<!--                        </div>-->
 
 
-                </div>
-
-            </div>
+<!--                    </div>-->
 
 
-            <div class="card">
-                <div class="left">
-                    <div class="img_box">
-                        <img src="../img/하루만기다리면(미소).jpeg" alt="제품사진">
-                    </div>
-                    <div class="left_box">
-                        <div class="first">
-                            <strong>제품명 : </strong> <strong>웃는 나</strong>
-                        </div>
-                        <div class="second">
-                            <span>가격 : </span> <span>414,000원</span>
-                        </div>
-                        <div class="third">
-                            <span>판매자 : </span> <span>웃는 너</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="right">
-                    <div class="icon_box">
-                        <a href="#"><img src="../img/Right.png" alt="상세보기"></a>
-                    </div>
-                    <div class="right_box">
-                        <div class="first">
-                            <p>주문일자</p>
-                            <p>2025.04.05</p>
-                        </div>
-                        <div class="second">
-                            <strong style="color: green;">배송완료</strong>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+<!--                </div>-->
+
+<!--            </div>-->
+
+
+<!--            <div class="card">-->
+<!--                <div class="left">-->
+<!--                    <div class="img_box">-->
+<!--                        <img src="../img/하루만기다리면(미소).jpeg" alt="제품사진">-->
+<!--                    </div>-->
+<!--                    <div class="left_box">-->
+<!--                        <div class="first">-->
+<!--                            <strong>제품명 : </strong> <strong>웃는 나</strong>-->
+<!--                        </div>-->
+<!--                        <div class="second">-->
+<!--                            <span>가격 : </span> <span>414,000원</span>-->
+<!--                        </div>-->
+<!--                        <div class="third">-->
+<!--                            <span>판매자 : </span> <span>웃는 너</span>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--                <div class="right">-->
+<!--                    <div class="icon_box">-->
+<!--                        <a href="#"><img src="../img/Right.png" alt="상세보기"></a>-->
+<!--                    </div>-->
+<!--                    <div class="right_box">-->
+<!--                        <div class="first">-->
+<!--                            <p>주문일자</p>-->
+<!--                            <p>2025.04.05</p>-->
+<!--                        </div>-->
+<!--                        <div class="second">-->
+<!--                            <strong style="color: green;">배송완료</strong>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
 
         <button class="top" onclick="scrollToTop()">TOP</button>
 

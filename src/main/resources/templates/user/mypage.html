@@ -41,44 +41,24 @@
 
       <!-- 중간 -->
       <div>
-        <h2>최근 주문 내역</h2>
+        <h2>최근 주문 상품</h2>
         <div style="display: flex; gap: 20px;">
-          <a href="addressdetail.html" class="latest-order">
+          <div th:each="list : ${orderprod}">
+          <a th:href="'/prod/prodDetail?prodId='+${list.prodId}" class="latest-order">
             <div class="latest-order">
-              <img src="/img/user/58dc48bc0431c3afc99be751bce99ac4c89237f380bc34b0d30b8adfbb92cc89_0.webp" alt=""
+              <img th:src="${list.img1}" alt=""
                 class="main-img">
-              <div class="title">스타벅스 블루투스 랜턴 캠핑조명</div>
-              <h4>20,000원</h4>
-              <div class="address">서초동 끌올 3시간전전</div>
+              <div class="title">[[${list.title}]]</div>
+              <h4>[[${#numbers.formatInteger(list.price, 0, 'COMMA')}]]원</h4>
+              <div class="address">[[${list.pickupAddress != null ? (
+                #strings.contains(list.pickupAddress, '특별자치') ?
+                #strings.substring(#strings.substringAfter(list.pickupAddress, '/'), 0, 11) :
+                #strings.substring(#strings.substringAfter(list.pickupAddress, '/'), 0, 6)
+                ) : ''}]]
+                [[${#temporals.format(list.regDate, 'yy년MM월dd일')}]] 등록</div>
             </div>
           </a>
-          <a href="addressdetail.html" class="latest-order">
-            <div class="latest-order">
-              <img src="/img/user/58dc48bc0431c3afc99be751bce99ac4c89237f380bc34b0d30b8adfbb92cc89_0.webp" alt=""
-                class="main-img">
-              <div class="title">스타벅스 블루투스 랜턴 캠핑조명</div>
-              <h4>20,000원</h4>
-              <div class="address">서초동 끌올 3시간전전</div>
-            </div>
-          </a>
-          <a href="addressdetail.html" class="latest-order">
-            <div class="latest-order">
-              <img src="/img/user/58dc48bc0431c3afc99be751bce99ac4c89237f380bc34b0d30b8adfbb92cc89_0.webp" alt=""
-                class="main-img">
-              <div class="title">스타벅스 블루투스 랜턴 캠핑조명</div>
-              <h4>20,000원</h4>
-              <div class="address">서초동 끌올 3시간전전</div>
-            </div>
-          </a>
-          <a href="addressdetail.html" class="latest-order">
-            <div class="latest-order">
-              <img src="/img/user/58dc48bc0431c3afc99be751bce99ac4c89237f380bc34b0d30b8adfbb92cc89_0.webp" alt=""
-                class="main-img">
-              <div class="title">스타벅스 블루투스 랜턴 캠핑조명</div>
-              <h4>20,000원</h4>
-              <div class="address">서초동 끌올 3시간전전</div>
-            </div>
-          </a>
+          </div>
           <a href="/prod/orderList" class="next-btn">
             <img src="/img/user/Vector.png" alt="" style="width: 50px; height: 50px;">
           </a>
@@ -87,7 +67,7 @@
 
       <!-- 하단 -->
       <div style="margin: 100px 0 100px 0;">
-        <h2>최근 판매 내역</h2>
+        <h2>최근 판매 상품</h2>
         <div style="display: flex; gap: 20px;">
           <div th:each="list : ${sellprod}">
             <a th:href="'/prod/prodDetail?prodId='+${list.prodId}" class="latest-order">

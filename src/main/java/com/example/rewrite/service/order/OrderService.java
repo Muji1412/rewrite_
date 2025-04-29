@@ -16,8 +16,7 @@ public interface OrderService {
     List<OrderCart> findOrderCartsByBuyerUid(Long uid);
     List<Product> findOrderDetail(Long oid);
     Orders findByOrderId(Long oid);//주문 상세
-    void saveOrder(Orders order, List<Cart> checkedCarts);
-
+    List<Product> getOrderAll(Long uid);//내 주문내역 아이템 전체 조회
     void updateOrderWithPaymentInfo(String orderId, String paymentKey, int amount, String paymentMethod, String paymentStatus, String approvedAt);
     //order에 저장
 }
