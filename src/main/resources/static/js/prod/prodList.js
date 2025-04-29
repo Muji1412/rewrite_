@@ -136,6 +136,16 @@ function selectSort(text, value) {
     window.location.href = url.toString();
 }
 
+function changeSellerSort(label, sortBy) {
+    const urlParams = new URLSearchParams(window.location.search);
+    const uid = urlParams.get('uid');
+    if (!uid) {
+        alert('판매자 정보가 없습니다.');
+        return;
+    }
+    window.location.href = `/prod/sellerProdList?uid=${uid}&sortBy=${sortBy}`;
+}
+
 // 바깥 클릭 시 드롭다운 닫기
 window.onclick = function(event) {
     if (!event.target.matches('.dropbtn')) {
@@ -162,4 +172,5 @@ window.onload = function() {
     else if (sortBy === "priceDesc") text = "가격높은순";
     document.querySelector('.dropbtn_content').innerText = text;
 };
+
 

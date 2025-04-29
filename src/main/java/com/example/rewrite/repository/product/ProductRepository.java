@@ -36,4 +36,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     // prod_status가 특정 값이 아닌 상품들 조회
     List<Product> findByProdStatusNot(String prodStatus, Sort sort);
+
+    List<Product> findAllByUser_Uid(Long uid, Sort sort);
+
 }

@@ -259,6 +259,7 @@ public class ProdController {
         return "prod/prodList";
     }
 
+
     @GetMapping("/myProdList")
     public String myProdList(HttpSession session, Model model){
         UserSessionDto user = (UserSessionDto)session.getAttribute("user");
@@ -428,5 +429,30 @@ public class ProdController {
 
         return "prod/orderSuccess";
     }
+
+    // 판매자 상품 리스트
+    @GetMapping("/sellerProdList")
+    public String sellerProdList(@RequestParam Long uid,
+                                 @RequestParam(defaultValue = "latest") String sortBy,
+                                 Model model, HttpSession session) {
+        Users seller = userService.getProfile(uid);
+        model.addAttribute("seller", seller);
+        List<ProductDTO> products = prodService.getSellerProducts(uid, sortBy);
+        model.addAttribute("products", products);
+
+        // 찜(위시리스트) 상태 정보 (로그인 사용자 기준)
+        UserSessionDto loginUser = (UserSessionDto) session.getAttribute("user");
+        Map<Long, Boolean> wishMap = new HashMap<>();
+        if (loginUser != null) {
+            for (ProductDTO prod : products) {
+                boolean isWishlisted = wishlistService.isWishlisted(loginUser.getUid(), prod.getProdId());
+                wishMap.put(prod.getProdId(), isWishlisted);
+            }
+        }
+        model.addAttribute("wishMap", wishMap);
+
+        return "prod/prodList";
+    }
+
 
 }

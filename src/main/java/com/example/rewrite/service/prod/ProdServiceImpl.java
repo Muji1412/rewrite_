@@ -215,6 +215,30 @@ public  class ProdServiceImpl implements ProdService {
             return list;
         }
     }
+
+    @Override
+    public List<ProductDTO> getSellerProducts(Long uid, String sortBy) {
+        Sort sort;
+        switch (sortBy) {
+            case "views":
+                sort = Sort.by(Sort.Direction.DESC, "viewCount");
+                break;
+            case "priceAsc":
+                sort = Sort.by(Sort.Direction.ASC, "price");
+                break;
+            case "priceDesc":
+                sort = Sort.by(Sort.Direction.DESC, "price");
+                break;
+            case "latest":
+            default:
+                sort = Sort.by(Sort.Direction.DESC, "regDate");
+        }
+        List<Product> products = productRepository.findAllByUser_Uid(uid, sort);
+        return products.stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
+    }
+
     @Override
     public void deleteProduct(Long id) {
         productRepository.deleteById(id);

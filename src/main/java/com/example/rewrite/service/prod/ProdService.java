@@ -29,6 +29,8 @@ public interface ProdService {
 
     List<ProductDTO> searchProductByUid(Long uid);
 
+    List<ProductDTO> getSellerProducts(Long uid, String sortBy);
+
     // 상품 삭제
     void deleteProduct(Long id);
 
