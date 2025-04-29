@@ -21,11 +21,11 @@ public interface OrderRepository extends JpaRepository<Orders, Long> {
     // 특정 사용자의 모든 주문 조회
     List<Orders> findByBuyerUid(Long uid);
     List<OrderCart> findByOrderId(Long oid);
-    
-    @Query(value = "SELECT oc.* FROM orders_cart oc " +
-            "LEFT JOIN product p ON oc.prod_id = p.prod_id " +
-            "WHERE oc.order_id IN (SELECT order_id FROM orders WHERE buyer_uid = :uid)",
-            nativeQuery = true)
+
+    @Query("SELECT oc FROM OrderCart oc " +
+            "JOIN FETCH oc.orders o " +
+            "JOIN FETCH oc.product p " +
+            "WHERE o.buyer.uid = :uid")
     List<OrderCart> findOrderCartsByBuyerUid(@Param("uid") Long uid);
 
     //특정 order의 모든 product 조회

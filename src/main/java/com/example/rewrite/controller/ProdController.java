@@ -23,6 +23,7 @@ import javax.servlet.http.HttpSession;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/prod")
@@ -333,7 +334,15 @@ public class ProdController {
 
         List<Orders>orders = orderService.getOrderList(user.getUid());
 
-        List<OrderCart>cart = orderService.getOrderDetail(user.getUid());
+
+        List<OrderCart>cart = orderService.findOrderCartsByBuyerUid(user.getUid());
+
+
+
+        Map<Long, List<OrderCart>> grouped = cart.stream()
+                .collect(Collectors.groupingBy(oc -> oc.getOrders().getOrderId()));
+
+        model.addAttribute("groupedOrderCartList", grouped);
         model.addAttribute("orderlist", orders );
         model.addAttribute("cart", cart);
 
