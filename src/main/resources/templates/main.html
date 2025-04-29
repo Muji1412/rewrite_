@@ -30,37 +30,31 @@
             </form>
         </nav>
 
-
-
-<!--        <div class="category_box">-->
-<!--            <div class="category_sec">-->
-<!--                <div><a href="#"><img src="img/cate_clothing.png" alt="category"></a></div>-->
-<!--                <div><a href="#"><img src="img/cate_game.png" alt="category"></a></div>-->
-<!--                <div><a href="#"><img src="img/cate_appliances.png" alt="category"></a></div>-->
-<!--                <div><a href="#"><img src="img/cate_electronics.png" alt="category"></a></div>-->
-<!--            </div>-->
-<!--        </div>-->
+        <div class="banner_title">
+            <h2> 지금 이런 상품이 올라오고 있어요~!</h2>
+        </div>
 
         <div class="flow_banner">
             <div class="list">
-                <!-- 타임리프를 사용하여 상품 목록 반복 -->
                 <div th:each="product : ${products}" class="card" th:data-prod-id="${product.prodId}">
                     <div class="media-container">
-                        <!-- 상품 이미지 -->
-                        <img th:src="${product.img1}" alt="상품 이미지" class="prod-image">
-                        <!-- 호버 텍스트 -->
-                        <div class="hover-text active">상세보기</div>
+                        <img class="prod-image" th:src="${product.img1}" alt="상품 이미지">
+                        <div class="hover-text">상세 보기</div>
                     </div>
                     <div class="product-info">
-                        <!-- 상품명 -->
                         <h3 class="product-name" th:text="${product.title}">상품명</h3>
-                        <!-- 가격 -->
-                        <p class="price" th:text="${#numbers.formatInteger(product.price, 0, 'COMMA') + '원'}">가격</p>
+                        <p class="price" th:text="${#numbers.formatDecimal(product.price, 0, 'COMMA', 0, 'POINT')} + '원'">가격</p>
                     </div>
                 </div>
             </div>
         </div>
 
+        <div class="banner_footer">
+            <div>
+                <span class="banner_span">전체 상품 보러가기<img src="/img/right_arrow.png" alt="right_arrow"></span>
+
+            </div>
+        </div>
 
     </section>
 </th:block>
