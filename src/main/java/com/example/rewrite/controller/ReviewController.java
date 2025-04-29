@@ -104,5 +104,4 @@ public class ReviewController {
 
         return "redirect:/review/reviewList";
     }
-
 }
