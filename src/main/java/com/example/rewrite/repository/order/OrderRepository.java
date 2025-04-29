@@ -1,6 +1,7 @@
 package com.example.rewrite.repository.order;
 
 
+import com.example.rewrite.command.OrderSummaryDto;
 import com.example.rewrite.entity.OrderCart;
 import com.example.rewrite.entity.Orders;
 import com.example.rewrite.entity.Product;
@@ -20,14 +21,14 @@ public interface OrderRepository extends JpaRepository<Orders, Long> {
 
     // 특정 사용자의 모든 주문 조회
     List<Orders> findByBuyerUid(Long uid);
-    List<OrderCart> findByOrderId(Long oid);
-
-    @Query("SELECT oc FROM OrderCart oc " +
-            "JOIN FETCH oc.orders o " +
-            "JOIN FETCH oc.product p " +
-            "WHERE o.buyer.uid = :uid")
-    List<OrderCart> findOrderCartsByBuyerUid(@Param("uid") Long uid);
-
+//    List<OrderCart> findByOrderId(Long oid);
+//
+//    @Query("SELECT oc FROM OrderCart oc " +
+//            "JOIN FETCH oc.orders o " +
+//            "JOIN FETCH oc.product p " +
+//            "WHERE o.buyer.uid = :uid")
+//    List<OrderCart> findOrderCartsByBuyerUid(@Param("uid") Long uid);
+//
     //특정 order의 모든 product 조회
     @Query("SELECT p FROM OrderCart oc JOIN oc.product p WHERE oc.orders.orderId = :orderId")
     List<Product> findOrderDetail(@Param("orderId") Long orderId);
@@ -41,4 +42,19 @@ public interface OrderRepository extends JpaRepository<Orders, Long> {
     List<Product> getOrderAll(@Param("uid")Long uid, Pageable pageable);
 
     Optional<Orders> findByTossOrderId(String tossOrderId);
+
+
+
+    @Query("SELECT new com.example.rewrite.command.OrderSummaryDto(" +
+            "o.orderId, o.orderStatus, o.orderedAt, o.receiverPhone, o.receiverName, o.finalPrice, " +
+            "p.prodId, p.price, p.img1, p.description, p.title, " +
+            "u.nickname) " +
+            "FROM Orders o " +
+            "JOIN o.buyer b " +  // o.buyer는 Users 엔티티
+            "JOIN OrderCart oc ON oc.orders = o " +
+            "JOIN Product p ON oc.product = p " +
+            "JOIN Users u ON p.user = u " +
+            "WHERE b.uid = :uid " +
+            "ORDER BY o.orderedAt desc")
+    List<OrderSummaryDto> findOrderSummariesByBuyerUid(@Param("uid") Long uid);
 }

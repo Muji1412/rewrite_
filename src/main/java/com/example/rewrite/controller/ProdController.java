@@ -1,5 +1,6 @@
 package com.example.rewrite.controller;
 
+import com.example.rewrite.command.OrderSummaryDto;
 import com.example.rewrite.command.ProductDTO;
 import com.example.rewrite.command.user.UserSessionDto;
 import com.example.rewrite.entity.*;
@@ -119,6 +120,7 @@ public class ProdController {
 
         System.out.println("checkedCarts: " + checkedCarts.toString());
 
+
         return "prod/orderPay";
     }
     @GetMapping("/cart")
@@ -158,6 +160,7 @@ public class ProdController {
             return "redirect:/user/login";
         }
 
+
         List<Product> products = orderService.findOrderDetail(oid);
 
         // 상품별 리뷰 작성 여부 체크
@@ -165,6 +168,11 @@ public class ProdController {
         for (Product product : products) {
             boolean hasReview = reviewRepository.existsByUserUidAndProductProdId(user.getUid(), product.getProdId());
             reviewStatusMap.put(product.getProdId(), hasReview);
+
+        // 주문자와 로그인한 사용자가 다를 경우
+        if(!(order.getBuyer().getUid().equals(user.getUid()))) {
+            return "redirect:/";
+
         }
 
         model.addAttribute("product", products);
@@ -340,19 +348,14 @@ public class ProdController {
     public String orderList(HttpSession session, Model model) {
         UserSessionDto user = (UserSessionDto) session.getAttribute("user");
 
-        List<Orders>orders = orderService.getOrderList(user.getUid());
+        List<OrderSummaryDto> summaries = orderService.getOrderSummaries(user.getUid());
+        System.out.println(summaries.toString());
 
+        //order 하나당 product 여러개 그루핑처리
+        Map<Long, List<OrderSummaryDto>> group = summaries.stream()
+                .collect(Collectors.groupingBy(os -> os.getOrderId()));
 
-        List<OrderCart>cart = orderService.findOrderCartsByBuyerUid(user.getUid());
-
-
-
-        Map<Long, List<OrderCart>> grouped = cart.stream()
-                .collect(Collectors.groupingBy(oc -> oc.getOrders().getOrderId()));
-
-        model.addAttribute("groupedOrderCartList", grouped);
-        model.addAttribute("orderlist", orders );
-        model.addAttribute("cart", cart);
+        model.addAttribute("summaries", group);
 
         return "prod/orderList";
     }

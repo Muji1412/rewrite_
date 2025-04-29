@@ -1,5 +1,6 @@
 package com.example.rewrite.service.order;
 
+import com.example.rewrite.command.OrderSummaryDto;
 import com.example.rewrite.entity.Cart;
 import com.example.rewrite.entity.OrderCart;
 import com.example.rewrite.entity.Orders;
@@ -7,6 +8,9 @@ import com.example.rewrite.entity.Product;
 import com.example.rewrite.repository.cart.CartRepository;
 import com.example.rewrite.repository.order.OrderRepository;
 import com.example.rewrite.repository.ordercart.OrderCartRepository;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -29,12 +33,18 @@ public class OrderServiceImpl implements OrderService {
     @Autowired
     private CartRepository cartRepository;
 
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+
     @Transactional
     @Override
     public void saveOrder(Orders order, List<Cart> checkedCarts) {
+        logger.info("저장하기 전 배송 요청 사항: '{}'", order.getDeliveryRequest());
         // 주문 저장
         Orders savedOrder = ordersRepository.save(order);
 
+        logger.info("저장된 주문의 ID: {}, 배송 요청 사항: '{}'",
+                savedOrder.getOrderId(), savedOrder.getDeliveryRequest());
         // OrderCart 저장
         List<OrderCart> orderCarts = checkedCarts.stream()
                 .map(cart -> OrderCart.builder()
@@ -81,21 +91,21 @@ public class OrderServiceImpl implements OrderService {
 
 
 
-    @Override
-    public List<Orders> getOrderList(Long uid) {
-        return ordersRepository.findByBuyerUid(uid);
-    }
-
-    @Override
-    public List<OrderCart> getOrderDetail(Long uid) {
-
-        return ordersRepository.findByOrderId(uid);
-    }
-
-    @Override
-    public List<OrderCart> findOrderCartsByBuyerUid(Long uid) {
-        return ordersRepository.findOrderCartsByBuyerUid(uid);
-    }
+//    @Override
+//    public List<Orders> getOrderList(Long uid) {
+//        return ordersRepository.findByBuyerUid(uid);
+//    }
+//
+//    @Override
+//    public List<OrderCart> getOrderDetail(Long uid) {
+//
+//        return ordersRepository.findByOrderId(uid);
+//    }
+//
+//    @Override
+//    public List<OrderCart> findOrderCartsByBuyerUid(Long uid) {
+//        return ordersRepository.findOrderCartsByBuyerUid(uid);
+//    }
 
     @Override
     public List<Product> findOrderDetail(Long oid) {
@@ -112,5 +122,10 @@ public class OrderServiceImpl implements OrderService {
         PageRequest pageRequest = PageRequest.of(0, 4); // 첫 번째 페이지, 4개 항목
 
         return ordersRepository.getOrderAll(uid, pageRequest);
+    }
+
+    @Override
+    public List<OrderSummaryDto> getOrderSummaries(Long uid) {
+        return ordersRepository.findOrderSummariesByBuyerUid(uid);
     }
 }
