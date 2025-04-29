@@ -46,14 +46,25 @@ public class ReviewController {
     }
 
     @GetMapping("/reviewList")
-    public String reviewList(HttpSession session, Model model) {
-        UserSessionDto user = (UserSessionDto) session.getAttribute("user");
-        if (user == null) {
-            return "redirect:/user/login";
+    public String reviewList(@RequestParam(value = "uid", required = false) Long uid,
+                             HttpSession session, Model model) {
+        // uid 파라미터가 있으면 해당 판매자 리뷰, 없으면 로그인 유저 리뷰
+        if (uid == null) {
+            UserSessionDto user = (UserSessionDto) session.getAttribute("user");
+            if (user == null) {
+                return "redirect:/user/login";
+            }
+            uid = user.getUid();
         }
-        Long uid = user.getUid();
-        List reviews = reviewService.getReviewsByUid(uid); // 필드로 선언된 reviewService 사용
+
+        // 리뷰 리스트 조회
+        List<ReviewDTO> reviews = reviewService.getReviewsByUid(uid);
         model.addAttribute("reviews", reviews);
+
+        // 판매자 정보도 필요하면 모델에 추가
+        Users seller = usersRepository.findById(uid).orElse(null);
+        model.addAttribute("seller", seller);
+
         return "review/reviewList";
     }
 

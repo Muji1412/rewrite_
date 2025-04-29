@@ -8,7 +8,12 @@
             <!-- 필요 시 로고 이미지 추가 -->
             <!-- <img src="/img/rewrite_logo.png" alt="REWRITE 로고" class="logo-image"> -->
 
-            <h2 class="page-title">리뷰 목록</h2>
+            <h2 class="page-title" th:if="${seller == null}">
+                리뷰 목록
+            </h2>
+            <h2 class="page-title" th:if="${seller != null and seller.nickname != null}">
+                [[${seller.nickname}]]님의 리뷰 내역
+            </h2>
 
             <div class="inquiry-table-container">
                 <table class="inquiry-table">

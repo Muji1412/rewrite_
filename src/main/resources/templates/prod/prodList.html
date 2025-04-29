@@ -15,6 +15,7 @@
                 <h2 th:if="${#httpServletRequest.getRequestURI().contains('myProdList')}">[[${user.nickname}]]님의 판매 내역</h2>
                 <h2 th:if="${#httpServletRequest.getRequestURI().contains('prodList') || #httpServletRequest.getRequestURI().contains('search')}">상품 리스트</h2>
                 <h2 th:if="${#httpServletRequest.getRequestURI().contains('wishList')}">[[${user.nickname}]]님의 찜 목록</h2>
+                <h2 th:if="${#httpServletRequest.getRequestURI().contains('sellerProdList')}">[[${seller.nickname}]]님의 판매 내역</h2>
                 <h2 th:if="${#httpServletRequest.getRequestURI().contains('prodList') and keyword != null}">
                     <span th:text="${keyword}"></span> 검색 결과
                 </h2>
@@ -22,8 +23,26 @@
             </div>
 
 
+            <th:block th:if="${#httpServletRequest.getRequestURI().contains('sellerProdList')}" >
+                <div class="list-header">
+                    <div class="dropdown">
+                        <button class="dropbtn" onclick="toggleDropdown(event)">
+                            <span class="dropbtn_content">정렬기준 선택하기</span>
+                        </button>
+                        <div class="dropdown-content">
+                            <div class="sort-option" onclick="changeSellerSort('최신순', 'latest')">최신순</div>
+                            <div class="sort-option" onclick="changeSellerSort('조회수순', 'views')">조회수순</div>
+                            <div class="sort-option" onclick="changeSellerSort('가격낮은순', 'priceAsc')">가격낮은순</div>
+                            <div class="sort-option" onclick="changeSellerSort('가격높은순', 'priceDesc')">가격높은순</div>
+                        </div>
+                    </div>
+                    <button class="write-btn" th:onclick="|location.href='@{/review/reviewList(uid=${seller.uid})}'|">리뷰내역</button>
 
-            <th:block th:if="${#httpServletRequest.getRequestURI().contains('prodList')}">
+                </div>
+            </th:block>
+
+
+            <th:block th:if="${#httpServletRequest.getRequestURI().contains('prodList')}" >
             <div class="list-header">
                 <div class="dropdown">
                     <button class="dropbtn" onclick="toggleDropdown(event)">

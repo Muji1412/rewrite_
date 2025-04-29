@@ -28,9 +28,9 @@
                     <img th:src="${product.userImgUrl}" alt="프로필 이미지" class="profile-img">
 
                 </div>
-                <div class="profile-info">
+                <a class="profile-info" th:href="@{/prod/sellerProdList(uid=${product.uid})}">
                     <span class="seller-nickname" th:text="${product.userNickname}"> </span>
-                </div>
+                </a>
 <!--                <div class="temp">-->
 <!--                    <img src="../img/레베루.png" alt="레벨">-->
 <!--                </div>-->
