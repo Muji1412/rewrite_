@@ -4,8 +4,10 @@ import com.example.rewrite.command.ProductDTO;
 import com.example.rewrite.entity.Address;
 import com.example.rewrite.entity.Product;
 import com.example.rewrite.entity.Users;
+import com.example.rewrite.repository.ordercart.OrderCartRepository;
 import com.example.rewrite.repository.product.ProductRepository;
 import com.example.rewrite.repository.users.UsersRepository;
+import com.example.rewrite.repository.wishlist.WishlistRepository;
 import com.example.rewrite.service.address.AddressService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -23,10 +25,15 @@ public  class ProdServiceImpl implements ProdService {
     private final ProductRepository productRepository;
 
     @Autowired
+    private WishlistRepository wishlistRepository;
+    @Autowired
+    private OrderCartRepository orderCartRepository;
+    @Autowired
     private UsersRepository userRepository;
 
     @Autowired
     private AddressService addressService;
+
 
     @Autowired
     public ProdServiceImpl(ProductRepository productRepository) {
@@ -240,7 +247,11 @@ public  class ProdServiceImpl implements ProdService {
     }
 
     @Override
+    @Transactional
     public void deleteProduct(Long id) {
+
+        orderCartRepository.deleteByProductProdId(id);
+        wishlistRepository.deleteByProductProdId(id);
         productRepository.deleteById(id);
     }
 
