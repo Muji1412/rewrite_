@@ -17,25 +17,25 @@
                         <th class="col-id">번호</th>
                         <th class="col-subject">상품명</th>
                         <th class="col-writer">작성자</th>
+                        <th class="col-date">작성일</th>
 
                     </tr>
+
                     <tbody id="tableBody">
-                    <!-- 데이터가 없을 경우 -->
-                    <tr th:if="${qnaPage != null && #lists.isEmpty(qnaPage.content)}">
-                        <td colspan="5" class="no-data">문의 내역이 없습니다.</td>
-                    </tr>
-
-
-                    <!-- QnA 데이터 출력 -->
-                    <tr th:each="qna : ${qnaPage.content}">
-                        <td th:text="${qna.qnaId}">번호</td>
-                        <td class="subject-cell">
-                            <a th:href="@{/qna/qnaDetail(id=${qna.qnaId})}" th:text="${qna.title}">상품명</a>
+                    <!-- 리뷰 데이터 출력 -->
+                    <tr th:each="review : ${reviews}">
+                        <td th:text="${review.id}">번호</td>
+                        <td>
+                            <a th:href="@{/review/reviewDetail(reviewId=${review.id})}" th:text="${review.title}">상품명</a>
                         </td>
-                        <td th:text="${qna.USERID}">작성자</td>
-
+                        <td th:text="${review.writer}">작성자</td>
+                        <td th:text="${review.createdDate}">작성일</td>
                     </tr>
-                    <!--  -->
+<!--                    &lt;!&ndash; 데이터가 없을 경우 &ndash;&gt;-->
+<!--                    <tr >-->
+<!--                        <td colspan="5" class="no-data">문의 내역이 없습니다.</td>-->
+<!--                    </tr>-->
+
                     </tbody>
                     </thead>
 
@@ -43,7 +43,7 @@
             </div>
 
             <div class="action-container">
-                <a href="#" class="write-button" > 상품목록으로 </a>
+                <a href="#" class="write-button" th:onclick="|location.href='@{/prod/prodList}'|"> 상품목록으로 </a>
             </div>
 
             <!-- 페이지네이션 (정적 예시) -->

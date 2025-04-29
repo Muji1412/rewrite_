@@ -22,7 +22,7 @@ public class Review {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="REVIEW_ID")
-    private int reviewId;  // 리뷰 ID
+    private Integer reviewId;  // 리뷰 ID
 
     @Column(name="CONTENT")
     private String content; //리뷰 내용
@@ -31,7 +31,7 @@ public class Review {
     private LocalDateTime regDate; //리뷰 작성 일시
 
     @Column(name="RATING")
-    private double rating;  // 평점
+    private Double rating;  // 평점
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "UID", referencedColumnName = "UID")

@@ -1,6 +1,10 @@
 /* --- 기본 스타일 및 공통 요소 --- */
 *{margin: 0;padding: 0;font-family: 'Noto Sans KR', sans-serif;}
 
+a {
+    color: black;
+}
+
 .section {color: #333;display: flex;justify-content: center;align-items: flex-start;min-height: 500px;box-sizing: border-box;padding: 50px 20px;}
 
 .container {width: 100%;max-width: 750px; /* 테이블이므로 너비를 좀 더 넓게 */}
@@ -71,3 +75,4 @@
 
 /* 줄임표 스타일 */
 .page-item.ellipsis .page-link {color: #aaa;pointer-events: none;cursor: default;background-color: #fff;border-color: transparent; /* 테두리 제거 */}
+

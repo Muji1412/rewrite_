@@ -4,6 +4,7 @@ import com.example.rewrite.command.ProductDTO;
 import com.example.rewrite.command.user.UserSessionDto;
 import com.example.rewrite.entity.*;
 import com.example.rewrite.repository.product.ProductRepository;
+import com.example.rewrite.repository.review.ReviewRepository;
 import com.example.rewrite.service.address.AddressService;
 import com.example.rewrite.service.cart.CartService;
 import com.example.rewrite.service.order.OrderService;
@@ -48,6 +49,8 @@ public class ProdController {
 
     @Autowired
     private OrderService orderService;
+    @Autowired
+    private ReviewRepository reviewRepository;
 
 
     public ProdController(ProductRepository productRepository) {
@@ -147,22 +150,27 @@ public class ProdController {
 
     @GetMapping("/orderDetail/{oid}")
     public String orderDetail(@PathVariable("oid") Long oid,
-                                HttpSession session,
-                                Model model) {
+                              HttpSession session,
+                              Model model) {
         UserSessionDto user = (UserSessionDto) session.getAttribute("user");
         Orders order = orderService.findByOrderId(oid);
         if(user == null) {
             return "redirect:/user/login";
         }
 
-//        // 주문자와 로그인한 사용자가 다를 경우
-//        if(!(order.getBuyer().getUid().equals(user.getUid()))) {
-//            return "redirect:/";
-//        }
+        List<Product> products = orderService.findOrderDetail(oid);
 
-        //order의 아이템 불러오기
-        model.addAttribute("product",orderService.findOrderDetail(oid)) ;
+        // 상품별 리뷰 작성 여부 체크
+        Map<Long, Boolean> reviewStatusMap = new HashMap<>();
+        for (Product product : products) {
+            boolean hasReview = reviewRepository.existsByUserUidAndProductProdId(user.getUid(), product.getProdId());
+            reviewStatusMap.put(product.getProdId(), hasReview);
+        }
+
+        model.addAttribute("product", products);
         model.addAttribute("order", order);
+        model.addAttribute("reviewStatusMap", reviewStatusMap);
+
         return "prod/orderDetail";
     }
 
