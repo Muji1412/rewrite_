@@ -6,6 +6,7 @@
 
     <section id="wrap">
       <th:block th:replace="~{/include/side :: def(~{::#wrap})}"/>
+
       <!-- 상단단 -->
       <div class="section_right">
       <h1>[[${nickname}]]님 안녕하세요</h1>
@@ -134,5 +135,9 @@
       }
     });
   });
+</script>
+<script th:if="${msg}" th:inline="javascript">
+  var messageText = "${msg}" // msg 값을 JS 변수에 먼저 저장
+  alert(messageText);          // 저장된 변수를 alert 에 사용
 </script>
 <script src="../js/sideBar.js" th:src="@{/js/sideBar.js}"></script>
