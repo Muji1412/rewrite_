@@ -212,10 +212,21 @@ public class ProdController {
         return "prod/prodDetail";
     }
 
-    @GetMapping("/prodList")
-    public String listProducts(Model model, @RequestParam(defaultValue = "latest") String sortBy, HttpSession session) {
-        List<ProductDTO> products = prodService.getAllProducts(sortBy);
+    @GetMapping({"/prodList", "/prodList/{category}"})
+    public String listProductsByCategory(
+            @PathVariable(required = false) String category,
+            @RequestParam(defaultValue = "latest") String sortBy,
+            Model model,
+            HttpSession session) {
 
+        List<ProductDTO> products;
+        if (category == null || category.isEmpty()) {
+            products = prodService.getAllProducts(sortBy);
+        } else {
+            products = prodService.getProductsByCategory(category, sortBy);
+        }
+
+        // 나머지 코드는 동일
         UserSessionDto user = (UserSessionDto) session.getAttribute("user");
         Map<Long, Boolean> wishMap = new HashMap<>();
         if (user != null) {
@@ -225,7 +236,7 @@ public class ProdController {
             }
         }
         model.addAttribute("products", products);
-        model.addAttribute("wishMap", wishMap); // 상품ID별 찜 상태
+        model.addAttribute("wishMap", wishMap);
         model.addAttribute("currentSort", sortBy);
         return "prod/prodList";
     }

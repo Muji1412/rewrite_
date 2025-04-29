@@ -25,7 +25,7 @@ public class ProductDTO {
     private LocalDateTime regDate;
     private String price;
     private String videoUrl;
-    private Long viewcount;
+    private Long viewCount;
     private Long uid;
     private String img1;
     private String img2;
@@ -34,6 +34,13 @@ public class ProductDTO {
     private String userNickname; // 사용자 닉네임
     private String userImgUrl;   // 사용자 프로필 이미지
 
+    private String imgPath;
+    public String getImgPath() {
+        return imgPath;
+    }
+    public void setImgPath(String imgPath) {
+        this.imgPath = imgPath;
+    }
 
     public static ProductDTO fromEntity(Product product) {
         return ProductDTO.builder()
@@ -49,7 +56,7 @@ public class ProductDTO {
                 .regDate(product.getRegDate())
                 .price(product.getPrice())
                 .videoUrl(product.getVideoUrl())
-                .viewcount(product.getViewCount() != null ? product.getViewCount().longValue() : null) // Integer -> Long 변환
+                .viewCount(product.getViewCount() != null ? product.getViewCount().longValue() : null) // Integer -> Long 변환
                 .uid(product.getUser() != null ? product.getUser().getUid() : null) // Users 엔티티에서 uid 가져오기
                 .img1(product.getImg1())
                 .img2(product.getImg2())

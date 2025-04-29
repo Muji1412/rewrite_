@@ -143,9 +143,8 @@ public  class ProdServiceImpl implements ProdService {
                 .regDate(product.getRegDate())
                 .pickupStatus(product.getPickupStatus())
                 .prodStatus(product.getProdStatus())
-                .viewcount(product.getViewCount() != null ? product.getViewCount() : 0L);
+                .viewCount(product.getViewCount() != null ? product.getViewCount() : 0L);
 
-        // 연관된 사용자 정보가 있다면 추가
         if (product.getUser() != null) {
             build.uid(product.getUser().getUid())
                     .userNickname(product.getUser().getNickname())
@@ -221,6 +220,36 @@ public  class ProdServiceImpl implements ProdService {
 
         productRepository.save(product);
     }
+
+    @Override
+    public List<ProductDTO> getProductsByCategory(String category, String sortBy) {
+        Sort sort;
+
+        // 정렬 기준에 따라 Sort 객체 생성 (기존 코드와 동일한 로직)
+        switch(sortBy) {
+            case "latest":
+                sort = Sort.by(Sort.Direction.DESC, "regDate"); // 최신순
+                break;
+            case "views":
+                sort = Sort.by(Sort.Direction.DESC, "viewCount"); // 조회수순
+                break;
+            case "priceAsc":
+                sort = Sort.by(Sort.Direction.ASC, "price"); // 가격 낮은순
+                break;
+            case "priceDesc":
+                sort = Sort.by(Sort.Direction.DESC, "price"); // 가격 높은순
+                break;
+            default:
+                sort = Sort.by(Sort.Direction.DESC, "regDate"); // 기본값은 최신순
+        }
+
+        // 카테고리와 정렬 조건으로 상품 조회
+        return productRepository.findByCategoryMax(category, sort).stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
+    }
+
+
 
 
     @Override

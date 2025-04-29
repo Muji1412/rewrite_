@@ -55,7 +55,7 @@
                 <div th:text="${product.description}">상품 설명이 여기에 표시됩니다.</div>
             </div>
               <div class="meta-info">
-                  <span>조회수: <span th:text="${product.viewcount}"></span></span>
+                  <span>조회수: <span th:text="${product.viewCount}"></span></span>
                   <a th:if="${session.user?.uid != null and session.user?.uid == product.uid and product.prodStatus != '판매완료'}"
                      th:href="@{/prod/productUpdate(prodId=${product.prodId})}"
                      class="edit-link">수정하기</a>
