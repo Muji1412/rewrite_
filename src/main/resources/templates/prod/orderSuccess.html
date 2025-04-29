@@ -1,58 +1,15 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>주문완료</title>
-    <link rel="stylesheet" href="/css/orderSuccess.css">
-    <link rel="stylesheet" href="/css/common.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <script src=""></script>
-</head>
-<body>
-    <header class="header">
-        <div class="header_top">
-            <ul class="header_semi_menu">
-                <li><a href="#">고객센터</a></li>
-                <li><a href="#">알림</a></li>
-                <li><a href="#">로그인</a></li>
-            </ul>
-        </div>
-        <div class="header_bottom">
-            <div class="logo_box">
-                <img src="/img/logo.png" alt="logo">
-            </div>
-            <div class="drop_menu">
-                <ul class="e_drop">
-                    <li>
-                        <a href="#" class="default_m">CLOTHING</a>
-                        <a href="#" class="hover_m">의류</a>
-                    </li>
-                    <li>
-                        <a href="#" class="default_m">GAMES</a>
-                        <a href="#" class="hover_m">게임</a>
-                    </li>
-                    <li>
-                        <a href="#" class="default_m">APPLIANCES</a>
-                        <a href="#" class="hover_m">가전제품</a>
-                    </li>
-                    <li>
-                        <a href="#" class="default_m">ELECTRONICS</a>
-                        <a href="#" class="hover_m">전자기기</a>
-                    </li>
-                </ul>
-            </div>
-            <div class="sub_icon">
-                <img src="/img/mypage_icon.png" alt="my_page">
-                <img src="/img/mycart_icon.png" alt="my_cart">
-            </div>
-        </div>
-    </header>
-    <section class="section">
+<link rel="stylesheet" href="/css/orderSuccess.css">
+<th:block th:replace="~{/include/include :: def(~{::#wrap})}">
+    <section class="section" id="wrap">
         <div class="order-container">
             <img src="/img/success.png" alt="주문완료">
             <p>주문이 완료 되었습니다.</p>
             <p>잠시 후 결제내역 페이지로 이동합니다.</p>
+            <div class="box_section" style="width: 600px; text-align: left">
+
+<!--                <b>Response Data :</b>-->
+           <div id="response" style="white-space: initial"></div>
+            </div>
         </div>
     </section>
     <footer class="footer">
@@ -89,20 +46,33 @@
             </div>
         </div>
     </footer>
-
+</th:block>
     <script>
-        // 쿼리 파라미터 값을 서버로 전달해 결제 요청할 때 보낸 데이터와 동일한지 반드시 확인하세요.
+        // 쿼리 파라미터 값을 서버ㅁ로 전달해 결제 요청할 때 보낸 데이터와 동일한지 반드시 확인하세요.
         const urlParams = new URLSearchParams(window.location.search);
+
+        const orderDataStr = sessionStorage.getItem('orderData');
+        let orderDataObj = null;
+
+        if (orderDataStr) {
+            orderDataObj = JSON.parse(orderDataStr);
+            console.log('주문 데이터 로드됨:', orderDataObj);
+        } else {
+            console.log('orderData가 없습니다.');
+        }
 
         // 서버로 결제 승인에 필요한 결제 정보를 보내세요.
         async function confirmPayment() {
             const userId = /*[[${userId}]]*/ null;
-            var requestData = {
+            const requestData = {
                 paymentKey: urlParams.get("paymentKey"),
                 orderId: urlParams.get("orderId"),
                 amount: urlParams.get("amount"),
-                deliveryRequest: urlParams.get("deliveryRequest")
+                deliveryRequest: orderDataObj ? orderDataObj.deliveryRequest : null
             };
+
+            console.log('전송할 데이터:', requestData);
+
 
             try {
                 const response = await fetch("/confirm/payment?uid=" + userId, {
@@ -118,6 +88,22 @@
                 if (!response.ok) {
                     throw { message: json.message, code: json.code };
                 }
+
+                //document.getElementById("response").innerHTML = `<pre>${JSON.stringify(json, null, 4)}</pre>`;
+
+                const orderDataStr = sessionStorage.getItem('orderData');
+                if (orderDataStr) {
+                    const orderData = JSON.parse(orderDataStr);
+
+                    // orderData 활용
+                    console.log(orderData);
+                } else {
+                    // 데이터가 없을 때 처리
+                    console.log('orderData가 없습니다.');
+                }
+
+
+
 
                 // 결제 성공 처리
                 console.log('결제가 성공적으로 완료되었습니다.');
@@ -140,4 +126,3 @@
 
     </script>
 </body>
-</html>

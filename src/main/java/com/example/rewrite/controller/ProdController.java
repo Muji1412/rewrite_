@@ -346,7 +346,7 @@ public class ProdController {
 
     //주문 내역 페이지 이동
     @GetMapping("/orderList")
-    public String orderList(HttpSession session, Model model) {
+    public String orderList(HttpSession session, Model model, RedirectAttributes redirectAttributes) {
         UserSessionDto user = (UserSessionDto) session.getAttribute("user");
 
         List<OrderSummaryDto> summaries = orderService.getOrderSummaries(user.getUid());
