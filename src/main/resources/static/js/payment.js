@@ -139,7 +139,7 @@ async function placeOrder() {
             postcode: postcode,
             addr: addr,
             detailAddr: detailAddr,
-            deliveryRequest: deliveryRequest,
+            deliveryRequest:deliveryRequest,
             // 주문 시각은 서버에서 처리
             orderedAt: new Date().toISOString(),
             // 상품 정보
@@ -154,7 +154,7 @@ async function placeOrder() {
             amount: amount,
             orderId: orderId,
             orderName: orderName,
-            successUrl: window.location.origin + "/prod/orderSuccess",
+            successUrl: window.location.origin + "/prod/orderSuccess?deliveryRequest=" + encodeURIComponent(deliveryRequest),
             failUrl: window.location.origin + "/prod/orderPay",
             customerEmail: "", // 사용자 이메일 정보가 있으면 추가
             customerName: receiverName
