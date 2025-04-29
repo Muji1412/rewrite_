@@ -168,7 +168,7 @@ public class ProdController {
         for (Product product : products) {
             boolean hasReview = reviewRepository.existsByUserUidAndProductProdId(user.getUid(), product.getProdId());
             reviewStatusMap.put(product.getProdId(), hasReview);
-
+        }
         // 주문자와 로그인한 사용자가 다를 경우
         if(!(order.getBuyer().getUid().equals(user.getUid()))) {
             return "redirect:/";
@@ -181,6 +181,7 @@ public class ProdController {
 
         return "prod/orderDetail";
     }
+
 
     @GetMapping("/productReg")
     public String reg(HttpSession session, Model model) {
