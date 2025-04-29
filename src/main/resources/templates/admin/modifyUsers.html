@@ -6,6 +6,7 @@
     <title>사용자 관리</title>
     <link rel="stylesheet" href="admin_users.css"> <!-- CSS 파일 연결 -->
     <style>
+
         body {
             font-family: sans-serif;
             line-height: 1.6;
@@ -72,7 +73,7 @@
 
         .user-table th,
         .user-table td {
-            border: 1px solid #ddd;
+            border: none;
             padding: 12px;
             text-align: left;
             vertical-align: middle; /* 내용 중간 정렬 */
@@ -192,28 +193,10 @@
         </tr>
         </thead>
         <tbody id="userTableBody">
-        <!-- 사용자 데이터가 여기에 동적으로 추가됩니다. -->
-        <!-- 예시 행 (JS로 생성될 내용) -->
-        <!--
-        <tr>
-            <td>1</td>
-            <td>testuser</td>
-            <td>테스트닉</td>
-            <td>test@example.com</td>
-            <td>2023-10-27</td>
-            <td>user</td>
-            <td>
-                <button class="btn-edit-role" data-uid="1">역할 변경</button>
-                <button class="btn-view-detail" data-uid="1">상세 보기</button>
-            </td>
-        </tr>
-         -->
         </tbody>
     </table>
 
-    <!-- 페이지네이션 (필요하다면 추가) -->
     <div class="pagination">
-        <!-- 페이지 번호 등이 여기에 들어갈 수 있습니다. -->
     </div>
 </div>
 
