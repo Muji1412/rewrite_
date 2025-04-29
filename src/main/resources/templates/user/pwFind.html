@@ -107,7 +107,7 @@
                 if (response.ok) {
                     const success = await response.json();
                     console.log('비밀번호 리셋 성공', success);
-                    alert("비밀번호가 재설정되었습니다. 메일을 확인해주세요.")
+                    alert("비밀번호가 재설정되었습니다. 메일함, 혹은 스팸메일함을 확인해주세요.")
                     window.location.href = '/'
 
                 }else {
