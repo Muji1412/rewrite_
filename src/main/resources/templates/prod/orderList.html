@@ -10,6 +10,11 @@
             <div style="margin: 0 0 20px 20px">
                 <h2>주문 내역</h2>
             </div>
+            <th:block th:if="${summaries == null || summaries.isEmpty()}">
+                <div class="no-orders">
+                    <p>주문 내역이 없습니다.</p>
+                </div>
+            </th:block>
             <div th:each="summaries : ${summaries}">
                 <div class="card">
                     <div class="left">
@@ -21,7 +26,7 @@
                                 <h6>주문번호: [[${summaries.key}]]</h6>
                                 <strong>제품명 : </strong>
                                 <strong>
-                                    [[${summaries.value[0].title}]]
+                                    [[${#strings.abbreviate(summaries.value[0].title, 12)}]]
                                     <span th:if="${#lists.size(summaries.value) > 1}">
                                         외 [[${#lists.size(summaries.value) - 1}]]개
                                     </span>

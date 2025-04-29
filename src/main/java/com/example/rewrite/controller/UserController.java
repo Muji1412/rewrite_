@@ -54,6 +54,7 @@ public class UserController {
         if(user == null) {
             return "redirect:/user/login";
         }
+
         model.addAttribute("orderprod",orderService.getOrderAll(user.getUid()));
         model.addAttribute("buycount", userService.buyCount(user.getUid()));
         model.addAttribute("nickname", user.getNickname());
