@@ -6,6 +6,20 @@
     <title>상품 관리</title>
     <!-- <link rel="stylesheet" href="admin_products.css"> CSS 파일 연결 (필요시 생성) -->
     <style>
+
+        /* 상품 테이블의 마지막 관리 셀에 Flexbox 적용 */
+        .product-table td:last-child {
+            display: flex; /* 버튼들을 가로로 배치 */
+            align-items: center; /* 버튼들을 세로 중앙 정렬 (선택 사항) */
+            justify-content: center;
+            gap: 5px; /* 버튼 사이 간격 (기존 margin-right 대신 사용) */
+        }
+
+        /* Flexbox 적용 시 기존 버튼 오른쪽 마진 제거 */
+        .product-table td:last-child button {
+            margin-right: 0;
+        }
+
         body {
             font-family: sans-serif;
             line-height: 1.6;
@@ -67,7 +81,7 @@
 
         .product-table th,
         .product-table td {
-            border: 1px solid #ddd;
+            border: none;
             padding: 12px;
             text-align: left;
             vertical-align: middle; /* 내용 중간 정렬 */
