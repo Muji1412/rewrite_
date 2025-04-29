@@ -38,7 +38,16 @@ $(document).ready(function () {
 
 $(document).ready(function() {
     setFlowBanner();
+
+    // 상품 카드 클릭 이벤트 처리
+    $(document).on('click', '.flow_banner .card', function() {
+        const prodId = $(this).data('prod-id');
+        if (prodId) {
+            window.location.href = `/prod/prodDetail?prodId=${prodId}`;
+        }
+    });
 });
+
 
 function setFlowBanner() {
     const $wrap = $('.flow_banner'); // 배너 전체를 감싸는 요소
