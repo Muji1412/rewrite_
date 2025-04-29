@@ -21,4 +21,6 @@ public interface OrderCartRepository extends JpaRepository<OrderCart, Long> {
     @Query("DELETE FROM OrderCart oc WHERE oc.product.prodId = :productId")
     void deleteByProductProdId(@Param("productId") Long productId);
 
+
+
 }

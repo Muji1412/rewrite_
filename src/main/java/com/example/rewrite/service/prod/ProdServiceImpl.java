@@ -6,6 +6,7 @@ import com.example.rewrite.entity.Product;
 import com.example.rewrite.entity.Users;
 import com.example.rewrite.repository.ordercart.OrderCartRepository;
 import com.example.rewrite.repository.product.ProductRepository;
+import com.example.rewrite.repository.review.ReviewRepository;
 import com.example.rewrite.repository.users.UsersRepository;
 import com.example.rewrite.repository.wishlist.WishlistRepository;
 import com.example.rewrite.service.address.AddressService;
@@ -33,6 +34,8 @@ public  class ProdServiceImpl implements ProdService {
 
     @Autowired
     private AddressService addressService;
+    @Autowired
+    private ReviewRepository reviewRepository;
 
 
     @Autowired
@@ -249,7 +252,7 @@ public  class ProdServiceImpl implements ProdService {
     @Override
     @Transactional
     public void deleteProduct(Long id) {
-
+        reviewRepository.deleteByProductProdId(id);
         orderCartRepository.deleteByProductProdId(id);
         wishlistRepository.deleteByProductProdId(id);
         productRepository.deleteById(id);
