@@ -28,7 +28,7 @@ public interface OrderRepository extends JpaRepository<Orders, Long> {
 //            "JOIN FETCH oc.product p " +
 //            "WHERE o.buyer.uid = :uid")
 //    List<OrderCart> findOrderCartsByBuyerUid(@Param("uid") Long uid);
-
+//
     //특정 order의 모든 product 조회
     @Query("SELECT p FROM OrderCart oc JOIN oc.product p WHERE oc.orders.orderId = :orderId")
     List<Product> findOrderDetail(@Param("orderId") Long orderId);
