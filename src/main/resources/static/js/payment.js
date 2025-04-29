@@ -40,8 +40,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     case "credit-card":
                         selectPaymentMethod("CARD");
                         break;
-                    case "kakao-pay":
-                        selectPaymentMethod("KAKAO_PAY");
+                    case "TRANSFER":
+                        selectPaymentMethod("TRANSFER");
                         break;
                     case "toss-pay":
                         selectPaymentMethod("TOSS_PAY");
@@ -176,12 +176,11 @@ async function placeOrder() {
                     },
                 });
                 break;
-            case "KAKAO_PAY":
-                console.log("카카오페이 결제 요청 시작");
+            case "TRANSFER":
+                console.log("계좌이체 결제 시작");
                 await payment.requestPayment({
-                    method: "EASY_PAY",
-                    ...commonParams,
-                    easyPay: "KAKAO_PAY",
+                    method: "TRANSFER",
+                    ...commonParams
                 });
                 break;
             case "TOSS_PAY":
