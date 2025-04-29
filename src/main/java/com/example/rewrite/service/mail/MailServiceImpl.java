@@ -174,13 +174,7 @@ public class MailServiceImpl implements MailService {
                             name + "님의 프로필을 완성하고 첫 거래를 시작해보는 건 어떠세요? 멋진 물건을 발견하거나, 안 쓰는 물건에 새 주인을 찾아주는 즐거움을 경험하실 수 있을 거예요." +
                             "    </p>" +
                             "    <div style='text-align:center; margin: 35px 0;'>" +
-                            "      <a href='" + loginUrl + "' style='background-color:#20c997; color:white; padding: 14px 28px; text-decoration:none; border-radius:8px; font-weight:bold; font-size: 17px; display: inline-block; box-shadow: 0 2px 4px rgba(0,0,0,0.1);'>" +
-                            "        ReWrite 시작하기" +
-                            "      </a>" +
                             "    </div>" +
-                            "    <p style='font-size:15px; line-height:1.7; color:#6c757d; margin-top:30px; text-align:center;'>" +
-                            "      궁금한 점이나 도움이 필요하시면 언제든 편하게<br>고객센터(<a href='mailto:help@rewrite.com' style='color:#20c997; text-decoration:none; font-weight: 600;'>help@rewrite.com</a>)로 문의해주세요.<br>ReWrite 팀이 항상 " + name + "님의 곁에서 돕겠습니다." +
-                            "    </p>" +
                             "    <p style='margin-top:35px; font-size:15px; color:#495057; text-align:center; font-weight: 600;'>" +
                             "      다시 한번 환영의 인사를 전하며,<br>" +
                             "      ReWrite 팀 드림" +
