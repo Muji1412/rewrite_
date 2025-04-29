@@ -12,6 +12,9 @@ public interface ProdService {
     // 상품 목록 조회
     List<ProductDTO> getAllProducts(String sortBy);
 
+    // 판매 완료되지 않은 상품만 조회
+    List<ProductDTO> getActiveProducts(String sortBy);
+
     // 내 상품 목록 조회
     List<ProductDTO> getMyProducts(Long uid);
 

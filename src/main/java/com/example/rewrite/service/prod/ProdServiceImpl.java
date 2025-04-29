@@ -60,6 +60,22 @@ public  class ProdServiceImpl implements ProdService {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public List<ProductDTO> getActiveProducts(String sortBy) {
+        Sort sort;
+        if ("latest".equals(sortBy)) {
+            sort = Sort.by(Sort.Direction.DESC, "regDate"); // 최신순
+        } else {
+            sort = Sort.by(Sort.Direction.ASC, "prodPrice"); // 가격순
+        }
+
+        // prodStatus가 "판매완료"가 아닌 상품만 조회
+        List<Product> productList = productRepository.findByProdStatusNot("판매완료", sort);
+
+        return productList.stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
+    }
 
 
     // 내 상품 목록 조회
