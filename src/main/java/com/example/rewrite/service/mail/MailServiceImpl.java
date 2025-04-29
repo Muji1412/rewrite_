@@ -19,49 +19,108 @@ import javax.mail.internet.MimeMessage;
 public class MailServiceImpl implements MailService {
 
     private final JavaMailSender mailSender;
+    private static final String FROM_ADDRESS = "noreply@rewrite.com"; // 발신자 주소 상수화
 
+    // 공통 HTML 템플릿 상단
+    private String getHtmlHeader(String title) {
+        return "<div style='background-color:#f8f9fa; " +
+                "padding:40px 20px; font-family: \"Malgun Gothic\", \"맑은 고딕\", sans-serif;'>" +
+                "  <div style='max-width:600px; margin:0 auto; background-color:#ffffff; padding:30px; border-radius:12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08);'>" +
+                "    <h1 style='color:#343a40; text-align:center; font-size:24px; margin-bottom:25px; font-weight: 600;'>" + title + "</h1>";
+    }
+
+    // 공통 HTML 템플릿 하단
+    private String getHtmlFooter() {
+        String privacyPolicyUrl = "https://rewrite.o-r.kr/privacy";
+
+        return "    <p style='margin-top:35px; font-size:15px; color:#495057; text-align:center; font-weight: 600;'>" +
+                "      ReWrite 팀 드림" +
+                "    </p>" +
+                "    <hr style='border: none; border-top: 1px solid #e9ecef; margin: 30px 0;'>" +
+                "    <p style='font-size:12px; color:#adb5bd; text-align:center; line-height:1.6;'>" +
+                "      ⓒ 2025 ReWrite Inc. | 서울시 성북구<br>" +
+                "      <a href='" + privacyPolicyUrl + "' style='color:#adb5bd; text-decoration:none;'>개인정보처리방침</a>" +
+                "    </p>" +
+                "  </div>" +
+                "</div>";
+    }
+
+    @Override
     @Async // 비동기 실행 (별도 스레드에서 동작)
     public void sendUserIdByEmail(String toEmail, String userId) {
         log.info("[MailService] 아이디 찾기 메일 발송 시작: {}", toEmail);
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(toEmail);
-        message.setSubject("[Rewrite] 아이디 찾기 결과 안내");
-        message.setText("안녕하세요.\n\n" +
-                "계정의 아이디는 [ " + userId + " ] 입니다.\n\n" + // Users 엔티티의 'id' 필드 값
-                "서비스를 이용해주셔서 감사합니다.");
+        MimeMessage mimeMessage = mailSender.createMimeMessage();
 
         try {
-            mailSender.send(message);
+            // MimeMessageHelper 생성 (멀티파트 true, 인코딩 UTF-8)
+            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
+
+            helper.setTo(toEmail);
+            helper.setSubject("[Rewrite] 아이디 찾기 결과 안내");
+            helper.setFrom(FROM_ADDRESS); // 발신자 설정
+
+            // HTML 본문 생성
+            String htmlContent = getHtmlHeader("아이디 찾기 결과 안내") +
+                    "    <p style='font-size:16px; line-height:1.7; color:#495057; margin-bottom: 20px;'>" +
+                    "      안녕하세요." +
+                    "    </p>" +
+                    "    <p style='font-size:16px; line-height:1.7; color:#495057; margin-bottom: 25px;'>" +
+                    "      요청하신 계정의 아이디는 <strong style='color:#20c997; font-size: 17px;'>[ " + userId + " ]</strong> 입니다." +
+                    "    </p>" +
+                    "    <p style='font-size:16px; line-height:1.7; color:#495057; margin-top: 30px;'>" +
+                    "      서비스를 이용해주셔서 감사합니다." +
+                    "    </p>" +
+                    getHtmlFooter();
+
+            helper.setText(htmlContent, true); // true: HTML 메일임을 명시
+
+            mailSender.send(mimeMessage);
             log.info("[MailService] 아이디 찾기 메일 발송 성공: {}", toEmail);
-        } catch (MailException e) {
-            // 실패 로그를 상세히 남김 (예: 설정 오류, 네트워크 문제 등 파악)
+        } catch (MessagingException e) { // MimeMessageHelper 관련 예외 처리 (javax.mail)
+            log.error("[MailService] 아이디 찾기 메일 구성 실패 - Email: {}, Error: {}", toEmail, e.getMessage(), e);
+        } catch (MailException e) { // 메일 발송 관련 예외 처리 (Spring)
             log.error("[MailService] 아이디 찾기 메일 발송 실패 - Email: {}, Error: {}", toEmail, e.getMessage(), e);
-            // 필요하다면, 실패 시 알림 발송, 재시도 로직 등을 추가 고려
         }
     }
 
     @Override
     @Async
     public void sendUserIdPasswordByEmail(String toEmail, String userId, String password) {
-        log.info("[MailService] 비밀번호 찾기 메일 발송 시작: {}", toEmail);
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(toEmail);
-        message.setSubject("[Rewrite] 비밀번호 찾기 결과 안내");
-        message.setText("안녕하세요.\n\n" +
-                "요청하신 비밀번호는 " + password + " 입니다." +
-                "\n\n" +
-                "로그인 하신 후 즉시 비밀번호를 변경하여 사용해주시길 바랍니다." +
-                "서비스를 이용해주셔서 감사합니다.");
+        log.info("[MailService] 비밀번호 찾기(임시 비밀번호) 메일 발송 시작: {}", toEmail);
+        MimeMessage mimeMessage = mailSender.createMimeMessage();
 
         try {
-            mailSender.send(message);
-            log.info("[MailService] 비밀번호 찾기 메일 발송 성공: {}", toEmail);
-        }catch (MailException e) {
-            // {} -> 이게 placeHolder임. xml 설정하는것 처럼, 뒤에 들어가있는 애들이 차례로 들어감.
-            // 단, SLF4J의 기능인데, 로깅 메서드의 마지막 파라미터로 Throwable 타입을 넣어주면 플레이스홀더가 아닌 스택 트레이서로 넣어줌.
-            log.error("[MailService] 비밀번호 찾기 메일 발송 실패 - Email: {}, Error: {}", toEmail, e.getMessage(), e);
-        }
+            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
 
+            helper.setTo(toEmail);
+            helper.setSubject("[Rewrite] 임시 비밀번호 안내");
+            helper.setFrom(FROM_ADDRESS);
+
+            // HTML 본문 생성
+            String htmlContent = getHtmlHeader("임시 비밀번호 안내") +
+                    "    <p style='font-size:16px; line-height:1.7; color:#495057; margin-bottom: 20px;'>" +
+                    "      안녕하세요, " + userId + "님." +
+                    "    </p>" +
+                    "    <p style='font-size:16px; line-height:1.7; color:#495057; margin-bottom: 20px;'>" +
+                    "      요청하신 임시 비밀번호는 <strong style='color:#dc3545; font-size: 18px; background-color: #fff3cd; padding: 2px 5px; border-radius: 4px;'>[ " + password + " ]</strong> 입니다." + // 비밀번호 강조 및 배경색 추가
+                    "    </p>" +
+                    "    <p style='font-size:16px; line-height:1.7; color:#856404; font-weight: bold; margin-bottom: 25px; border: 1px solid #ffeeba; background-color: #fff3cd; padding: 12px; border-radius: 5px;'>" + // 경고 메시지 스타일 개선
+                    "      <strong style='color:#dc3545;'>[중요]</strong> 보안을 위해 로그인 하신 후 즉시 비밀번호를 변경하여 사용해주시기 바랍니다." +
+                    "    </p>" +
+                    "   <p style='font-size:16px; line-height:1.7; color:#495057; margin-top: 30px;'>" +
+                    "      서비스를 이용해주셔서 감사합니다." +
+                    "    </p>" +
+                    getHtmlFooter();
+
+            helper.setText(htmlContent, true);
+
+            mailSender.send(mimeMessage);
+            log.info("[MailService] 임시 비밀번호 메일 발송 성공: {}", toEmail);
+        } catch (MessagingException e) {
+            log.error("[MailService] 임시 비밀번호 메일 구성 실패 - Email: {}, Error: {}", toEmail, e.getMessage(), e);
+        } catch (MailException e) {
+            log.error("[MailService] 임시 비밀번호 메일 발송 실패 - Email: {}, Error: {}", toEmail, e.getMessage(), e);
+        }
     }
 
     @Override
@@ -69,23 +128,24 @@ public class MailServiceImpl implements MailService {
     public void sendWelcomeEmail(String toEmail, String userId, String name) {
         log.info("[MailService] 웰컴 이메일 발송 시작: {}", toEmail);
 
-        String baseUrl = "https://https://rewrite.o-r.kr/";
-        String loginUrl = baseUrl + "user/login?userId=" + userId;
-        String privacyPolicyUrl = baseUrl + "/privacy";
+        String baseUrl = "https://rewrite.o-r.kr/";
+        String loginUrl = baseUrl + "user/login?userId=" + userId; // 실제 로그인 URL 확인
+        String privacyPolicyUrl = baseUrl + "privacy"; // 실제 개인정보처리방침 URL 확인
+
+        MimeMessage mimeMessage = mailSender.createMimeMessage();
 
         try {
-            MimeMessage mimeMessage = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
 
             helper.setTo(toEmail);
             helper.setSubject("[ReWrite] " + name + "님, 새로운 가족이 되신 것을 환영합니다! ♻️");
-            helper.setFrom("noreply@rewrite.com");
+            helper.setFrom(FROM_ADDRESS);
 
             String htmlContent =
                     "<div style='background-color:#f8f9fa; padding:40px 20px; font-family: \"Malgun Gothic\", \"맑은 고딕\", sans-serif;'>" +
                             "  <div style='max-width:600px; margin:0 auto; background-color:#ffffff; padding:30px; border-radius:12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08);'>" +
                             // "    <div style='text-align:center; margin-bottom:25px;'>" +
-                            // "      <img src='YOUR_LOGO_URL_HERE' alt='ReWrite 로고' style='max-width:150px;'>" +
+                            // "      <img src='YOUR_LOGO_URL_HERE' alt='ReWrite 로고' style='max-width:150px;'>" + // 로고 URL 추가 시 주석 해제
                             // "    </div>" +
                             "    <h1 style='color:#343a40; text-align:center; font-size:26px; margin-bottom:15px; font-weight: 600;'>" +
                             name + "님, ReWrite의 새로운 가족이 되신 것을 환영합니다! <span style='font-size: 20px;'>♻️</span>" +
@@ -102,7 +162,7 @@ public class MailServiceImpl implements MailService {
                             "    <h2 style='color:#20c997; font-size:20px; margin-top:30px; margin-bottom:15px; border-left: 4px solid #20c997; padding-left: 10px; font-weight: 600;'>" +
                             "      ReWrite에서는 이런 경험을 하실 수 있어요:" +
                             "    </h2>" +
-                            "    <ul style='font-size:16px; line-height:1.8; color:#495057; padding-left: 20px; margin-bottom: 30px; list-style-position: outside;'>" + // list-style-position 추가
+                            "    <ul style='font-size:16px; line-height:1.8; color:#495057; padding-left: 20px; margin-bottom: 30px; list-style-position: outside;'>" +
                             "      <li><strong>믿음직한 거래:</strong> 안전결제 시스템과 사용자 후기를 통해 안심하고 거래하세요.</li>" +
                             "      <li><strong>손쉬운 이용:</strong> 몇 번의 터치만으로 간편하게 물건을 등록하고 찾아볼 수 있습니다.</li>" +
                             "      <li><strong>따뜻한 소통:</strong> 1:1 채팅으로 판매자, 구매자와 편안하게 대화하며 궁금증을 해결하세요.</li>" +
@@ -128,7 +188,7 @@ public class MailServiceImpl implements MailService {
                             "    <hr style='border: none; border-top: 1px solid #e9ecef; margin: 30px 0;'>" +
                             "    <p style='font-size:12px; color:#adb5bd; text-align:center; line-height:1.6;'>" +
                             "      ⓒ 2025 ReWrite Inc. | 서울시 성북구<br>" +
-                            "      <a href='" + privacyPolicyUrl + "' style='color:#adb5bd; text-decoration:none;'>개인정보처리방침</a> | " +
+                            "      <a href='" + privacyPolicyUrl + "' style='color:#adb5bd; text-decoration:none;'>개인정보처리방침</a> | " + // 개인정보처리방침 링크 확인
                             "    </p>" +
                             "  </div>" +
                             "</div>";
@@ -136,11 +196,11 @@ public class MailServiceImpl implements MailService {
 
             helper.setText(htmlContent, true); // true: HTML 메일 사용
 
-            // --- 이메일 발송 ---
             mailSender.send(mimeMessage);
-
             log.info("[MailService] 웰컴 이메일 발송 완료: {}", toEmail);
-        } catch (MailException | MessagingException e) {
+        } catch (MessagingException e) { // javax.mail 예외
+            log.error("[MailService] 웰컴 이메일 구성 실패 - Email: {}, UserId: {}, Name: {}, Error: {}", toEmail, userId, name, e.getMessage(), e);
+        } catch (MailException e) { // Spring 예외
             log.error("[MailService] 웰컴 이메일 발송 실패 - Email: {}, UserId: {}, Name: {}, Error: {}", toEmail, userId, name, e.getMessage(), e);
         }
     }

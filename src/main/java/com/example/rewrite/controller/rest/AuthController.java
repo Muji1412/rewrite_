@@ -156,7 +156,7 @@ public class AuthController {
         try {
             userService.sendUserIdToEmail(requestDto);
             // UserService 호출이 성공하면 (예외가 발생하지 않으면)
-            String successMessage = "아이디 정보가 [" + requestDto.getEmail() + "] 주소로 발송되었습니다. 메일을 확인해주세요.";
+            String successMessage = "아이디 정보가 [" + requestDto.getEmail() + "] 주소로 발송되었습니다. 메일을 확인해주세요. 메일이 확인되지 않는 경우, 스팸 메일함도 확인해주세요.";
             log.info(successMessage);
             return ResponseEntity.ok(ApiResponseDto.success(successMessage));
 
