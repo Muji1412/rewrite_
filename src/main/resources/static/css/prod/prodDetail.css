@@ -160,6 +160,7 @@ section {
     height: 100%;
     outline: none;
     resize: none;
+    border: none;
   }
   
   .meta-info {
