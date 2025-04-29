@@ -69,9 +69,9 @@ public class PaymentController {
                                  @RequestParam("uid") Long uid,
                                  @RequestParam("orderId") Long orderId,
                                  @RequestParam("paymentKey") String paymentKey,
-                                 @RequestParam("deliverRequest") String deliverRequest,
                                  @RequestParam("tossOrderId") String tossOrderId,
-                                 @RequestParam("finalPrice") Integer finalPrice) {
+                                 @RequestParam("finalPrice") Integer finalPrice,
+                                  @RequestParam(value = "deliveryRequest", required = false) String deliveryRequest) {
         logger.info("confirmPayDone 메서드 실행 - 결제 끝남.");
 
         // 1. 사용자 및 배송지 정보 조회
@@ -88,7 +88,10 @@ public class PaymentController {
         String detailAddr = addressParts.length > 2 ? addressParts[2] : "";
 
         // 배송 요청사항 추출
-        String deliveryRequest = request.getParameter("deliveryRequest");
+        if (deliveryRequest == null) {
+            deliveryRequest = request.getParameter("deliveryRequest");
+        }
+        logger.info("배송 요청 사항 (payDone1): '{}'", deliveryRequest);
         //결제 정보를 바탕으로 주문 객체 생성 및 저장
         Orders order = Orders.builder()
                 .tossOrderId(tossOrderId)
@@ -104,13 +107,14 @@ public class PaymentController {
                 .paidAt(LocalDateTime.now())
                 .deliveryRequest(deliveryRequest)
                 .orderStatus("주문완료")
-                .paymentStatus("결제")
+                .paymentStatus("결제완료")
                 .paymentKey(paymentKey)
                 .paymentMethod(request.getParameter("paymentMethod") != null ?
                         request.getParameter("paymentMethod") : "CARD")
                 .tossOrderId(tossOrderId)
                 .build();
 
+        logger.info("생성된 주문 객체의 배송 요청 사항: '{}'", order.getDeliveryRequest());
         orderService.saveOrder(order, checkedCarts);
         // TODO - UID에 관련된 카트 삭제 (장바구니 초기화시키기)
         cartService.clearUserCart(uid);
