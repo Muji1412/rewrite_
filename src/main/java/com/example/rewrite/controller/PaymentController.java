@@ -6,6 +6,7 @@ import com.example.rewrite.entity.Address;
 import com.example.rewrite.entity.Cart;
 import com.example.rewrite.entity.Orders;
 import com.example.rewrite.entity.Users;
+import com.example.rewrite.repository.order.OrderRepository;
 import com.example.rewrite.repository.users.UsersRepository;
 import com.example.rewrite.service.address.AddressService;
 import com.example.rewrite.service.cart.CartService;
@@ -62,6 +63,8 @@ public class PaymentController {
     private AddressService addressService;
     @Autowired
     private PaymentService paymentService;
+    @Autowired
+    private OrderRepository orderRepository;
 
     // 우리 서비스단에서 쓸 컨트롤러
     @RequestMapping("/confirm/payDone1")
@@ -69,9 +72,9 @@ public class PaymentController {
                                  @RequestParam("uid") Long uid,
                                  @RequestParam("orderId") Long orderId,
                                  @RequestParam("paymentKey") String paymentKey,
-                                 @RequestParam("deliverRequest") String deliverRequest,
                                  @RequestParam("tossOrderId") String tossOrderId,
-                                 @RequestParam("finalPrice") Integer finalPrice) {
+                                 @RequestParam("finalPrice") Integer finalPrice,
+                                  @RequestParam(value = "deliveryRequest", required = false) String deliveryRequest) {
         logger.info("confirmPayDone 메서드 실행 - 결제 끝남.");
 
         // 1. 사용자 및 배송지 정보 조회
@@ -88,7 +91,10 @@ public class PaymentController {
         String detailAddr = addressParts.length > 2 ? addressParts[2] : "";
 
         // 배송 요청사항 추출
-        String deliveryRequest = request.getParameter("deliveryRequest");
+        if (deliveryRequest == null) {
+            deliveryRequest = request.getParameter("deliveryRequest");
+        }
+        logger.info("배송 요청 사항 (payDone1): '{}'", deliveryRequest);
         //결제 정보를 바탕으로 주문 객체 생성 및 저장
         Orders order = Orders.builder()
                 .tossOrderId(tossOrderId)
@@ -104,13 +110,14 @@ public class PaymentController {
                 .paidAt(LocalDateTime.now())
                 .deliveryRequest(deliveryRequest)
                 .orderStatus("주문완료")
-                .paymentStatus("결제")
+                .paymentStatus("결제완료")
                 .paymentKey(paymentKey)
                 .paymentMethod(request.getParameter("paymentMethod") != null ?
                         request.getParameter("paymentMethod") : "CARD")
                 .tossOrderId(tossOrderId)
                 .build();
 
+        logger.info("생성된 주문 객체의 배송 요청 사항: '{}'", order.getDeliveryRequest());
         orderService.saveOrder(order, checkedCarts);
         // TODO - UID에 관련된 카트 삭제 (장바구니 초기화시키기)
         cartService.clearUserCart(uid);
@@ -150,12 +157,21 @@ public class PaymentController {
             }
         }
     }
-
+    //실제로 쓰는 컨트롤러, 다른것들은 유틸이나 다른거임
     @RequestMapping("/confirm/payment")
     public ResponseEntity<?> confirmPayment(HttpServletRequest request, @RequestBody String jsonBody) throws Exception {
         // 1. 요청 데이터 파싱
         JSONObject requestData = parseRequestData(jsonBody);
         String secretKey = API_SECRET_KEY;
+
+        JSONParser parser = new JSONParser();
+        JSONObject jsonObject = (JSONObject) parser.parse(jsonBody);
+
+        String deliveryRequest = (String) jsonObject.get("deliveryRequest");
+
+
+        System.out.println("딜리버리리퀘스트 테스트");
+        System.out.println("deliveryRequest: " + deliveryRequest);
 
         // 2. 토스페이먼츠 API 호출하여 결제 검증
         JSONObject response = sendRequest(requestData, secretKey, "https://api.tosspayments.com/v1/payments/confirm");
@@ -181,8 +197,6 @@ public class PaymentController {
                 String addr = addressParts.length > 1 ? addressParts[1] : "";
                 String detailAddr = addressParts.length > 2 ? addressParts[2] : "";
 
-                // 배송 요청사항 추출 (세션이나 요청에서)
-                String deliveryRequest = request.getParameter("deliveryRequest");
 
                 // 주문 객체 생성
                 Orders order = Orders.builder()

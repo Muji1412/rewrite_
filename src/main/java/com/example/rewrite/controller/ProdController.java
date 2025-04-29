@@ -1,9 +1,11 @@
 package com.example.rewrite.controller;
 
+import com.example.rewrite.command.OrderSummaryDto;
 import com.example.rewrite.command.ProductDTO;
 import com.example.rewrite.command.user.UserSessionDto;
 import com.example.rewrite.entity.*;
 import com.example.rewrite.repository.product.ProductRepository;
+import com.example.rewrite.repository.review.ReviewRepository;
 import com.example.rewrite.service.address.AddressService;
 import com.example.rewrite.service.cart.CartService;
 import com.example.rewrite.service.order.OrderService;
@@ -48,6 +50,8 @@ public class ProdController {
 
     @Autowired
     private OrderService orderService;
+    @Autowired
+    private ReviewRepository reviewRepository;
 
 
     public ProdController(ProductRepository productRepository) {
@@ -116,6 +120,7 @@ public class ProdController {
 
         System.out.println("checkedCarts: " + checkedCarts.toString());
 
+
         return "prod/orderPay";
     }
     @GetMapping("/cart")
@@ -147,24 +152,36 @@ public class ProdController {
 
     @GetMapping("/orderDetail/{oid}")
     public String orderDetail(@PathVariable("oid") Long oid,
-                                HttpSession session,
-                                Model model) {
+                              HttpSession session,
+                              Model model) {
         UserSessionDto user = (UserSessionDto) session.getAttribute("user");
         Orders order = orderService.findByOrderId(oid);
         if(user == null) {
             return "redirect:/user/login";
         }
 
-//        // 주문자와 로그인한 사용자가 다를 경우
-//        if(!(order.getBuyer().getUid().equals(user.getUid()))) {
-//            return "redirect:/";
-//        }
 
-        //order의 아이템 불러오기
-        model.addAttribute("product",orderService.findOrderDetail(oid)) ;
+        List<Product> products = orderService.findOrderDetail(oid);
+
+        // 상품별 리뷰 작성 여부 체크
+        Map<Long, Boolean> reviewStatusMap = new HashMap<>();
+        for (Product product : products) {
+            boolean hasReview = reviewRepository.existsByUserUidAndProductProdId(user.getUid(), product.getProdId());
+            reviewStatusMap.put(product.getProdId(), hasReview);
+        }
+        // 주문자와 로그인한 사용자가 다를 경우
+        if(!(order.getBuyer().getUid().equals(user.getUid()))) {
+            return "redirect:/";
+
+        }
+
+        model.addAttribute("product", products);
         model.addAttribute("order", order);
+        model.addAttribute("reviewStatusMap", reviewStatusMap);
+
         return "prod/orderDetail";
     }
+
 
     @GetMapping("/productReg")
     public String reg(HttpSession session, Model model) {
@@ -332,19 +349,14 @@ public class ProdController {
     public String orderList(HttpSession session, Model model, RedirectAttributes redirectAttributes) {
         UserSessionDto user = (UserSessionDto) session.getAttribute("user");
 
-        List<Orders>orders = orderService.getOrderList(user.getUid());
+        List<OrderSummaryDto> summaries = orderService.getOrderSummaries(user.getUid());
+        System.out.println(summaries.toString());
 
+        //order 하나당 product 여러개 그루핑처리
+        Map<Long, List<OrderSummaryDto>> group = summaries.stream()
+                .collect(Collectors.groupingBy(os -> os.getOrderId()));
 
-        List<OrderCart>cart = orderService.findOrderCartsByBuyerUid(user.getUid());
-
-
-
-        Map<Long, List<OrderCart>> grouped = cart.stream()
-                .collect(Collectors.groupingBy(oc -> oc.getOrders().getOrderId()));
-
-        model.addAttribute("groupedOrderCartList", grouped);
-        model.addAttribute("orderlist", orders );
-        model.addAttribute("cart", cart);
+        model.addAttribute("summaries", group);
 
         return "prod/orderList";
     }

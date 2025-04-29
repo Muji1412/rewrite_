@@ -15,13 +15,15 @@ a {
 
 section{
     margin: 0 auto;
-    width: 1000px;
+    margin-top: 77px;
+    width: 1250px;
+    min-height: 950px;
     position: relative;
   }
 
 .title-box {
     text-align: center;
-    margin-bottom: 40px;
+    /*margin-bottom: 40px;*/
     width: 100%;
 }
 
@@ -32,9 +34,9 @@ section{
     width: 1000px;
     margin: 0 auto;
     min-height: 500px;
-    padding-top: 100px;
+    /*padding-top: 100px;*/
     padding-left: 100px;
-    padding-right: 200px;
+    /*padding-right: 200px;*/
   }
 
 

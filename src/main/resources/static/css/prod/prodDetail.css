@@ -18,6 +18,7 @@ section {
     font-family: 'Arial', sans-serif;
     padding: 40px 20px 0px 20px ;
     max-width: 1000px;
+    min-height: 550px;
     margin: auto;
     
   }
@@ -160,6 +161,7 @@ section {
     height: 100%;
     outline: none;
     resize: none;
+    border: none;
   }
   
   .meta-info {
