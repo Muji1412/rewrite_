@@ -18,8 +18,8 @@ public class HomeController {
 
     @GetMapping("/")
     public String home(Model model) {
-        // 최신순으로 상품 목록 가져오기 (ProdController의 방식과 유사하게)
-        List<ProductDTO> products = prodService.getAllProducts("latest");
+        // 판매 완료되지 않은 상품 목록 가져오기
+        List<ProductDTO> products = prodService.getActiveProducts("latest");
 
         // 메인 페이지에 표시할 상품 수 제한 (예: 8개)
         int limit = Math.min(products.size(), 8);

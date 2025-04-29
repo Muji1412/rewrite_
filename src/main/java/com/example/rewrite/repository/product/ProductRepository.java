@@ -33,4 +33,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     List<Product> findByCategoryMax(String category, Sort sort);
 
     List<Product> findByTitleContaining(String keyword);
+
+    // prod_status가 특정 값이 아닌 상품들 조회
+    List<Product> findByProdStatusNot(String prodStatus, Sort sort);
 }
