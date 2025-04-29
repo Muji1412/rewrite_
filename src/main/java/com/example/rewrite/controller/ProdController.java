@@ -182,6 +182,7 @@ public class ProdController {
         return "prod/orderDetail";
     }
 
+
     @GetMapping("/productReg")
     public String reg(HttpSession session, Model model) {
         UserSessionDto user = (UserSessionDto) session.getAttribute("user");
