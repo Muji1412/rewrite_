@@ -4,8 +4,11 @@ body {
   }
 
   section {
-    width: 1000px;
     margin: 0 auto;
+    margin-top: 77px;
+    width: 1250px;
+    min-height: 950px;
+    position: relative;
   }
 
   .address-list{
@@ -17,7 +20,7 @@ body {
 
   h2 {
     font-size: 25px;
-    margin: 0 0 10px 180px;
+    margin: 0 0 10px 305px;
   }
 
   .subtitle {
