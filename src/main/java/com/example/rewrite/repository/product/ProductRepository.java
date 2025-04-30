@@ -23,6 +23,8 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     List<Product> prodId(Long prodId);
 
+
+    List<Product> findProductsByUserUid(Long uid, Sort sort);
     List<Product> findProductsByUserUid(Long uid);
     void deleteByUserUid(Long uid);
     List<Product> findByUserUid(Long uid);
