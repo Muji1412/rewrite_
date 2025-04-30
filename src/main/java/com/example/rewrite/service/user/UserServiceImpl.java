@@ -40,10 +40,6 @@ import java.util.*;
 @Transactional(readOnly = true) // 기본적으로 읽기 전용 트랜잭션, 쓰기 작업 메소드에 @Transactional 추가
 public class UserServiceImpl implements UserService, UserDetailsService {
 
-    @Autowired
-    private UserMapper userMapper;
-    //나는바보입니다
-
     private final UsersRepository usersRepository;
     private final PasswordEncoder passwordEncoder;
     private final MailService mailService;
