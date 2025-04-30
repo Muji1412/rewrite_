@@ -59,13 +59,12 @@ public class UserController {
         }
         Long uid = user.getUid();
 
-        model.addAttribute("review", reviewService.getReviewsByUid(uid).size());
-        model.addAttribute("orderprod",orderService.getOrderAll(uid));
-        model.addAttribute("buycount", userService.buyCount(uid));
-        model.addAttribute("nickname", user.getNickname());
-        model.addAttribute("user", userService.getProfile(uid));
-        model.addAttribute("sellprod", userService.getSellProd(uid));
-        model.addAttribute("sellcount", userService.sellCount(uid));
+        model.addAttribute("review", reviewService.getReviewsByUid(uid).size()); //리뷰수
+        model.addAttribute("orderprod",orderService.getOrder4(uid)); //최근 주문 상품
+        model.addAttribute("buycount", orderService.getOrderAll(uid).size()); //구매수
+        model.addAttribute("user", userService.getProfile(uid)); //회원정보
+        model.addAttribute("sellprod", userService.getSellProd(uid));//최근 판매 상품
+        model.addAttribute("sellcount", userService.sellCount(uid)); //판매수
         return "user/mypage";
     }
     @GetMapping("/edit")

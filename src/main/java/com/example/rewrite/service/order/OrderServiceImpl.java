@@ -89,24 +89,6 @@ public class OrderServiceImpl implements OrderService {
         // 필요하다면 여기서 이메일 알림 등 추가 작업 수행
     }
 
-
-
-//    @Override
-//    public List<Orders> getOrderList(Long uid) {
-//        return ordersRepository.findByBuyerUid(uid);
-//    }
-//
-//    @Override
-//    public List<OrderCart> getOrderDetail(Long uid) {
-//
-//        return ordersRepository.findByOrderId(uid);
-//    }
-//
-//    @Override
-//    public List<OrderCart> findOrderCartsByBuyerUid(Long uid) {
-//        return ordersRepository.findOrderCartsByBuyerUid(uid);
-//    }
-
     @Override
     public List<Product> findOrderDetail(Long oid) {
         return ordersRepository.findOrderDetail(oid);
@@ -119,9 +101,15 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<Product> getOrderAll(Long uid) {
+
+        return ordersRepository.getOrderAll(uid);
+    }
+
+    @Override
+    public List<Product> getOrder4(Long uid) {
         PageRequest pageRequest = PageRequest.of(0, 4); // 첫 번째 페이지, 4개 항목
 
-        return ordersRepository.getOrderAll(uid, pageRequest);
+        return ordersRepository.getOrder4(uid, pageRequest);
     }
 
     @Override

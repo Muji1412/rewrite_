@@ -91,8 +91,8 @@ public  class ProdServiceImpl implements ProdService {
     // 내 상품 목록 조회
     @Override
     public List<ProductDTO> getMyProducts(Long uid) {
-
-        List<Product> myProducts = productRepository.findProductsByUserUid(uid);
+        Sort sort = Sort.by(Sort.Direction.DESC, "regDate");
+        List<Product> myProducts = productRepository.findProductsByUserUid(uid, sort);
 
         return myProducts.stream()
                 .map(this::convertToDto)

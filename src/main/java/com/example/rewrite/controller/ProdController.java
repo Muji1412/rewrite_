@@ -22,9 +22,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpSession;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Controller
@@ -268,9 +266,7 @@ public class ProdController {
         }
         Map<Long, Boolean> wishMap = new HashMap<>();
         if (user != null) {
-            for (ProductDTO prod
-
-                    : prodService.getMyProducts(user.getUid())) {
+            for (ProductDTO prod : prodService.getMyProducts(user.getUid())) {
                 boolean isWishlisted = wishlistService.isWishlisted(user.getUid(), prod.getProdId());
                 wishMap.put(prod.getProdId(), isWishlisted);
             }
@@ -354,8 +350,11 @@ public class ProdController {
         System.out.println(summaries.toString());
 
         //order 하나당 product 여러개 그루핑처리
-        Map<Long, List<OrderSummaryDto>> group = summaries.stream()
-                .collect(Collectors.groupingBy(os -> os.getOrderId()));
+        Map<Long, List<OrderSummaryDto>> group = new TreeMap<>(Comparator.reverseOrder());//내림차순정렬
+        group.putAll(
+                summaries.stream()
+                .collect(Collectors.groupingBy(os -> os.getOrderId())));
+
 
         model.addAttribute("summaries", group);
 
