@@ -1,6 +1,7 @@
 <th:block th:fragment="def (item)">
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<html xmlns:th="http://www.thymeleaf.org" lang="en"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -31,9 +32,24 @@
                     <a th:href="@{/user/login}">로그인</a>  <!-- 로그인 페이지로 이동 -->
                 </li>
 
-                <li th:if="${session.user}">
-                    <a th:href="@{/logout}">로그아웃</a>
-                </li>
+                <!-- ADMIN 사용자 메뉴 -->
+                <th:block sec:authorize="hasRole('ADMIN')">
+                    <li><a th:href="@{/admin/modifyUsers}">유저관리</a></li>
+                    <li><a th:href="@{/admin/modifyProducts}">상품관리</a></li>
+                    <li><a th:href="@{/admin/noticeWrite}">공지작성</a></li>
+                </th:block>
+
+                <th:block sec:authorize="!hasRole('ADMIN')">
+                    <li><a href="/user/cs_main">고객센터</a></li>
+                    <li><a href="#">알림</a></li>
+                    <li th:unless="${session.user}">
+                        <a th:href="@{/user/login}">로그인</a>
+                    </li>
+                    <li th:if="${session.user}">
+                        <a th:href="@{/logout}">로그아웃</a>
+                    </li>
+                </th:block>
+
             </ul>
         </div>
         <div class="header_bottom">
