@@ -252,6 +252,7 @@ public  class ProdServiceImpl implements ProdService {
     @Override
     @Transactional
     public void deleteProduct(Long id) {
+        //delete할때 service단에서 포린키 제약 걸린애들 먼저 날림
         reviewRepository.deleteByProductProdId(id);
         orderCartRepository.deleteByProductProdId(id);
         wishlistRepository.deleteByProductProdId(id);
