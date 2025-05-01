@@ -1,5 +1,6 @@
 package com.example.rewrite.repository.wishlist;
 
+import com.example.rewrite.entity.Product;
 import com.example.rewrite.entity.Wishlist;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -52,4 +53,13 @@ public interface WishlistRepository extends JpaRepository<Wishlist, Long> {
     @Transactional // 삭제 작업은 트랜잭션 내에서 수행되어야 함
     @Query("DELETE FROM Wishlist w WHERE w.product.prodId = :productId")
     void deleteByProductProdId(@Param("productId") Long productId);
+
+    void deleteByProduct(Product product);
+
+    @Modifying // 데이터 변경 쿼리임을 명시
+    @Transactional // 삭제 작업은 트랜잭션 내에서 수행되어야 함
+    @Query("DELETE FROM Wishlist w WHERE w.user.uid = :userId")
+    void deleteByUserUid(@Param("userId") Long userId); // 파라미터 이름 명시
+
+
 }

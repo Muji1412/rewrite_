@@ -23,5 +23,5 @@ public interface CartRepository extends JpaRepository<Cart, Long> {
     // 1. 선택된 장바구니 아이템만 조회 (체크된 상품)
     List<Cart> findByUser_UidAndIsCheckedTrue(Long uid);
 
-
+    void deleteByProduct(Product product);
 }

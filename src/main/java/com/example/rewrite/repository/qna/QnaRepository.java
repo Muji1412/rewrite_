@@ -10,5 +10,4 @@ import org.springframework.stereotype.Repository;
 public interface QnaRepository  extends JpaRepository<Qna, Long> {
     Page<Qna> findByUSERID(String userid, Pageable pageable);
 
-    //Qna 관련 메서드들?
 }

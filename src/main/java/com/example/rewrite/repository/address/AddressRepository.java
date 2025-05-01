@@ -54,4 +54,8 @@ public interface AddressRepository extends JpaRepository<Address,Long> {
             "WHERE a.addressId = :#{#address.addressId}")
     void modifyAddress(@Param("address") Address address);
 
+    @Modifying // 데이터 변경 쿼리임을 명시
+    @Transactional // 삭제 작업은 트랜잭션 내에서 수행
+    @Query("DELETE FROM Address a WHERE a.uid = :userId")
+    void deleteByUserUid(@Param("userId") Long userId); // 구현 추가
 }
