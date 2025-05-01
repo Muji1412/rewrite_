@@ -142,14 +142,31 @@ public class AddressController {
     }
 
     @PostMapping("/default") //기본주소지 선택
-    public String checkDefault(HttpSession session, @RequestParam("addressId")Long addressId){ //세션으로변경 예정
+    @ResponseBody  // 이 어노테이션을 추가하여 뷰가 아닌 데이터를 직접 반환[3]
+    public String checkDefault(HttpSession session, @RequestParam("addressId")Long addressId){
         UserSessionDto user = (UserSessionDto)session.getAttribute("user");
+
         if(user == null) {
-            return "redirect:/user/login";
+            return "unauthorized";  // 뷰 이름이 아닌 상태 문자열 반환
         }
-        addressService.checkDefault(addressId, user.getUid());
-        return "redirect:/address/detail";
+
+        try {
+            addressService.checkDefault(addressId, user.getUid());
+            return "ok";  // 성공 시 "ok" 문자열 반환
+        } catch (Exception e) {
+            return "error";  // 오류 발생 시 "error" 문자열 반환
+        }
     }
+
+//    @PostMapping("/default") //기본주소지 선택
+//    public String checkDefault(HttpSession session, @RequestParam("addressId")Long addressId){ //세션으로변경 예정
+//        UserSessionDto user = (UserSessionDto)session.getAttribute("user");
+//        if(user == null) {
+//            return "redirect:/user/login";
+//        }
+//        addressService.checkDefault(addressId, user.getUid());
+//        return "redirect:/address/detail";
+//    }
 
     @PostMapping("/delete") //주소지 삭제
     public String addressDelete(@RequestParam("addressId")Long addressId){
