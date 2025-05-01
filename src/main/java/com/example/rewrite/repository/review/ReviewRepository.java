@@ -1,5 +1,6 @@
 package com.example.rewrite.repository.review;
 
+import com.example.rewrite.entity.Product;
 import com.example.rewrite.entity.Review;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -22,4 +23,7 @@ public interface ReviewRepository extends JpaRepository<Review, Integer> {
     @Query("DELETE FROM Review r WHERE r.product.prodId = :productId")
     void deleteByProductProdId(@Param("productId") Long productId);
 
+    void deleteByProduct(Product product);
+
+    void deleteByUserUid(Long uid);
 }
