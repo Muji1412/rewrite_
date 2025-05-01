@@ -387,20 +387,56 @@ public class ProdController {
     }
 
     @PostMapping("/bump")
-    public String bumpProduct(@RequestParam Long prodId, HttpSession session, RedirectAttributes redirectAttributes) {
+    @ResponseBody  // 이 줄을 추가 - 뷰가 아닌 데이터를 직접 반환한다는 의미
+    public String bumpProduct(@RequestParam Long prodId, HttpSession session) {  // RedirectAttributes 제거
         UserSessionDto user = (UserSessionDto) session.getAttribute("user");
         if (user == null) {
-            return "redirect:/user/login";
+            return "unauthorized";  // 리다이렉트 대신 문자열 반환
         }
-        ProductDTO product = prodService.getProductById(prodId);
-        if (!user.getUid().equals(product.getUid())) {
-            redirectAttributes.addFlashAttribute("error", "본인 글만 끌어올릴 수 있습니다.");
-            return "redirect:/prod/prodDetail?prodId=" + prodId;
+
+        try {
+            ProductDTO product = prodService.getProductById(prodId);
+
+            // 상품이 없는 경우 처리 (선택적)
+            if (product == null) {
+                return "not_found";
+            }
+
+            // 본인 글이 아닌 경우
+            if (!user.getUid().equals(product.getUid())) {
+                return "forbidden";  // 리다이렉트 대신 문자열 반환
+            }
+
+            // 판매완료 상태 체크 (선택적)
+            if ("판매완료".equals(product.getProdStatus())) {
+                return "sold_out";
+            }
+
+            // 끌어올리기 실행
+            prodService.bumpProduct(prodId);
+
+            // 성공 응답
+            return "ok";  // 리다이렉트 대신 문자열 반환
+        } catch (Exception e) {
+            return "error";  // 예외 발생 시 에러 문자열 반환
         }
-        prodService.bumpProduct(prodId);
-        redirectAttributes.addFlashAttribute("success", "끌어올리기가 완료되었습니다!");
-        return "redirect:/prod/prodDetail?prodId=" + prodId; // 상세페이지로 리다이렉트
     }
+
+//    @PostMapping("/bump")
+//    public String bumpProduct(@RequestParam Long prodId, HttpSession session, RedirectAttributes redirectAttributes) {
+//        UserSessionDto user = (UserSessionDto) session.getAttribute("user");
+//        if (user == null) {
+//            return "redirect:/user/login";
+//        }
+//        ProductDTO product = prodService.getProductById(prodId);
+//        if (!user.getUid().equals(product.getUid())) {
+//            redirectAttributes.addFlashAttribute("error", "본인 글만 끌어올릴 수 있습니다.");
+//            return "redirect:/prod/prodDetail?prodId=" + prodId;
+//        }
+//        prodService.bumpProduct(prodId);
+//        redirectAttributes.addFlashAttribute("success", "끌어올리기가 완료되었습니다!");
+//        return "redirect:/prod/prodDetail?prodId=" + prodId; // 상세페이지로 리다이렉트
+//    }
 
     @GetMapping("/orderSuccess")
     public String orderSuccess(
