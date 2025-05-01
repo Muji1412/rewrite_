@@ -98,3 +98,14 @@ body {
 .submit-button:hover {
     background-color: #e0e0e0; /* 마우스 오버 시 약간 어둡게 */
 }
+
+/* 기존 CSS 코드 아래에 추가 */
+
+/* 에러 메시지 스타일 */
+.error-message {
+    display: block; /* span을 블록 요소로 만들어 줄바꿈 및 margin 적용 */
+    color: #dc3545; /* 에러 메시지 색상 (빨간색 계열) */
+    font-size: 0.8rem; /* 작은 폰트 크기 */
+    margin-top: 5px; /* 입력 필드와의 상단 여백 */
+    min-height: 1em; /* 메시지가 없을 때도 공간을 차지하도록 (선택 사항) */
+}
