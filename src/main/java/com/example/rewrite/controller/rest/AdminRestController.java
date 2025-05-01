@@ -27,17 +27,32 @@ public class AdminRestController {
     private final ProdService prodService;
 
     @GetMapping("/users")
-    public List<UserDTO> getUsers( // Users 엔티티 대신 DTO 사용 권장
-                                   @RequestParam(required = false) String search,
-                                   @RequestParam(required = false) String role) {
+    public List<UserDTO> getUsers(
+            @RequestParam(required = false) String search,
+            @RequestParam(required = false) String role) {
 
-        // if문으로 예외처리 해주기
-        if (role.equals("none")) {
-            String getall = null;
-            return userService.findUsers(getall, getall);
+        String roleToSearch = role; // role 파라미터 복사
+
+        // role 값이 null이거나, 비어있거나, "none"일 경우 실제 검색 시에는 null 사용 (역할 필터링 안 함)
+        if (roleToSearch == null || roleToSearch.trim().isEmpty() || "none".equalsIgnoreCase(roleToSearch)) {
+            roleToSearch = null;
         }
-        return userService.findUsers(search, role);
+
+        // search 값은 그대로, role 값은 필터링 여부에 따라 null 또는 실제 값 전달
+        return userService.findUsers(search, roleToSearch);
     }
+//    @GetMapping("/users")
+//    public List<UserDTO> getUsers( // Users 엔티티 대신 DTO 사용 권장
+//                                   @RequestParam(required = false) String search,
+//                                   @RequestParam(required = false) String role) {
+//
+//        // if문으로 예외처리 해주기
+//        if (role.equals("none")) {
+//            String getall = null;
+//            return userService.findUsers(getall, getall);
+//        }
+//        return userService.findUsers(search, role);
+//    }
 
     @PostMapping("/setUserRole")
     public ResponseEntity<Object> setUserRole(@RequestBody ChangeRoleDto changeRoleDto) {
