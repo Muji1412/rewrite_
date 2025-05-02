@@ -44,6 +44,8 @@
             <input type="text" id = "sample6_detailAddress" name="detailAddress" placeholder="상세주소" th:value="${detailAddress}" required><br>
 
             <textarea rows="5" class="tarea"  placeholder="-상품 설명
+
+
 -사용 기간
 -실제 촬영한 사진을 올려주세요.
 -본인이 촬영한 사진이 아닐 시 이용제재 처리 될 수 있습니다." id="description" name="description"  th:text="${product != null ? product.description : ''}"></textarea>

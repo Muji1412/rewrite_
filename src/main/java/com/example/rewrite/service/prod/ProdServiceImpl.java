@@ -230,6 +230,8 @@ public  class ProdServiceImpl implements ProdService {
     public List<ProductDTO> getSellerProducts(Long uid, String sortBy) {
         Sort sort;
         switch (sortBy) {
+
+
             case "views":
                 sort = Sort.by(Sort.Direction.DESC, "viewCount");
                 break;
