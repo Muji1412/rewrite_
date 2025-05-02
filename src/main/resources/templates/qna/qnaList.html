@@ -50,6 +50,7 @@
 
             <!-- 페이지네이션 (정적 예시) -->
             <nav class="pagination-container" aria-label="Page navigation">
+
                 <div class="pagination">
                     <a th:href="${qnaPage.first} ? '#' : @{/qna/qnaList(page=${qnaPage.number - 1})}"
                        class="page-link" th:classappend="${qnaPage.first} ? 'disabled'"> ← Prev </a>
@@ -59,7 +60,7 @@
                         <span th:if="${pageNumber == qnaPage.number + 1}" class="page-link current-page"
                               th:text="${pageNumber}"></span>
                         <!-- 나머지는 클릭 되게 -->
-                        <a th:unless="${pageNumber == qnaPage.number + 1}"
+                        <a th:if="${pageNumber > 0 && pageNumber != qnaPage.number + 1}"
                            th:href="@{/qna/qnaList(page=${pageNumber - 1})}"
                            class="page-link" th:text="${pageNumber}"></a>
                     </th:block>

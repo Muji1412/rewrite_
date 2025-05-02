@@ -52,26 +52,26 @@ public class AuthController {
             session.setAttribute("user", userSessionDto); //
 
             // 회원가입 성공시, 성공 메세지를 body에 담아주면 json형식으로 보내줌.
-            Map<String, Object> successBody = new HashMap<>();
-            successBody.put("message", "회원가입을 환영합니다. " + registeredUser.getName() +"님!");
+
+            // 맵 형식 리팩토링 필요
+//            Map<String, Object> successBody = new HashMap<>();
+//
+//            successBody.put("message", "회원가입을 환영합니다. " + registeredUser.getName() +"님!");
             mailService.sendWelcomeEmail(registeredUser.getEmail(), registeredUser.getId(), registeredUser.getName());
 
-            return ResponseEntity.status(HttpStatus.CREATED)
-                    .body(successBody);
+            return ResponseEntity
+                    .status(HttpStatus.CREATED)
+                    .body(ApiResponseDto.success("회원가입을 환영합니다. " + registeredUser.getName() +"님!"));
 
-        } catch (IllegalArgumentException e) { //실패케이스 - @Valid로 지정한 오류들(중복 등)
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(ApiResponseDto.fail(e.getMessage()));
 
-            // 회원가입 실패처리
-            Map<String, String> errorBody = new HashMap<>();
-            errorBody.put("message", e.getMessage());
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(errorBody);
-
-        } catch (Exception e) { //실패케이스 - 서버오류
-            Map<String, String> errorBody = new HashMap<>();
-            errorBody.put("message", e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(errorBody);
+        } catch (Exception e) {
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(ApiResponseDto.fail(e.getMessage()));
         }
     }
     @PostMapping("/login")

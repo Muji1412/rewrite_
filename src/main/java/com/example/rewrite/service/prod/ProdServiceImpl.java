@@ -4,6 +4,7 @@ import com.example.rewrite.command.ProductDTO;
 import com.example.rewrite.entity.Address;
 import com.example.rewrite.entity.Product;
 import com.example.rewrite.entity.Users;
+import com.example.rewrite.repository.cart.CartRepository;
 import com.example.rewrite.repository.ordercart.OrderCartRepository;
 import com.example.rewrite.repository.product.ProductRepository;
 import com.example.rewrite.repository.review.ReviewRepository;
@@ -26,6 +27,8 @@ public  class ProdServiceImpl implements ProdService {
     private final ProductRepository productRepository;
 
     @Autowired
+    private CartRepository cartRepository;
+    @Autowired
     private WishlistRepository wishlistRepository;
     @Autowired
     private OrderCartRepository orderCartRepository;
@@ -36,6 +39,7 @@ public  class ProdServiceImpl implements ProdService {
     private AddressService addressService;
     @Autowired
     private ReviewRepository reviewRepository;
+
 
 
     @Autowired
@@ -91,8 +95,8 @@ public  class ProdServiceImpl implements ProdService {
     // 내 상품 목록 조회
     @Override
     public List<ProductDTO> getMyProducts(Long uid) {
-
-        List<Product> myProducts = productRepository.findProductsByUserUid(uid);
+        Sort sort = Sort.by(Sort.Direction.DESC, "regDate");
+        List<Product> myProducts = productRepository.findProductsByUserUid(uid, sort);
 
         return myProducts.stream()
                 .map(this::convertToDto)
@@ -254,9 +258,11 @@ public  class ProdServiceImpl implements ProdService {
     @Override
     @Transactional
     public void deleteProduct(Long id) {
+        //delete할때 service단에서 포린키 제약 걸린애들 먼저 날림
         reviewRepository.deleteByProductProdId(id);
         orderCartRepository.deleteByProductProdId(id);
         wishlistRepository.deleteByProductProdId(id);
+        cartRepository.deleteByProductProdId(id);
         productRepository.deleteById(id);
     }
 

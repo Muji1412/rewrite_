@@ -36,11 +36,11 @@ $(document).ready(function () {
 
 /* infinity rolling */
 
-$(document).ready(function() {
+$(document).ready(function () {
     setFlowBanner();
 
     // 상품 카드 클릭 이벤트 처리
-    $(document).on('click', '.flow_banner .card', function() {
+    $(document).on('click', '.flow_banner .card', function () {
         const prodId = $(this).data('prod-id');
         if (prodId) {
             window.location.href = `/prod/prodDetail?prodId=${prodId}`;
@@ -60,7 +60,7 @@ function setFlowBanner() {
     const $baseClone = $list.clone();
 
     // 페이지 로드 시 실행
-    $(window).on('load', function() {
+    $(window).on('load', function () {
         $wrap.append($baseClone.clone()); // 초기 복제 리스트 1개 추가
         flowBannerAct(); // 배너 롤링 시작
     });
@@ -113,7 +113,7 @@ function setFlowBanner() {
     });
 
 
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
         // flow_banner 내 카드에 이벤트 리스너 추가
         const flowBannerCards = document.querySelectorAll('.flow_banner .card');
 
@@ -132,14 +132,64 @@ function setFlowBanner() {
             });
 
             // 카드 클릭 이벤트 - 상세 페이지로 이동
-            card.addEventListener('click', function() {
+            card.addEventListener('click', function () {
                 const prodId = this.getAttribute('data-prod-id');
                 if (prodId) {
                     window.location.href = `/prod/prodDetail?prodId=${prodId}`;
                 }
             });
         });
+
+        // 스크롤 이벤트 리스너 추가
+        window.addEventListener('scroll', function() {
+            const topButton = document.querySelector('.top');
+            const footer = document.querySelector('footer'); // footer 선택자에 맞게 수정
+
+            // footer 위치 계산
+            const footerTop = footer.getBoundingClientRect().top;
+            const windowHeight = window.innerHeight;
+
+            // footer가 화면에 보이기 시작하면 버튼 위치 조정
+            if (footerTop < windowHeight) {
+                // footer까지의 거리에 따라 버튼 위치 조정
+                const bottomValue = windowHeight - footerTop + 100; // 100px 여유 공간
+                topButton.style.transition = '0.01s';
+                topButton.style.bottom = bottomValue + 'px';
+            } else {
+                // 기본 위치로 복원
+                topButton.style.bottom = '100px';
+            }
+        });
+
+
     });
 
 
+// 방법 2: 순수 JavaScript만 사용
+//     document.addEventListener('DOMContentLoaded', function() {
+//         // 스크롤 이벤트 리스너 추가
+//         window.addEventListener('scroll', function() {
+//             const topButton = document.querySelector('.top');
+//             const footer = document.querySelector('footer');
+//
+//             // footer 위치 계산
+//             const footerTop = footer.getBoundingClientRect().top;
+//             const windowHeight = window.innerHeight;
+//
+//             // footer가 화면에 보이기 시작하면 버튼 위치 조정
+//             if (footerTop < windowHeight) {
+//                 // footer까지의 거리에 따라 버튼 위치 조정
+//                 const bottomValue = windowHeight - footerTop + 100;
+//                 topButton.style.transition = '0.01s';
+//                 topButton.style.bottom = bottomValue + 'px';
+//             } else {
+//                 // 기본 위치로 복원
+//                 topButton.style.bottom = '100px';
+//             }
+//         });
+//     });
 }
+
+
+
+

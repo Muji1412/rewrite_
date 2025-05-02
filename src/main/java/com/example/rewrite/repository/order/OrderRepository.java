@@ -7,9 +7,11 @@ import com.example.rewrite.entity.Orders;
 import com.example.rewrite.entity.Product;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -21,14 +23,7 @@ public interface OrderRepository extends JpaRepository<Orders, Long> {
 
     // 특정 사용자의 모든 주문 조회
     List<Orders> findByBuyerUid(Long uid);
-//    List<OrderCart> findByOrderId(Long oid);
-//
-//    @Query("SELECT oc FROM OrderCart oc " +
-//            "JOIN FETCH oc.orders o " +
-//            "JOIN FETCH oc.product p " +
-//            "WHERE o.buyer.uid = :uid")
-//    List<OrderCart> findOrderCartsByBuyerUid(@Param("uid") Long uid);
-//
+
     //특정 order의 모든 product 조회
     @Query("SELECT p FROM OrderCart oc JOIN oc.product p WHERE oc.orders.orderId = :orderId")
     List<Product> findOrderDetail(@Param("orderId") Long orderId);
@@ -38,8 +33,12 @@ public interface OrderRepository extends JpaRepository<Orders, Long> {
     Orders getOrder(@Param("orderId") Long oid);
 
     //내 order의 product 전체 조회
-    @Query("SELECT p FROM OrderCart oc JOIN oc.product p JOIN oc.orders o WHERE o.buyer.uid = :uid")
-    List<Product> getOrderAll(@Param("uid")Long uid, Pageable pageable);
+    @Query("SELECT p FROM OrderCart oc JOIN oc.product p JOIN oc.orders o WHERE o.buyer.uid = :uid order by o.orderedAt desc")
+    List<Product> getOrder4(@Param("uid")Long uid, Pageable pageable);
+
+    //내 order의 product 전체 조회
+    @Query("SELECT p FROM OrderCart oc JOIN oc.product p JOIN oc.orders o WHERE o.buyer.uid = :uid order by o.orderedAt desc")
+    List<Product> getOrderAll(Long uid);
 
     Optional<Orders> findByTossOrderId(String tossOrderId);
 
@@ -54,7 +53,11 @@ public interface OrderRepository extends JpaRepository<Orders, Long> {
             "JOIN OrderCart oc ON oc.orders = o " +
             "JOIN Product p ON oc.product = p " +
             "JOIN Users u ON p.user = u " +
-            "WHERE b.uid = :uid " +
-            "ORDER BY o.orderedAt desc")
+            "WHERE b.uid = :uid ")
     List<OrderSummaryDto> findOrderSummariesByBuyerUid(@Param("uid") Long uid);
+
+    @Modifying // 데이터 변경 쿼리임을 명시
+    @Transactional // 삭제 작업은 트랜잭션 내에서 수행
+    @Query("DELETE FROM Orders o WHERE o.buyer.uid = :userId")
+    void deleteByBuyerUid(@Param("userId") Long userId); // 구현 추가
 }

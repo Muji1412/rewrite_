@@ -129,8 +129,6 @@ public class MailServiceImpl implements MailService {
         log.info("[MailService] 웰컴 이메일 발송 시작: {}", toEmail);
 
         String baseUrl = "https://rewrite.o-r.kr/";
-        String loginUrl = baseUrl + "user/login?userId=" + userId; // 실제 로그인 URL 확인
-        String privacyPolicyUrl = baseUrl + "privacy"; // 실제 개인정보처리방침 URL 확인
 
         MimeMessage mimeMessage = mailSender.createMimeMessage();
 
@@ -182,7 +180,6 @@ public class MailServiceImpl implements MailService {
                             "    <hr style='border: none; border-top: 1px solid #e9ecef; margin: 30px 0;'>" +
                             "    <p style='font-size:12px; color:#adb5bd; text-align:center; line-height:1.6;'>" +
                             "      ⓒ 2025 ReWrite Inc. | 서울시 성북구<br>" +
-                            "      <a href='" + privacyPolicyUrl + "' style='color:#adb5bd; text-decoration:none;'>개인정보처리방침</a> | " + // 개인정보처리방침 링크 확인
                             "    </p>" +
                             "  </div>" +
                             "</div>";

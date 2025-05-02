@@ -6,12 +6,19 @@ import com.example.rewrite.command.user.FindIdRequestDto;
 import com.example.rewrite.command.user.SignupRequestDto;
 import com.example.rewrite.command.user.UserDTO;
 import com.example.rewrite.entity.Cart;
+import com.example.rewrite.entity.Orders;
 import com.example.rewrite.entity.Product;
 import com.example.rewrite.entity.Users;
+import com.example.rewrite.repository.address.AddressRepository;
 import com.example.rewrite.repository.cart.CartRepository;
 import com.example.rewrite.repository.order.OrderRepository;
+import com.example.rewrite.repository.ordercart.OrderCartRepository;
 import com.example.rewrite.repository.product.ProductRepository;
+import com.example.rewrite.repository.qna.QnaRepository;
+import com.example.rewrite.repository.review.ReviewRepository;
 import com.example.rewrite.repository.users.UsersRepository;
+import com.example.rewrite.repository.wishlist.WishlistRepository;
+import com.example.rewrite.service.cart.CartService;
 import com.example.rewrite.service.mail.MailService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -40,17 +47,18 @@ import java.util.*;
 @Transactional(readOnly = true) // 기본적으로 읽기 전용 트랜잭션, 쓰기 작업 메소드에 @Transactional 추가
 public class UserServiceImpl implements UserService, UserDetailsService {
 
-    @Autowired
-    private UserMapper userMapper;
-    //나는바보입니다
-
     private final UsersRepository usersRepository;
     private final PasswordEncoder passwordEncoder;
     private final MailService mailService;
     private final ProductRepository productRepository;
     private final CartRepository cartRepository;
-    @Autowired
-    private OrderRepository orderRepository;
+    private final WishlistRepository wishlistRepository;
+    private final QnaRepository qnaRepository;
+    private final ReviewRepository reviewRepository;
+    private final OrderRepository orderRepository;
+    private final AddressRepository addressRepository;
+    private final OrderCartRepository ordersCartRepository;
+
     @Override
     @Transactional
     public Users signup(SignupRequestDto signupRequestDto) {
@@ -229,18 +237,54 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     public void deleteUser(Long uid) {
         Users user = usersRepository.findUserByUid(uid);
 
-
         if (user != null) {
 
+            // 1. 사용자가 등록한 상품과 관련된 다른 레코드들 삭제
             List<Product> products = productRepository.findProductsByUserUid(uid);
             for (Product product : products) {
-                List<Cart> carts = cartRepository.findCartsByProduct(product);
-                cartRepository.deleteAll(carts);
+                // 다른 유저의 장바구니에 담긴 내 상품 삭제
+                cartRepository.deleteByProduct(product);
+                // 다른 유저가 내 상품을 찜한 목록 삭제
+                wishlistRepository.deleteByProduct(product);
+                // 내 상품에 달린 리뷰 삭제 (정책에 따라 다를 수 있음)
+                reviewRepository.deleteByProduct(product);
+                // 내 상품이 포함된 주문 상세 내역 삭제
+                ordersCartRepository.deleteByProduct(product);
             }
 
-            cartRepository.deleteByUserUid(uid); //순서 중요
-            productRepository.deleteByUserUid(uid);
+            // 2. 사용자와 직접 관련된 레코드 삭제
+            // 2-1. 장바구니 삭제 (내 장바구니)
+            cartRepository.deleteByUserUid(uid); // User FK 기준
+
+            // 2-2. 찜 목록 삭제
+            wishlistRepository.deleteByUserUid(uid);
+
+            // 2-3. 리뷰 삭제 (내가 쓴 리뷰)
+            reviewRepository.deleteByUserUid(uid);
+
+
+            // 2-5. 주문 및 주문 상세 삭제
+            List<Orders> orders = orderRepository.findByBuyerUid(uid);
+            for (Orders order : orders) {
+                ordersCartRepository.deleteByOrdersOrderId(order.getOrderId()); // 수정된 호출
+            }
+            orderRepository.deleteByBuyerUid(uid); // User FK 기준
+
+            // 2-6. 주소 삭제
+            addressRepository.deleteByUserUid(uid); // User FK 기준 (가정)
+
+            // 3. 사용자 상품 삭제
+            productRepository.deleteByUserUid(uid); // User FK 기준
+
+            // 4. 사용자 삭제
             usersRepository.delete(user);
+
+            // 참고: cartRepository.findCartsByProduct 및 deleteAll(carts) 로직은
+            // cartRepository.deleteByProduct(product) 로 대체 가능할 수 있습니다.
+            // 기존 로직 (`List<Cart> carts = cartRepository.findCartsByProduct(product); cartRepository.deleteAll(carts);`) 은
+            // deleteByProduct(product) 가 동일한 기능을 수행한다면 제거해도 됩니다.
+            // 마찬가지로 기존 `cartRepository.deleteByUserUid(uid);` 호출 위치는
+            // 관련된 모든 자식 데이터가 삭제된 후 User 삭제 직전으로 옮기는 것이 더 명확할 수 있습니다. (위 예시처럼)
         }
     }
 
