@@ -12,7 +12,7 @@
         <div class="box">
 
             <div class="title-box">
-                <h2 th:if="${#httpServletRequest.getRequestURI().contains('myProdList')}">[[${user.nickname}]]님의 판매 내역</h2>
+                <h2 th:if="${#httpServletRequest.getRequestURI().contains('myProdList')}">[[${user.nickname}]]님의 판매 물품</h2>
                 <h2 th:if="${#httpServletRequest.getRequestURI().contains('prodList') || #httpServletRequest.getRequestURI().contains('search')}">상품 리스트</h2>
                 <h2 th:if="${#httpServletRequest.getRequestURI().contains('wishList')}">[[${user.nickname}]]님의 찜 목록</h2>
                 <h2 th:if="${#httpServletRequest.getRequestURI().contains('sellerProdList')}">[[${seller.nickname}]]님의 판매 내역</h2>
