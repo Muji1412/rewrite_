@@ -198,8 +198,10 @@ $(document).ready(function(){
     // 초기 미디어 표시
     showInitialMedia();
 
-    // 끌어올리기 버튼 클릭 이벤트
-    $('#bumpBtn').on('click', function() {
+    // prodDetail.js
+    $('#bumpBtn').on('click', function (event) {
+        event.preventDefault();
+
         if (!productId) {
             alert('상품 정보를 찾을 수 없습니다.');
             return;
@@ -207,27 +209,55 @@ $(document).ready(function(){
         $.ajax({
             url: '/prod/bump',
             type: 'POST',
-            data: { prodId: productId },
-            success: function(response) {
+            data: {prodId: productId},
+            success: function (response) {
                 if (response === 'ok') {
                     alert('끌어올리기가 완료되었습니다!');
-                    // 페이지 이동 코드 추가
                     window.location.href = '/prod/prodDetail?prodId=' + productId;
                 } else if (response === 'forbidden') {
                     alert('본인 글만 끌어올릴 수 있습니다.');
                 } else if (response === 'unauthorized') {
                     alert('로그인이 필요합니다.');
-                    // 선택적으로 로그인 페이지로 이동
-                    // window.location.href = '/user/login';
                 } else {
-                    alert('알 수 없는 오류가 발생했습니다.');
+                    alert('알 수 없는 오류가 발생했습니다: ' + response);
                 }
             },
-            error: function() {
-                alert('끌어올리기에 실패했습니다.');
+            error: function (jqXHR, textStatus, errorThrown) {
+                alert('끌어올리기에 실패했습니다. (' + textStatus + ': ' + errorThrown + ')');
             }
         });
     });
+
+    // // 끌어올리기 버튼 클릭 이벤트
+    // $('#bumpBtn').on('click', function() {
+    //     if (!productId) {
+    //         alert('상품 정보를 찾을 수 없습니다.');
+    //         return;
+    //     }
+    //     $.ajax({
+    //         url: '/prod/bump',
+    //         type: 'POST',
+    //         data: { prodId: productId },
+    //         success: function(response) {
+    //             if (response === 'ok') {
+    //                 alert('끌어올리기가 완료되었습니다!');
+    //                 // 페이지 이동 코드 추가
+    //                 window.location.href = '/prod/prodDetail?prodId=' + productId;
+    //             } else if (response === 'forbidden') {
+    //                 alert('본인 글만 끌어올릴 수 있습니다.');
+    //             } else if (response === 'unauthorized') {
+    //                 alert('로그인이 필요합니다.');
+    //                 // 선택적으로 로그인 페이지로 이동
+    //                 // window.location.href = '/user/login';
+    //             } else {
+    //                 alert('알 수 없는 오류가 발생했습니다.');
+    //             }
+    //         },
+    //         error: function() {
+    //             alert('끌어올리기에 실패했습니다.');
+    //         }
+    //     });
+    // });
 
     // $('#bumpBtn').on('click', function() {
     //     if (!productId) {
