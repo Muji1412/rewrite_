@@ -6,7 +6,10 @@ import com.example.rewrite.entity.Cart;
 import com.example.rewrite.entity.Product;
 import com.example.rewrite.entity.Users;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -24,4 +27,8 @@ public interface CartRepository extends JpaRepository<Cart, Long> {
     List<Cart> findByUser_UidAndIsCheckedTrue(Long uid);
 
     void deleteByProduct(Product product);
+    @Transactional
+    @Modifying
+    @Query("DELETE FROM Cart c WHERE c.product.prodId = :prodId")
+    void deleteByProductProdId(@Param("prodId") Long prodId);
 }
