@@ -38,6 +38,68 @@
     </section>
 </th:block>
 <script>
+    // document.addEventListener('click',function(event){
+    //     if(event.target.classList.contains('btn-select')){ //기본주소지 선택
+    //         var form = event.target.closest('form');
+    //         var formData = new FormData(form);
+    //         var data = {};
+    //         formData.forEach(function(value,key){
+    //             data[key] = value;
+    //             }
+    //         );
+    //         try{
+    //         fetch('/address/default',{
+    //             method: 'POST',
+    //             headers: {
+    //                 'Content-Type': 'application/json'
+    //             },
+    //             body:JSON.stringify(data)
+    //         }).then(function(response){
+    //             return response.json();
+    //         }).then(function(responseData){
+    //             location.reload();
+    //         })
+    //         }catch(error){
+    //
+    //         }
+    //     }
+    // })
+    document.querySelectorAll('.btn-select').forEach(button => {
+        button.addEventListener('click', function() {
+            const form = this.closest('form');
+            const addressId = form.querySelector('input[name="addressId"]').value;
+            const clickedCard = this.closest('.address-box');
+
+            fetch('/address/default', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `addressId=${addressId}`
+            })
+                .then(response => response.text())
+                .then(data => {
+                    if(data === 'ok') {
+                        // 모든 '기본주소지' 라벨 제거
+                        document.querySelectorAll('.default').forEach(label => {
+                            label.textContent = '';
+                        });
+
+                        // 클릭한 카드에만 '기본주소지' 라벨 추가
+                        clickedCard.querySelector('.default').textContent = '기본주소지';
+                    } else if(data === 'unauthorized') {
+                        alert('로그인이 필요합니다.');
+                        location.href = '/user/login';
+                    } else {
+                        alert('오류가 발생했습니다.');
+                    }
+                })
+                .catch(error => {
+                    alert('서버 통신 중 오류가 발생했습니다.');
+                    console.error('오류:', error);
+                });
+        });
+    });
     $(document).ready(function() {
 
         //아무 주소지도 없을경우
@@ -51,11 +113,13 @@
             form.submit(); // form 제출
         });
 
-        $('.btn-select').click(function() { //기본주소지 선택
-            var form = $(this).closest('form');
-            form.attr('action', '/address/default');
-            form.submit(); // form 제출
-        });
+        // $('.btn-select').click(function() { //기본주소지 선택
+        //     var form = $(this).closest('form');
+        //     form.attr('action', '/address/default');
+        //     form.submit(); // form 제출
+        // });
+
+
 
         $('.btn-delete').click(function() { //삭제 버튼
             var form = $(this).closest('form');
@@ -69,6 +133,7 @@
                 form.submit(); // form 제출
             }
         });
+
 
 
 
