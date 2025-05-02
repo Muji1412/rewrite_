@@ -4,6 +4,7 @@ import com.example.rewrite.command.ProductDTO;
 import com.example.rewrite.entity.Address;
 import com.example.rewrite.entity.Product;
 import com.example.rewrite.entity.Users;
+import com.example.rewrite.repository.cart.CartRepository;
 import com.example.rewrite.repository.ordercart.OrderCartRepository;
 import com.example.rewrite.repository.product.ProductRepository;
 import com.example.rewrite.repository.review.ReviewRepository;
@@ -26,6 +27,8 @@ public  class ProdServiceImpl implements ProdService {
     private final ProductRepository productRepository;
 
     @Autowired
+    private CartRepository cartRepository;
+    @Autowired
     private WishlistRepository wishlistRepository;
     @Autowired
     private OrderCartRepository orderCartRepository;
@@ -36,6 +39,7 @@ public  class ProdServiceImpl implements ProdService {
     private AddressService addressService;
     @Autowired
     private ReviewRepository reviewRepository;
+
 
 
     @Autowired
@@ -256,6 +260,7 @@ public  class ProdServiceImpl implements ProdService {
         reviewRepository.deleteByProductProdId(id);
         orderCartRepository.deleteByProductProdId(id);
         wishlistRepository.deleteByProductProdId(id);
+        cartRepository.deleteByProductProdId(id);
         productRepository.deleteById(id);
     }
 
