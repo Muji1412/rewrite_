@@ -1,11 +1,12 @@
 <link rel="stylesheet" href="/css/user/mypage.css" th:href="@{/css/user/mypage.css}">
 <link rel="stylesheet" href="/css/sideBar.css" th:href="@{/css/sideBar.css}">
 
-<th:block th:replace="~{/include/include :: def(~{::#wrap})}">
+<th:block th:replace="~{include/include :: def(~{::section})}">
 
 
     <section id="wrap">
-        <th:block th:replace="~{/include/side :: def(~{::#wrap})}"/>
+        <th:block th:replace="~{include/side :: def(~{::#wrap})}"/>
+
         <!-- 상단단 -->
         <div class="section_right">
             <h1>[[${user.nickname}]]님 안녕하세요</h1>

@@ -1,7 +1,7 @@
 <!-- 페이지별 스타일 시트 링크 (콘텐츠 내부에 위치) -->
 <link rel="stylesheet" th:href="@{/css/user/idFind.css}">
 
-<th:block th:replace="~{/include/include :: def(~{::#wrap})}">
+<th:block th:replace="~{include/include :: def(~{::#wrap})}">
     <!--
         1. th:replace: 이 파일 전체를 'include/include' 파일의 'def' 프래그먼트로 교체합니다.
         2. 파라미터 전달: ~{::.idfind-wrapper} 를 사용하여 아래 정의된 section 전체를 item 파라미터로 전달합니다.

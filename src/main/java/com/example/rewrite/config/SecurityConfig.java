@@ -30,13 +30,10 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable()) // 개발/테스트 시 임시 비활성화 유지 or 실제 서비스 시 활성화 고려
 
-                // ★★★ 요청 권한 설정 수정 ★★★
                 .authorizeHttpRequests(authorize -> authorize
-                        // 1. 문자열 경로를 AntPathRequestMatcher 객체로 감싸줍니다.
                         .requestMatchers(
-                                new AntPathRequestMatcher("/notice/noticeWrite"), // 특정 페이지
+                                new AntPathRequestMatcher("/notice/noticeWrite"),
                                 new AntPathRequestMatcher("/admin/**")
-    // /admin/ 으로 시작하는 모든 하위 경로
                         ).hasRole("ADMIN") // "ADMIN" 역할을 가진 사용자만 허용 (ROLE_ 접두사는 자동으로 처리됨)
 
                         .requestMatchers(
@@ -58,9 +55,6 @@ public class SecurityConfig {
                                 // 필요하다면 공개 API 경로 패턴 추가
                                 // new AntPathRequestMatcher("/api/public/**")
                         ).permitAll()
-
-                        // 3. 나머지 요청에 대한 설정
-                        // ★★★ 주의: 개발 완료 후 반드시 permitAll() -> authenticated() 등으로 변경하세요! ★★★
                         .anyRequest().permitAll() // 또는 .anyRequest().authenticated()
                 )
 

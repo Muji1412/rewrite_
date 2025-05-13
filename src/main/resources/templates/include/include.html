@@ -17,10 +17,15 @@
 <body>
 <div id="semi_wrap">
 <!--  타임리프 코드 2개가 아래에 있는 삼항연산식으로 변경  -->
-    <th:block th:replace="~{/include/popup :: def(~{::*})}"/>
-    <th:block th:replace="~{/include/payPopup :: def(~{::*})}"/>
+<!--    <th:block th:replace="~{include/popup :: def(~{::*})}"/>-->
+    <th:block th:if="${qnaForPopup != null}"> <!-- 팝업을 위한 qna 데이터가 있을 때만 팝업을 렌더링 (예시 조건) -->
+        <th:block th:replace="~{include/popup :: def(item=${qnaForPopup})}"/>
+    </th:block>
+    <th:block th:if="${userAddressList != null}"> <!-- 컨트롤러에서 'userAddressList'라는 이름으로 주소 목록을 전달한다고 가정 -->
+        <th:block th:replace="~{include/payPopup :: def(addressList=${userAddressList})}"/>
+    </th:block>
     <!-- 하나의 표현식으로 조건부 렌더링 -->
-<!--    <th:block th:replace="${pageType == 'qna'} ? ~{/include/popup :: def(~{::*})} : (${pageType == 'order'} ? ~{/include/payPopup :: def(~{::*})} : ~{})"></th:block>-->
+<!--    <th:block th:replace="${pageType == 'qna'} ? ~{include/popup :: def(~{::*})} : (${pageType == 'order'} ? ~{include/payPopup :: def(~{::*})} : ~{})"></th:block>-->
 
 
     <header class="header">
